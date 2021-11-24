@@ -15,9 +15,11 @@ cdef class ComplexPlaneProductElement__class(SageObject):
     cdef MPComplexNumber _norm
     cdef RealNumber _imag_norm
     cdef RealNumber _real_norm
+    cdef RealNumber _abs_square_norm
     cdef int _norm_set
     cdef int _imag_norm_set
     cdef int _real_norm_set
+    cdef int _abs_square_norm_set
     cdef int _is_in_upper_half_plane
     cpdef imag(self)
     cpdef real(self)
@@ -32,6 +34,7 @@ cdef class ComplexPlaneProductElement__class(SageObject):
     cpdef abs(self)
     cpdef imag_norm(self)
     cpdef real_norm(self)
+    cpdef abs_square_norm(self)
     cpdef imag_trace(self)
     cpdef real_trace(self)
     cpdef trace(self)

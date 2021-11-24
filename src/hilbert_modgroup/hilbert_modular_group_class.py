@@ -397,7 +397,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H4.ncusps()
             2
         """
-        if not self._cusps:
+        if not self._ncusps:
             self._ncusps = self.base_ring().class_number()
         return self._ncusps
 
@@ -417,19 +417,17 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H2=HilbertModularGroup(10)
             sage: H2.cusps()
             [Cusp Infinity of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?,
-             Cusp [3: a + 2] of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?]
-
-            sage: var('x')
-            x
+            Cusp [2: a] of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?]
+            sage: x=var('x')
             sage: K = NumberField(x^3-36*x-1, names='a')
             sage: H3=HilbertModularGroup(K); H3
             Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^3 - 36*x - 1
             sage: H3.cusps()
-            [Cusp Infinity of Number Field in a with defining polynomial x^3 - 36*x - 1,
+             [Cusp Infinity of Number Field in a with defining polynomial x^3 - 36*x - 1,
              Cusp [2: a + 1] of Number Field in a with defining polynomial x^3 - 36*x - 1,
-             Cusp [4: a - 1] of Number Field in a with defining polynomial x^3 - 36*x - 1,
-             Cusp [8: a + 3] of Number Field in a with defining polynomial x^3 - 36*x - 1,
-             Cusp [16: a + 3] of Number Field in a with defining polynomial x^3 - 36*x - 1]
+             Cusp [3: 1/3*a^2 + 1/3*a - 26/3] of Number Field in a with defining polynomial x^3 - 36*x - 1,
+             Cusp [2: 1/3*a^2 + 1/3*a - 23/3] of Number Field in a with defining polynomial x^3 - 36*x - 1,
+             Cusp [6: 1/3*a^2 + 1/3*a - 26/3] of Number Field in a with defining polynomial x^3 - 36*x - 1]
 
             sage: K4 = NumberField(x**4 - 17*x**2 + 36,names='a'); a=K4.gen()
             sage: H4=HilbertModularGroup(NumberField(x**4 - 17*x**2 + 36,names='a'))
@@ -457,6 +455,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         Return a list of ideals corresponding to cusp representatives, i.e.
         ideal representatives of ideal classes.
 
+        Note: We choose the ideal of smallest norm in each class.
+
         EXAMPLES::
 
             sage: from hilbert_modgroup.all import HilbertModularGroup
@@ -466,20 +466,17 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
 
             sage: H2=HilbertModularGroup(10)
             sage: H2.ideal_cusp_representatives()
-            [Fractional ideal (1), Fractional ideal (3, a + 2)]
-
-            sage: var('x')
-            x
+            [Fractional ideal (1), Fractional ideal (2, a)]
+            sage: x=var('x')
             sage: K = NumberField(x^3-36*x-1, names='a')
             sage: H3=HilbertModularGroup(K); H3
             Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^3 - 36*x - 1
             sage: H3.ideal_cusp_representatives()
             [Fractional ideal (1),
              Fractional ideal (2, a + 1),
-             Fractional ideal (4, a - 1),
-             Fractional ideal (8, a + 3),
-             Fractional ideal (16, a + 3)]
-
+             Fractional ideal (3, 1/3*a^2 + 1/3*a - 26/3),
+             Fractional ideal (2, 1/3*a^2 + 1/3*a - 23/3),
+             Fractional ideal (6, 1/3*a^2 + 1/3*a - 26/3)]
             sage: K4 = NumberField(x**4 - 17*x**2 + 36,names='a'); a=K4.gen()
             sage: H4=HilbertModularGroup(NumberField(x**4 - 17*x**2 + 36,names='a'))
             sage: H4.ideal_cusp_representatives()
@@ -488,12 +485,33 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
 
         """
         if not self._ideal_cusp_representatives:
-            self._ideal_cusp_representatives = [x.ideal() for x in self.base_ring().class_group()]
+            self._ideal_cusp_representatives = []
+
+            def _find_equivalent_ideal_of_minimal_norm(c):
+                for a in self.base_ring().number_field().ideals_of_bdd_norm(c.norm()-1).items():
+                    for ideala in a[1]:
+                        if (ideala*c**-1).is_principal():
+                            return ideala
+                return c
+
+            for ideal_class in self.base_ring().class_group():
+                c = ideal_class.ideal().reduce_equiv()
+                # NOTE: Even though we use 'reduce_equiv' we are not guaranteed a representative with minimal **norm**
+                #       To make certain we choose a representative of minmal norm explicitly.
+                c = _find_equivalent_ideal_of_minimal_norm(c)
+                self._ideal_cusp_representatives.append(c)
+            # We finally sort all representatives according to norm.
+            self._ideal_cusp_representatives.sort(key=lambda x: x.norm())
+
         return self._ideal_cusp_representatives
 
-    def cusp_representative(self, cusp):
+    def cusp_representative(self, cusp, return_map=False):
         r"""
-        Return a representative cusp to self.
+        Return a representative cusp and optionally a corresponding map.
+
+        INPUT:
+        - ``cusp`` -- cusp
+        - ``return_map`` -- bool (default: False) set to True to also return the map giving the equivalence.
 
         EXAMPLES::
 
@@ -512,7 +530,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: x,y = 3*a - 10, a - 4
             sage: c = NFCusp(H2.base_ring().number_field(),x,y)
             sage: H2.cusp_representative(c)
-            Cusp [3: a + 2] of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
+            Cusp [2: a] of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
 
             sage: x = ZZ['x'].gen()
             sage: K = NumberField(x^3-36*x-1, names='a')
@@ -524,14 +542,16 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: x,y = 3*a - 10, a - 4
             sage: c = NFCusp(H3.base_ring().number_field(),16,a+3)
             sage: H3.cusp_representative(c)
-            Cusp [16: a + 3] of Number Field in a with defining polynomial x^3 - 36*x - 1
+            Cusp [2: 1/3*a^2 + 1/3*a - 23/3] of Number Field in a with defining polynomial x^3 - 36*x - 1
 
 
         """
-        if self.ncusps() == 1:
-            return self.cusps()[0]
         for c in self.cusps():
-            if c.is_Gamma0_equivalent(cusp,self.level()):
+            if return_map:
+                t,B = cusp.is_Gamma0_equivalent(c,self.level(),Transformation=True)
+                if t:
+                    return c,self(B)
+            elif cusp.is_Gamma0_equivalent(c,self.level()):
                 return c
         raise ArithmeticError(f"Could not find cusp representative for {cusp}")
 
@@ -752,17 +772,18 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
     # Functions for working with cusps.
     #
 
-    def cusp_normalizing_map(self, cusp, inverse=False):
+    def cusp_normalizing_map(self, cusp, inverse=False, check=False):
         r"""
         Given a cusp (a:c) Return a matrix A = [[ a ,b ], [c , d]] in SL(2,K) such that
         A(Infinity)=(a:c) and b, d in self.base_ring().ideal(a,c)**-1
 
         INPUT::
 
-        - `cusp` Instance of NFCusp
+        - ``cusp`` -- Instance of NFCusp
+        - ``inverse`` -- bool (default: False) set to True to return the inverse map
+        - ``check`` -- bool (default: False) set to True to check the result
 
-
-        NOTE: THe sage function NFCusp.ABmatrix() returns a matrix with determinant which is not necessarily 1 even
+        NOTE: The sage function NFCusp.ABmatrix() returns a matrix with determinant which is not necessarily 1 even
             though 1 is a generator of the ideal (1)=(a,c)*(a,c)**-1
 
         If inverse = True then return A^-1
@@ -787,22 +808,20 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
 
             sage: H2=HilbertModularGroup(10)
             sage: H2.cusp_normalizing_map(H2.cusps()[1])
-            [           3  1/3*a - 2/3]
-            [       a + 2            1]
-
-            sage: var('x')
-            x
+            [     2 -1/2*a]
+            [     a     -2]
+            sage: x=var('x')
             sage: K = NumberField(x^3-36*x-1, names='a')
             sage: H3=HilbertModularGroup(K)
             sage: H3.cusp_normalizing_map(H3.cusps()[1])
             [                     2 1/2*a^2 - 1/2*a - 35/2]
             [                 a + 1                     -8]
             sage: H3.cusp_normalizing_map(H3.cusps()[2])
-                [                        4 1/12*a^2 + 1/12*a - 35/12]
-            [                    a - 1                         1]
+            [                     3      1/3*a^2 - a - 7/3]
+            [1/3*a^2 + 1/3*a - 26/3                      7]
             sage: H3.cusp_normalizing_map(H3.cusps()[3])
-            [                            8 -11/24*a^2 + 25/24*a + 217/24]
-            [                        a + 3   -1/24*a^2 - 13/24*a + 83/24]
+            [                     2                      1]
+            [1/3*a^2 + 1/3*a - 23/3 1/6*a^2 + 1/6*a - 10/3]
 
             sage: K4 = NumberField(x**4 - 17*x**2 + 36,names='a'); a=K4.gen()
             sage: H4=HilbertModularGroup(K4)
@@ -815,12 +834,20 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             raise ValueError("Input should be a NF cusp defined over {0}!".format(self.base_ring().number_field()))
         ca, cb = (cusp.numerator(), cusp.denominator())
         if not (ca, cb) in self._cusp_normalizing_maps:
+            # First find the equivalent representative
+            # crep, B = self.cusp_representative(cusp,return_map=True)
+            # crepa,crepb = crep.numerator(),crep.denominator()
+            # crep_normalizing_map = self._cusp_normalizing_maps.get((crepa,crepb))
+            # if not crep_normalizing_map:
+            # Find a normalizing map of the cusp representative
             a, b, c, d = cusp.ABmatrix()
             det = a*d - b*c
             A = Matrix(self.base_ring().number_field(), 2, 2, [a, b/det, c, d/det])
-            infinity = NFCusp(self.base_ring().number_field(),1,0)
-            if infinity.apply(A.list()) != cusp or A.det() != 1:
-                raise ArithmeticError("did not get correct normalizing map A={0} to cusp: {1}".format(A,cusp))
+            # A = B.matrix().inverse()*crep_normalizing_map
+            if check:
+                infinity = NFCusp(self.base_ring().number_field(),1,0)
+                if infinity.apply(A.list()) != cusp or A.det() != 1:
+                    raise ArithmeticError("did not get correct normalizing map A={0} to cusp: {1}".format(A,cusp))
             logger.debug(f"A={0}".format(A))
             logger.debug("A.det()={0}".format(A.det().complex_embeddings()))
             self._cusp_normalizing_maps_inverse[(ca, cb)] = A.inverse()
@@ -848,37 +875,39 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: from hilbert_modgroup.all import HilbertModularGroup,ComplexPlaneProductElement
             sage: H2=HilbertModularGroup(10)
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],1.0)
-            0.549703546891172
+            0.360379610028063
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],1)
-            4/3*a - 11/3
+            1/6*a - 1/6
             sage: z = NFCusp(H2.base_ring().number_field(),1)
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],z)
-            Cusp [4*a - 11: 3] of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
+            Cusp [a - 1: 6] of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
             sage: a=H2.base_ring().gens()[1]
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],a)
-            38/81*a - 74/81
+            3/16*a
             sage: z=ComplexPlaneProductElement([CC(1,0),CC(1,0)]); z
             [1.00000000000000, 1.00000000000000]
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],z)
-            [-7.88303688022450, 0.549703546891172]
+            [-0.693712943361397, 0.360379610028063]
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],1).complex_embeddings()
-            [-7.88303688022451, 0.549703546891173]
+            [-0.693712943361397, 0.360379610028063]
 
             # If we apply a matrix to a an element in K we get back an element in K
             sage: s,t = H2.cusps()[1].numerator(),H2.cusps()[1].denominator()
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],s/t)
-            11/24*a - 11/12
+            Traceback (most recent call last):
+            ...
+            ZeroDivisionError: number field element division by zero
 
             # If we apply the matrix to a cusp we return a cusp.
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],H2.cusps()[1])
-            Cusp [11: 4*a + 8] of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
+            Cusp Infinity of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
 
             # Applying the inverse of a cusp normalising map to the same cusp returns infinity.
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],H2.cusps()[1],inverse=True)
             Cusp Infinity of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
             sage: c1 = H2.cusps()[1]
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],Infinity)
-            1/2*a - 1
+            1/5*a
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],Infinity) == c1
             False
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],Infinity) == c1.numerator()/c1.denominator()

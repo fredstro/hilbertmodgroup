@@ -369,13 +369,46 @@ cdef class ComplexPlaneProductElement__class(SageObject):
         self._imag_norm = 0.0
         self._real_norm = 0.0
         self._norm = 0.0
+        self._abs_square_norm = 0.0
         self._imag_norm_set = 0
         self._real_norm_set = 0
         self._norm_set = 0
+        self._abs_square_norm_set = 0
+
         # self.c_new(self._xlist,self._ylist)
         if verbose>0:
             print("c_new successful!")
         super().__init__()
+
+    def _cache_key(self):
+        """
+        Cache key for self.
+
+        EXAMPLES::
+
+        sage: from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement__class
+        sage: z=ComplexPlaneProductElement__class([CC(1,1),CC(2,3)])
+        sage: z._cache_key()
+        ('ComplexPlaneProductElement__class',
+        (1.00000000000000 + 1.00000000000000*I,
+        2.00000000000000 + 3.00000000000000*I))
+
+        """
+        return (self.__class__.__name__,tuple(self._z))
+
+    def __hash__(self):
+        """
+        Hash of self.
+
+        EXAMPLES::
+
+        sage: from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement__class
+        sage: z=ComplexPlaneProductElement__class([CC(1,1),CC(2,3)])
+        sage: hash(z) # random
+        2592654998731023797
+
+        """
+        return hash(self._cache_key())
 
     def parent(self):
         r"""
@@ -710,20 +743,40 @@ cdef class ComplexPlaneProductElement__class(SageObject):
             sage: from hilbert_modgroup.all import ComplexPlaneProductElement
             sage: z=ComplexPlaneProductElement([CC(1,1),CC(2,-1)]); z
             [1.00000000000000 + 1.00000000000000*I, 2.00000000000000 - 1.00000000000000*I]
-            sage: z.imag_norm()
-            -1.00000000000000
+            sage: z.abs() # abs tol 1e-10
+            [1.41421356237310, 2.23606797749979]
             sage: z=ComplexPlaneProductElement([CC(1,1),CC(0,0)]); z
             [1.00000000000000 + 1.00000000000000*I, 0]
             sage: z.imag_norm()
             0.000000000000000
         """
+        return ComplexPlaneProductElement([abs(self._z[i]) for i in range(self._degree)])
+
+    cpdef abs_square_norm(self):
+        r"""
+        Return the norm of |z|^2 
+        
+        EXAMPLES::
+        
+            sage: from hilbert_modgroup.all import ComplexPlaneProductElement
+            sage: z=ComplexPlaneProductElement([CC(1,1),CC(2,-1)])
+            sage: z.abs_square_norm() # abs tol 1e-10
+            10.0000000000000
+            sage: z=ComplexPlaneProductElement([CC(1,1),CC(0,0)])
+            sage: z.abs_square_norm() # abs tol 1e-10
+            0.000000000000000
+            sage: z=ComplexPlaneProductElement([CC(1,1),CC(1,0)])
+            sage: z.abs_square_norm() # abs tol 1e-10
+            2.000000000000000
+            
+        """
         cdef int i
-        if self._imag_norm_set == 0:
-            self._imag_norm = self.base_ring().base_ring()(1)
+        if not self._abs_square_norm_set:
+            self._abs_square_norm = self.base_ring().base_ring()(1)
             for i in range(self._degree):
-                self._imag_norm = self._imag_norm * self._y[i]
-            self._imag_norm_set = 1
-        return self._imag_norm
+                self._abs_square_norm = self._abs_square_norm * (self._x[i]**2 + self._y[i]**2)
+            self._abs_square_norm_set = 1
+        return self._abs_square_norm
 
     cpdef real_norm(self):
         """
@@ -1054,15 +1107,18 @@ cdef class ComplexPlaneProductElement__class(SageObject):
         TESTS:
             
             sage: z._sub(w,UpperHalfPlaneProductElement__class)
-            Traceback (most recent call last):
-            ...
-            ValueError: Point [-1.00000000000000 - 1.00000000000000*I, -1.00000000000000 - 1.00000000000000*I] not in upper half-plane!
+            [-1.00000000000000 - 1.00000000000000*I, -1.00000000000000 - 1.00000000000000*I]
+
                          
             
         """
         if self._degree != other.degree() or self._prec != other.prec():
             raise TypeError
-        return parent([self._z[i] - other[i] for i in range(self.degree())])
+        # Try to make an element of the same class as self and if it doesn't work, coerce to complex plane product element
+        try:
+            return parent([self._z[i] - other[i] for i in range(self.degree())])
+        except ValueError:
+            return ComplexPlaneProductElement__class([self._z[i] - other[i] for i in range(self.degree())])
 
     def __mul__(left,right):
         """
@@ -1111,15 +1167,11 @@ cdef class ComplexPlaneProductElement__class(SageObject):
             sage: type(2*z) == type(z)
             True
             sage: -1*z
-            Traceback (most recent call last):
-            ...
-            ValueError: Point [-1.00000000000000 - 1.00000000000000*I, -1.00000000000000 - 2.00000000000000*I] not in upper half-plane!
+            [-1.00000000000000 - 1.00000000000000*I, -1.00000000000000 - 2.00000000000000*I]
             sage: w=UpperHalfPlaneProduct(degree=2)([-1+I,2+I]); w
             [-1.00000000000000 + 1.00000000000000*I, 2.00000000000000 + 1.00000000000000*I]
             sage: w*z
-            Traceback (most recent call last):
-            ...
-            ValueError: Point [-2.00000000000000, 5.00000000000000*I] not in upper half-plane!
+            [-2.00000000000000, 5.00000000000000*I]
 
         """
         # Recall that either of self or other can be of this class
@@ -1153,7 +1205,11 @@ cdef class ComplexPlaneProductElement__class(SageObject):
         """
         if self._degree != other._degree or self._prec != other._prec:
             raise TypeError
-        return parent([self._z[i]*other._z[i] for i in range(self.degree())])
+        try:
+            new_element = [self._z[i]*other._z[i] for i in range(self.degree())]
+            return parent(new_element)
+        except ValueError:
+            return ComplexPlaneProductElement__class(new_element)
 
 
     def __truediv__(left, right):
@@ -1199,9 +1255,7 @@ cdef class ComplexPlaneProductElement__class(SageObject):
             sage: type(-1/z)==type(z)
             True
             sage: 1/z
-            Traceback (most recent call last):
-            ...
-            ValueError: Point [0.500000000000000 - 0.500000000000000*I, 0.200000000000000 - 0.400000000000000*I] not in upper half-plane!
+            [0.500000000000000 - 0.500000000000000*I, 0.200000000000000 - 0.400000000000000*I]
 
 
         """
@@ -1240,7 +1294,11 @@ cdef class ComplexPlaneProductElement__class(SageObject):
             raise TypeError
         if any([z == 0 for z in other._z]):
             raise ZeroDivisionError("Can not divide by zero!")
-        return parent([self._z[i]/other._z[i] for i in range(self.degree())])
+        new_element = [self._z[i]/other._z[i] for i in range(self.degree())]
+        try:
+            return parent(new_element)
+        except ValueError:
+            return ComplexPlaneProductElement__class(new_element)
 
 
     def __pow__(self, power, modulo):
@@ -1290,7 +1348,11 @@ cdef class ComplexPlaneProductElement__class(SageObject):
             power = self.parent()(power,prec=self.prec())
             if any(power[i].real() < 0 and self[i] == 0 for i in range(self.degree())):
                 raise ZeroDivisionError("Can not divide component by 0!")
-            return self.parent()([z**power[i] for i,z in enumerate(self)])
+            new_element = [z**power[i] for i,z in enumerate(self)]
+            try:
+                return self.parent()(new_element)
+            except ValueError:
+                return ComplexPlaneProductElement__class(new_element)
         except TypeError as e:
             raise TypeError(f"Can not coerce {power} to self.base_ring(). {e}")
 
