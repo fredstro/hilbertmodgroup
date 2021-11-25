@@ -1,7 +1,7 @@
-# Hilbert Modular Forms
+# Hilbert Modular Groups
 
 This repository contains a python package `hilbert_modgroup` that implements algorithms 
-for Hilbert modular forms. The implementation is written in Python 
+for Hilbert modular groups, in particular a reduction algorithm. The implementation is written in Python 
 and is dependent on SageMath.
 
 ## Requirements
