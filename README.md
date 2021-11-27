@@ -7,6 +7,7 @@ and is dependent on SageMath.
 ## Requirements
 - SageMath (https://www.sagemath.org/)
   Tested on v 9.4 but should work on most 9.+ versions.
+  Note: Currently you need to have the development libraries of Sage. 
 
 ## Installation
 With the executable `sage` in your path run 
