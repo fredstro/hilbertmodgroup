@@ -29,21 +29,28 @@ One of the most important groups in Number Theory is the modular group, $\Gamma=
 consisting of fractional-linear transformations, $z\mapsto (az+b)/(cz+d)$ on the complex upper
 half-plane, $\mathbb{H}$, given by 2-by-2 matrices of determinant 1 and integer entries. 
 
-A reduction algorithm theory for the modular group is an algorithm that, for a given $z \in \mathbb{H}$, 
-finds an element, $A=\begin{smallmatrix} a & b \\ c & d\end{smallmatrix} \in \Gamma$ such that $Az=(az+b)/(cz+d)$ 
-belongs to a specific set, a so-called "fundamental domain". This type of algorithm was first 
-found by Gauss in connection with binary quadratic forms.
+A *reduction* algorithm for the modular group is an algorithm that, for a given $z \in \mathbb{H}$, 
+finds an element, $A=\left(\begin{smallmatrix} a & b \\ c & d\end{smallmatrix}\right) \in \Gamma$ such that $Az=(az+b)/(cz+d)$ 
+belongs to a specific set, a so-called "fundamental domain". 
+This type of algorithm was first introduced in the context of binary quadratic forms in the 
+18th century by Lagrange and others, with the main contribution 
+published by Gauss in his famous *Disquisitiones Arithmeticae*.
 
-A natural generalisation of the modular group over $\mathbb{Z}$, 
+A natural generalisation of the modular group over $\mathbb{Z}$
 is given by the family of Hilbert modular groups, $\Gamma_K=\mathrm{PSL}_2(\mathcal{O}_K)$, 
 where $K$ is a totally real number field of degree $n$ and $\mathcal{O}_K$ is its ring of integers. 
 This group gives rise to an action on $n$ copies of the complex upper half-plane 
 $$\mathbb{H}_K=\mathbb{H} \times \cdots \times \mathbb{H}.$$ 
 A reduction algorithm for a Hilbert modular group $\Gamma_K$ 
-works in the same way as before. Given $z \in \mathbb{H}_K$ the algorithm finds an element 
+should work in the same way as before. Given $z \in \mathbb{H}_K$ the algorithm finds an element 
 $A \in \Gamma_K$ such that $Az$ belongs to a certain fundamental domain. 
-The additional complexity it in this case, when $K$ is not equal to $\QQ$,
-has both a theoretical and a numerical part. stems both from 
+The additional complexity in this case, when $K$ is not equal to $\mathbb{Q}$,
+has both a theoretical and a practical part. The main theoretical problem arises 
+when the number field $K$ has class number greater than 1, in which case the corresponding
+Fundamental domain will have more than one point at "infinity". 
+From a practical standpoint the main problem appears when the degree and discriminant 
+of the number field increases, making it necessary to, for instance, locate 
+integral point in higher-dimensional polytopes. 
 
 # Statement of need
 
@@ -55,8 +62,8 @@ See for example the algorithms by Boyer and Streng [@MR3376741], and Quinn and V
 
 Having access to the algorithm in this package, which is valid for any totally real number field, 
 opens up for several new research directions and generalisations of previous research. 
-Some of the direct applications lie in the field of explicit formulas for 
-Hilbert modular groups and computational aspects of non-holomorphic Hilbert modular forms. 
+Some of the direct applications to be pursued by the package author and collaborators 
+lie in the field of explicit formulas and computational aspects of non-holomorphic Hilbert modular forms. 
 
 # Implementation
 
