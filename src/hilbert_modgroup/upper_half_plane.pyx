@@ -22,7 +22,7 @@ from sage.misc.cachefunc import cached_method
 from sage.structure.unique_representation import UniqueRepresentation
 from sage.structure.parent import Parent
 
-from sage.rings.complex_mpfr cimport ComplexNumber
+from sage.rings.complex_number cimport ComplexNumber
 from sage.rings.complex_mpc cimport MPComplexNumber, MPComplexField_class
 from sage.rings.complex_mpc import MPComplexField
 from sage.categories.semigroups import Semigroups
