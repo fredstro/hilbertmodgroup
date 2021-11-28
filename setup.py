@@ -24,9 +24,7 @@ ext_modules=[
     Extension(
         'hilbert_modgroup.pullback_cython',
         sources=[os.path.join('src/hilbert_modgroup/pullback_cython.pyx')],
-        include_dirs=[os.path.join(SAGE_LIB,'cypari2'),
-                      NTL_INCDIR],
-        library_dirs=[NTL_LIBDIR],
+        include_dirs=[os.path.join(SAGE_LIB,'cypari2')],
         language='c++',
         extra_compile_args=['-std=c++11'])
     ,
