@@ -1,18 +1,16 @@
 ---
-title: 'hilbertmodgroup: Reduction algorithms and framework for Hilbert Modular Groups' 
-
+title: 'hilbertmodgroup: Reduction algorithms and framework for Hilbert Modular Groups'
 tags:
   - Python
-  - mathematics
   - SageMath
+  - mathematics
+  - number theory
 authors:
   - name: Fredrik Strömberg 
     orcid:0000-0002-6960-1002
     affiliation: "University of Nottingham"
-
-date: 29 November 2021
+date: 28 November 2021
 bibliography: paper.bib
-
 ---
 
 # Summary
@@ -33,7 +31,7 @@ A *reduction* algorithm for the modular group is an algorithm that, for a given 
 finds an element, $A=\left(\begin{smallmatrix} a & b \\ c & d\end{smallmatrix}\right) \in \Gamma$ such that $Az=(az+b)/(cz+d)$ 
 belongs to a specific set, a so-called "fundamental domain". 
 This type of algorithm was first introduced in the context of binary quadratic forms in the 
-18th century by Lagrange and others, with the main contribution 
+18th century by Lagrange, Gauss and others, with the main contribution 
 published by Gauss in his famous *Disquisitiones Arithmeticae*.
 
 A natural generalisation of the modular group over $\mathbb{Z}$
@@ -50,7 +48,7 @@ when the number field $K$ has class number greater than 1, in which case the cor
 Fundamental domain will have more than one point at "infinity". 
 From a practical standpoint the main problem appears when the degree and discriminant 
 of the number field increases, making it necessary to, for instance, locate 
-integral point in higher-dimensional polytopes. 
+integral points in higher-dimensional polytopes. 
 
 # Statement of need
 
