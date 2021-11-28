@@ -38,7 +38,7 @@ A natural generalisation of the modular group over $\mathbb{Z}$,
 is given by the family of Hilbert modular groups, $\Gamma_K=\mathrm{PSL}_2(\mathcal{O}_K)$, 
 where $K$ is a totally real number field of degree $n$ and $\mathcal{O}_K$ is its ring of integers. 
 This group gives rise to an action on $n$ copies of the complex upper half-plane 
-$\mathbb{H}_K=\mathbb{H} \times \cdots \time \mathbb{H}$. 
+$$\mathbb{H}_K=\mathbb{H} \times \cdots \times \mathbb{H}.$$ 
 A reduction algorithm for a Hilbert modular group $\Gamma_K$ 
 works in the same way as before. Given $z \in \mathbb{H}_K$ the algorithm finds an element 
 $A \in \Gamma_K$ such that $Az$ belongs to a certain fundamental domain. 
