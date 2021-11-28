@@ -7,8 +7,11 @@ tags:
   - number theory
 authors:
   - name: Fredrik Strömberg 
-    orcid:0000-0002-6960-1002
-    affiliation: "University of Nottingham"
+    orcid: 0000-0002-6960-1002
+    affiliation: 1
+affiliations:
+  - name: "University of Nottingham, School of Mathematics"
+    index: 1
 date: 28 November 2021
 bibliography: paper.bib
 ---
@@ -65,19 +68,17 @@ lie in the field of explicit formulas and computational aspects of non-holomorph
 
 # Implementation
 
-The package `hilbertmodgrup` is mainly written in Python with some parts in Cython [@behnel2011cython]. 
+The package `hilbertmodgroup` is mainly written in Python with some parts in Cython [@behnel2011cython]. 
 It is intended to run as a package inside SageMath [@sage] as it 
 makes heavy use SageMath's implementation of 
 number fields, which is in turn is in many cases using the backend from PARI/gp [@PARI2].
 
-# Documentation and Testing
-All functions are documented using docstrings with integrated doctest 
+# Documentation and Examples
+All functions are documented using docstrings with integrated doctests 
 following the guide for SageMath development. 
-In addition, the directory `/examples` contains a selection of 
+In addition, the directory `/examples` contains  
 Jupyter notebooks illustrating the use of the package with 
-a selection of fundamental examples, corresponding to examples listed in 
-[@reductionalghilbert].
-
+a selection of fundamental examples, corresponding to examples presented in [@reductionalghilbert].
 
 # Acknowledgements
 This work was partially supported by the Engineering and Physical Sciences Research Council [EP/N007360/1] and [EP/V026321/1].
