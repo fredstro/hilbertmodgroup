@@ -5,7 +5,7 @@ import setuptools
 from setuptools.extension import Extension
 from Cython.Build import cythonize
 
-from sage.env import sage_include_directories,SAGE_LIB,SAGE_LOCAL,NTL_INCDIR,NTL_LIBDIR
+from sage.env import sage_include_directories,SAGE_LIB,SAGE_LOCAL
 SAGE_INC=SAGE_LOCAL + "/include"
 
 include_path=[SAGE_INC,SAGE_LIB]
