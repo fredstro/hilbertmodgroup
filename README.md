@@ -5,9 +5,11 @@ for Hilbert modular groups, in particular a reduction algorithm. The implementat
 and is dependent on SageMath.
 
 ## Requirements
-- SageMath (https://www.sagemath.org/)
-  Tested on v 9.4 but should work on most 9.+ versions.
-  Note: Currently you need to have the development libraries of Sage. 
+- SageMath v9.4 (https://www.sagemath.org/)
+- Note: the main incompatibility with previous versions is that the 
+  'Transformation' option to LLL was only introduced in v9.4. This means in particular that 
+  the basic functionality likely work with 9.1-3 but the pre-optimization in finding a close cusp using LLL
+  will fail. As a temporary workaround I have added a try/except to catch this.  
 
 ## Installation
 With the executable `sage` in your path run 
@@ -32,3 +34,11 @@ You can run all doctest by typing
 
 If you just want to test an individual module you can simply run e.g. 
 `sage -t <file_to_test>`
+
+## Docker
+It is also possible to install the package and run the example notebooks
+in a docker container with the following steps:
+1. docker build -t hilbertmodgroup .
+2. docker run -p 8888:8888 hilbertmodgroup
+3. Open a browser at the indicated URL: http://127.0.0.1:8888/?token=<token>
+

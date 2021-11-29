@@ -30,7 +30,9 @@ from hilbert_modgroup.utils import upper, lower
 
 from hilbert_modgroup.pullback_cython import lattice_elements_in_box, \
     coordinates_to_ideal_elements,find_closest_cusp, find_candidate_cusps, distance_to_cusp
+import logging
 
+log = logging.getLogger(__name__)
 
 class HilbertPullback(SageObject):
     r"""
@@ -778,7 +780,11 @@ class HilbertPullback(SageObject):
 
         """
         a = self._construct_ideal(a)
-        shortest_basis_vectors = self._shortest_vectors_ideal_plusz(z, a)
+        try:
+            shortest_basis_vectors = self._shortest_vectors_ideal_plusz(z, a)
+        except ValueError as e:
+            log.critical("The LLL 'finding shortest vector' has failed. It is likely that you need to upgrade your version of Sage to 9.4+.")
+            return None
         # Convert this lattice vector to two integers sigma and rho:
         n = len(a.basis())
         dmin = None
