@@ -1,14 +1,18 @@
-
 import os
+import sys
 import setuptools
-
 from setuptools.extension import Extension
 from Cython.Build import cythonize
 
-from sage.env import sage_include_directories,SAGE_LIB,SAGE_LOCAL
-SAGE_INC=SAGE_LOCAL + "/include"
-
-include_path=[SAGE_INC,SAGE_LIB]
+# Find correct value for SAGE_LIB without importing sage (to allow for build isolation)
+SAGE_LOCAL = os.getenv('SAGE_LOCAL')
+if not SAGE_LOCAL:
+    raise ValueError("This package can only be installed inside SageMath (http://www.sagemath.org)")
+# Need to find the correct site-packages directory
+PYTHON_VERSION = f"{sys.version_info.major}.{sys.version_info.minor}"
+SAGE_LIB = f"{SAGE_LOCAL}/lib/python{PYTHON_VERSION}/site-packages"
+if not os.path.isdir(SAGE_LIB):
+    raise ValueError(f"The library path {SAGE_LIB} is not a directory.")
 
 # Extension modules using Cython
 ext_modules=[
@@ -24,24 +28,14 @@ ext_modules=[
     Extension(
         'hilbert_modgroup.pullback_cython',
         sources=[os.path.join('src/hilbert_modgroup/pullback_cython.pyx')],
-        include_dirs=[os.path.join(SAGE_LIB,'cypari2')],
         language='c++',
         extra_compile_args=['-std=c++11'])
-    ,
 ]
 
 setuptools.setup(
-    name='hilbert_modular_group',
-    version='1.0',
-    license='GPL v3+',
-    author='Fredrik Stromberg',
-    author_email='fredrik314@gmail.com',
-    packages=['hilbert_modgroup'],
-    package_dir={'hilbert_modgroup':'src/hilbert_modgroup'},
-    zip_safe=False,
     ext_modules=cythonize(
         ext_modules,
-        include_path=['src'],
+        include_path=[SAGE_LIB,'src'],
         compiler_directives={
             'embedsignature': True,
             'language_level': '3',

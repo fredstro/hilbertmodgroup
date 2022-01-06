@@ -81,7 +81,7 @@ def UpperHalfPlaneProductElement(z, **kwds):
     """
     Construct an element in the product of upper half planes.
 
-    INPUT::
+    INPUT:
 
         - ``z`` -- input to construct a tuple of complex number
         - ``kwds`` -- dict.
@@ -122,13 +122,13 @@ def ComplexPlaneProductElement(z,**kwds):
     """
     Construct an element in the product of complex planes.
 
-    INPUT::
+    INPUT:
 
         - ``z`` -- input to construct a tuple of complex number
         - ``kwds`` -- dict.
             - ``degree`` -- positive integer. If a scalar input is given this is the degree of the constructed element.
 
-    OUTPUT::
+    OUTPUT:
         - Element of the type ComplexPlaneProductElement__class
 
     EXAMPLES::
@@ -148,7 +148,7 @@ def ComplexPlaneProductElement(z,**kwds):
     """
     if isinstance(z,ComplexPlaneProductElement__class):
         return z
-    # Get precision in the first hand from kwds, second from z and third set default ot 53 bits
+    # Get precision in the first hand from kwds, second from z and third set default to 53 bits
     prec = kwds.get('prec',getattr(z,'prec',lambda : 53)())
     if is_NumberFieldElement(z):
         z = z.complex_embeddings(prec)
@@ -332,7 +332,7 @@ cdef class ComplexPlaneProductElement__class(SageObject):
         Init self from a list of complex numbers.
         Currently we only work with double (53 bits) precision.
 
-        INPUT::
+        INPUT:
 
         - `zl` (list) - list of complex numbers
 
@@ -677,7 +677,7 @@ cdef class ComplexPlaneProductElement__class(SageObject):
         """
         Compare self with other
 
-        INPUT::
+        INPUT:
         - `right`
         - `op`
 
@@ -699,7 +699,7 @@ cdef class ComplexPlaneProductElement__class(SageObject):
         """
         res=1
         if op != Py_EQ and op != Py_NE:
-            raise NotImplementedError,"Ordering of points in H^n is not implemented!"
+            raise NotImplementedError("Ordering of points in H^n is not implemented!")
         if type(self) != type(right) or right.degree() != self.degree():
             res=0
         else:
@@ -861,7 +861,7 @@ cdef class ComplexPlaneProductElement__class(SageObject):
         r"""
         Return the Euclidean norm of self as a vector in C^n
         
-        INPUT::
+        INPUT:
         - `p` (integer) default = 2 (L2-norm). Other options include =1 (L1-norm) or =0 (Infinity-norm)
         
         Note: This is about twice as fast as doing z.vector().norm()
@@ -896,7 +896,7 @@ cdef class ComplexPlaneProductElement__class(SageObject):
         """
         Change the base ring of self.
 
-        INPUT::
+        INPUT:
         - `R` -- MOComplexField
 
         EXAMPLES::
@@ -918,7 +918,7 @@ cdef class ComplexPlaneProductElement__class(SageObject):
         """
         Change the precision of self.
         
-        INPUT::
+        INPUT:
         - `prec`
         
         EXAMPLES::
@@ -942,7 +942,7 @@ cdef class ComplexPlaneProductElement__class(SageObject):
         """
         Convert the argument left and right to elements of the type ComplexPlaneProduct_class
 
-        INPUT::
+        INPUT:
 
         - ``left`` -- object
         - ``right`` -- object
@@ -1043,7 +1043,7 @@ cdef class ComplexPlaneProductElement__class(SageObject):
 
     def __sub__(left,right):
         r"""
-        Substract two points in the upper half-plane may sometimes produce another point.
+        Subtract two points in the upper half-plane may sometimes produce another point.
 
 
         EXAMPLES::
@@ -1124,7 +1124,7 @@ cdef class ComplexPlaneProductElement__class(SageObject):
         """
         Multiply self with other.
 
-        INPUT::
+        INPUT:
         - `other` - element of ComplexPlaneProductElement__class
 
         EXAMPLES::
@@ -1309,7 +1309,7 @@ cdef class ComplexPlaneProductElement__class(SageObject):
         If `power` is an element of this class:
                 z^power = (z_1^power_1,...,z_n^power_n)
 
-        INPUT::
+        INPUT:
 
         - `power` -- complex number (will be coerced to the base_ring of self)
         - `modulo` -- dummy argument (ignored)

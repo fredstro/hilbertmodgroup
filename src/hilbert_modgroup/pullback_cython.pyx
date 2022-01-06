@@ -73,7 +73,7 @@ cpdef lattice_elements_in_box(lattice_basis, lattice_bounds, coordinate_bounds, 
     INPUT:
     - ``lattice_basis`` -- a list of lists of a basis of the embedded lattice
     - ``lattice_bounds`` -- the bounds for the embeddings
-    - ``coordinate_bounds`` -- the bounds for the cordinates
+    - ``coordinate_bounds`` -- the bounds for the coordinates
     - ``norm_bound`` -- bounds for the norm (default None - meaning that no bounds are applied)
     
     EXAMPLES::

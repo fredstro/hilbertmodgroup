@@ -43,7 +43,7 @@ class HilbertPullback(SageObject):
         r"""
         Init self.
 
-        INPUT::
+        INPUT:
 
         - ``G`` - A Hilbert modular group
 
@@ -199,7 +199,7 @@ class HilbertPullback(SageObject):
         r"""
         Compute the coordinate of y=Im(z)/N(y)^(1/n) with respect to the logarithmic unit lattice.
 
-        INPUT::
+        INPUT:
 
         - ``z`` -- element of type UpperHalfPlaneProductElement
         - ``return_error_estimate`` -- boolean (default=False) set to True to return a tuple including an estimate of the error.
@@ -264,7 +264,7 @@ class HilbertPullback(SageObject):
         Reduce the point z with respect to action of units to a point where Im(z) belongs
         to a fundamental domain for the logarithmic unit lattice.
 
-        INPUT::
+        INPUT:
 
         - ``z`` -- element of type UpperHalfPlaneProductElement
         - ``return_map`` -- boolean (default=False) set to True to return the map which does the reduction.
@@ -330,7 +330,7 @@ class HilbertPullback(SageObject):
         r"""
         Return True if z is reduced with respect to the logarithmic unit lattice, otherwise return False.
 
-        INPUT::
+        INPUT:
 
         - ``z`` -- element of the type UpperHalfPlaneProductElement_class
 
@@ -380,7 +380,7 @@ class HilbertPullback(SageObject):
         r"""
         Return the Basis matrix corresponding to an integer basis of an ideal a.
 
-        INPUT::
+        INPUT:
 
         - ``a`` -- ideal or number field element.
         - ``prec`` -- integer (default=53)
@@ -433,7 +433,7 @@ class HilbertPullback(SageObject):
         Return the Basis matrix corresponding to an integer basis of an ideal a
         in terms of the standard power basis.
 
-        INPUT::
+        INPUT:
 
         - ``a`` -- ideal or number field element.
 
@@ -482,7 +482,7 @@ class HilbertPullback(SageObject):
         r"""
         Return the coordinates of x with respect to an integral basia of a.
 
-        INPUT::
+        INPUT:
 
         - ``x`` -- element of ideal a
         - ``a`` -- ideal or number field element.
@@ -525,7 +525,7 @@ class HilbertPullback(SageObject):
         r"""
         Return the Basis matrix corresponding to an integer basis of an ideal a.
 
-        INPUT::
+        INPUT:
 
         - ``a`` -- ideal or number field element.
         - ``prec`` -- integer (default=53)
@@ -570,7 +570,7 @@ class HilbertPullback(SageObject):
         L = OKz + OK embedded in R^{2n} and given by the fixed
         integral basis of the ideal a.
 
-        INPUT::
+        INPUT:
 
         - ``z`` -- element of a product of complex planes
         - ``a`` -- ideal or number field element.
@@ -891,7 +891,7 @@ class HilbertPullback(SageObject):
         r"""
         Reduce the point z with respect to the cuspidal region in a neighbourhood of the cusp .
 
-        INPUT::
+        INPUT:
 
         - ``z`` -- point in the upper half-plane.
         - ``a`` -- ideal cusp (default=None) if None use the ring of integers.
@@ -1010,7 +1010,7 @@ class HilbertPullback(SageObject):
         r"""
         Reduce ``z`` to a point in the fundamental domain.
 
-        INPUT::
+        INPUT:
 
         - ``z`` -- point in the upper half-plane
         - ``return_map`` -- boolean (default False) set to ``True`` to return the map which performed the reduction.
@@ -1049,7 +1049,7 @@ class HilbertPullback(SageObject):
         r"""
         Reduce the point z with respect to the cuspidal region in a neighbourhood of a representative cusp .
 
-        INPUT::
+        INPUT:
 
         - ``z`` -- point in the upper half-plane.
         - ``cusp`` -- cusp of the group of self.
@@ -1077,7 +1077,7 @@ class HilbertPullback(SageObject):
             )
 
         :: Check that if we apply a cusp-normalizing map to a point then the reduction with respect to that cusp is the same
-        :: as the reduction of the original point wih respect to infinity
+        :: as the reduction of the original point with respect to infinity
 
             sage: c=NFCusp(P1.group().base_ring().number_field(),1,2)
             sage: N=H1.cusp_normalizing_map(c)
@@ -1151,7 +1151,7 @@ class HilbertPullback(SageObject):
         r"""
         Find the closest cusp (rho:sigma) to z
 
-        INPUT::
+        INPUT:
 
         - `z` -- point in the upper half-plane
         - `return_multiple` -- boolean: default False - set to True to return all cusps with the same minimal distance ,
@@ -1199,7 +1199,7 @@ class HilbertPullback(SageObject):
         """
         Give the distance from the point z to the cusp: N(a)^-1 N(Im A^-1z)^(-1/2)
 
-        INPUT::
+        INPUT:
         - `cusp` -- NF cusp or tuple of integral elements in the number field.
         - `z`
 
@@ -1249,13 +1249,13 @@ class HilbertPullback(SageObject):
         Get a list of integer points in an ideal with embeddings in RR^n within a given bound.
         Reference: Algorithm 10
 
-        INPUT::
+        INPUT:
 
         - ``a`` -- ideal or algebraic integer.
         - ``bounds`` -- list of bounds for the coordinates or scalar which then gives a cube with the same bound.
                         can be of the form [b1,b2,...,bn] or [(a1,b1),(a2,b2)....(an,bn)]
                         in the first case the bounds are interpreted as (-b1,b1),...,(-bn,bn)
-        - ``return_polyhedron`` -- bolean (default False) set to True to return a polyhedron of the corresponding domain
+        - ``return_polyhedron`` -- boolean (default False) set to True to return a polyhedron of the corresponding domain
         - ``preimage`` -- boolean (default False) set to True to return the polyhedron of the pre-image (only used when return_polyhedron=True)
 
         EXAMPLES::
@@ -1656,7 +1656,7 @@ class HilbertPullback(SageObject):
         Bound for the embeddings of the denominator of the closest cusp to z
         Reference: Corollary 5.
 
-        INPUT::
+        INPUT:
 
         - ``z`` -- point in the upper half-plane
         - ``prec`` -- integer - the number of bits precision in the returned values.
@@ -1703,7 +1703,7 @@ class HilbertPullback(SageObject):
         Bound `c` for the coordinates, with respect to the ring of integers, of the closest cusp to z
         Reference: Lemma XXX
 
-        INPUT::
+        INPUT:
 
         - ``z`` -- point in the upper half-plane
         - ``initial_bd_d`` -- float - an initial bound (default None) for the distance to a specific cusp.
@@ -1753,7 +1753,7 @@ class HilbertPullback(SageObject):
         Reference: Corollary 5
 
             rho_i in [sigma_i x_i - delta*y_i**0.5 , sigma_i x_i - delta*y_i**0.5]
-        INPUT::
+        INPUT:
 
         - ``z`` -- point in the upper half-plane
         - ``sigma`` -- list of complex embeddings of algebraic integer
@@ -1824,7 +1824,7 @@ class HilbertPullback(SageObject):
         Reference: Lemma XXX
             rho_i in [sigma_i x_i - delta*y_i**0.5 , sigma_i x_i - delta*y_i**0.5]
 
-        INPUT::
+        INPUT:
 
         - ``z`` -- point in the upper half-plane
         - ``sigma`` -- complex embeddings of algebraic integer
@@ -1891,14 +1891,14 @@ class HilbertPullback(SageObject):
         """
         Compute a list of candidates for the denominator of the closest cusp.
 
-        INPUT::
+        INPUT:
 
         - ``z`` -- element of type UpperHalfPlaneProductelement_class
         - ``a`` -- ideal or algebraic integer (default = 1). If an integer is given then the ideal is the principal ideal.
         - ``domain`` -- string: 'polytope' (default), 'boundingbox',
         - ``return_polyhedron`` -- boolean
         - ``ideal_basis`` -- list or =None,
-        - ``lattice_basis`` -- list of lists corresponding to a numerical basie of the lattice corresponding ot the ring of integers.
+        - ``lattice_basis`` -- list of lists corresponding to a numerical basie of the lattice corresponding to the ring of integers.
         - ``sorted`` -- boolean -- True to return a list sorted by norm first and then lexicographically with respect to embeddings.
         - ``initial_bd_d`` -- positive number (default: `None`) - an initial bound for the distance to nearest cusp.
         - ``use_norm_bound`` -- boolean (default: `True`) -- True if using the norm bound otherwise
@@ -2018,7 +2018,7 @@ class HilbertPullback(SageObject):
         """
         Compute a list of candidates for the denominator of the closest cusp.
 
-         INPUT::
+         INPUT:
 
         - ``z`` -- element of type UpperHalfPlaneProductelement_class
         - ``sigma`` -- algebraic integer
@@ -2089,14 +2089,14 @@ class HilbertPullback(SageObject):
         r"""
         Find candidates for the closest cusp.
 
-        INPUT::
+        INPUT:
 
         - ``z`` -- point in the upper half-plane
         - ``use_lll`` -- boolean (default: `True`)  Use the LLL method to find a preliminary bounds
         - ``use_norm_bound`` -- boolean (default: `True`) Use the norm bound together ith the embedding bounds
         - ``use_initial_bd_d`` -- boolean (default: `False`) Use the initial bound
 
-        - ``as_cusps`` -- boolean - (deafult: `False`), set to True to return a list of cusps instead of tuples.
+        - ``as_cusps`` -- boolean - (default: `False`), set to True to return a list of cusps instead of tuples.
 
 
         EXAMPLES::

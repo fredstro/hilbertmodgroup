@@ -37,11 +37,11 @@ def is_HilbertModularGroup(x):
     """
     Return `True` if ``x`` is an instance of a HilbertModularGroup
 
-    INPUT::
+    INPUT:
 
     - ``x`` -- something to test if it is a Hilbert modular group or not
 
-    OUTPUT::
+    OUTPUT:
 
     - boolean
 
@@ -184,7 +184,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         r"""
         Return a list of generators of self.
 
-        INPUT::
+        INPUT:
 
 
         - ``algorithm`` (string) either 'standard' or 'elementary'.
@@ -246,7 +246,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         """
         Return the element T^a = ( 1 & a // 0 & 1 ) of self.
 
-        INPUT::
+        INPUT:
 
         - ``a`` -- integer in number field (default=1)
 
@@ -298,7 +298,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         """
         Return the element U=( u & 0 // 0 & u**-1 ) of self.
 
-        INPUT::
+        INPUT:
         - `u` unit in self.base_ring()
 
         EXAMPLES::
@@ -325,7 +325,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
 
             The generators need not be minimal. For arguments, see :meth:`~generators`.
 
-        INUPUT::
+        INPUT:
 
         - ``algorithm`` -- string (default='standard') give the algorithm to compute the generators
 
@@ -497,7 +497,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             for ideal_class in self.base_ring().class_group():
                 c = ideal_class.ideal().reduce_equiv()
                 # NOTE: Even though we use 'reduce_equiv' we are not guaranteed a representative with minimal **norm**
-                #       To make certain we choose a representative of minmal norm explicitly.
+                #       To make certain we choose a representative of minimal norm explicitly.
                 c = _find_equivalent_ideal_of_minimal_norm(c)
                 self._ideal_cusp_representatives.append(c)
             # We finally sort all representatives according to norm.
@@ -729,10 +729,10 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         r"""
         Return the order of elliptic elements of a given trace. Returns None if no elliptic element with this trace exists.
 
-        INPUT::
+        INPUT:
         - `t` number field element
 
-        OUTPUT::
+        OUTPUT:
         - integer or None
 
 
@@ -777,7 +777,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         Given a cusp (a:c) Return a matrix A = [[ a ,b ], [c , d]] in SL(2,K) such that
         A(Infinity)=(a:c) and b, d in self.base_ring().ideal(a,c)**-1
 
-        INPUT::
+        INPUT:
 
         - ``cusp`` -- Instance of NFCusp
         - ``inverse`` -- bool (default: False) set to True to return the inverse map
@@ -861,7 +861,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         """
         Apply the cusp normalising map associated with the cusp to an element z
 
-        INPUT::
+        INPUT:
 
         - `cusp` - an instance of NFcusp
         - `z` - an element in

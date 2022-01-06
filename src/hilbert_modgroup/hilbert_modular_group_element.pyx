@@ -587,7 +587,7 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
         """
         Return a list of matrices which are entry-wise complex embeddings of self
 
-        INPUT::
+        INPUT:
         - ``prec`` integer (default=53) number of bits precision
 
         EXAMPLES::
