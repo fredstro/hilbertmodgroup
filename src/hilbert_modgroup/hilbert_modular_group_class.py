@@ -29,6 +29,7 @@ from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement__class
 from .hilbert_modular_group_element import HilbertModularGroupElement
 
 import logging
+
 logger = logging.getLogger(__name__)
 logger.setLevel(10)
 
@@ -54,7 +55,7 @@ def is_HilbertModularGroup(x):
         sage: is_HilbertModularGroup(H)
         True
     """
-    return isinstance(x,HilbertModularGroup_class)
+    return isinstance(x, HilbertModularGroup_class)
 
 
 def HilbertModularGroup(number_field, projective=True):
@@ -131,7 +132,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
 
         """
         if not is_NumberFieldOrder(base_ring) or not base_ring.number_field().is_totally_real():
-            raise ValueError("Input (={0}) can not be used to create a Hilbert modular group. Need an order of a "+
+            raise ValueError("Input (={0}) can not be used to create a Hilbert modular group. Need an order of a " +
                              "totally real number field")
         # Instance data related to elliptic elements
         self._elliptic_elements_traces = []
@@ -147,11 +148,12 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         self._cusp_normalizing_maps_inverse = {}
         # At the moment we only deal with full level (1)
         self._level = base_ring.ideal(1)
-        super(HilbertModularGroup_class, self).__init__(degree=Integer(2), base_ring=base_ring, special=True, sage_name=sage_name,
+        super(HilbertModularGroup_class, self).__init__(degree=Integer(2), base_ring=base_ring, special=True,
+                                                        sage_name=sage_name,
                                                         latex_string=latex_string, category=Groups().Infinite(),
                                                         invariant_form=None)
 
-    def __call__(self,a):
+    def __call__(self, a):
         r"""
         Create an element of this Hilbert modular group if possible
 
@@ -177,7 +179,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             [          0           1]
 
         """
-        return super(HilbertModularGroup_class,self).__call__(a)
+        return super(HilbertModularGroup_class, self).__call__(a)
 
     @cached_method
     def generators(self, algorithm='standard'):
@@ -242,7 +244,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         return self([0, -1, 1, 0])
 
     @cached_method
-    def T(self,a=1):
+    def T(self, a=1):
         """
         Return the element T^a = ( 1 & a // 0 & 1 ) of self.
 
@@ -268,7 +270,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         return self([1, a, 0, 1])
 
     @cached_method
-    def L(self,a):
+    def L(self, a):
         """
         Return the element L=( 1 & 0 // a & 1 ) of self.
 
@@ -317,7 +319,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             [          0 1/2*a + 1/2]
 
         """
-        return self([u, 0, 0, u**-1])
+        return self([u, 0, 0, u ** -1])
 
     def gens(self, algorithm='standard'):
         r"""
@@ -488,9 +490,9 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             self._ideal_cusp_representatives = []
 
             def _find_equivalent_ideal_of_minimal_norm(c):
-                for a in self.base_ring().number_field().ideals_of_bdd_norm(c.norm()-1).items():
+                for a in self.base_ring().number_field().ideals_of_bdd_norm(c.norm() - 1).items():
                     for ideala in a[1]:
-                        if (ideala*c**-1).is_principal():
+                        if (ideala * c ** -1).is_principal():
                             return ideala
                 return c
 
@@ -548,14 +550,14 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         """
         for c in self.cusps():
             if return_map:
-                t,B = cusp.is_Gamma0_equivalent(c,self.level(),Transformation=True)
+                t, B = cusp.is_Gamma0_equivalent(c, self.level(), Transformation=True)
                 if t:
-                    return c,self(B)
-            elif cusp.is_Gamma0_equivalent(c,self.level()):
+                    return c, self(B)
+            elif cusp.is_Gamma0_equivalent(c, self.level()):
                 return c
         raise ArithmeticError(f"Could not find cusp representative for {cusp}")
 
-    ## Functions for elliptic elements
+    # Functions for elliptic elements
 
     def _compute_traces_of_elliptic_elements(self):
         r"""
@@ -723,9 +725,9 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         """
         if not self._elliptic_elements_traces_of_orders:
             self._compute_traces_of_elliptic_elements()
-        return self._elliptic_elements_traces_of_orders.get(l,[])
+        return self._elliptic_elements_traces_of_orders.get(l, [])
 
-    def order_of_elliptic_element_of_trace(self,t):
+    def order_of_elliptic_element_of_trace(self, t):
         r"""
         Return the order of elliptic elements of a given trace. Returns None if no elliptic element with this trace exists.
 
@@ -841,13 +843,13 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             # if not crep_normalizing_map:
             # Find a normalizing map of the cusp representative
             a, b, c, d = cusp.ABmatrix()
-            det = a*d - b*c
-            A = Matrix(self.base_ring().number_field(), 2, 2, [a, b/det, c, d/det])
+            det = a * d - b * c
+            A = Matrix(self.base_ring().number_field(), 2, 2, [a, b / det, c, d / det])
             # A = B.matrix().inverse()*crep_normalizing_map
             if check:
-                infinity = NFCusp(self.base_ring().number_field(),1,0)
+                infinity = NFCusp(self.base_ring().number_field(), 1, 0)
                 if infinity.apply(A.list()) != cusp or A.det() != 1:
-                    raise ArithmeticError("did not get correct normalizing map A={0} to cusp: {1}".format(A,cusp))
+                    raise ArithmeticError("did not get correct normalizing map A={0} to cusp: {1}".format(A, cusp))
             logger.debug(f"A={0}".format(A))
             logger.debug("A.det()={0}".format(A.det().complex_embeddings()))
             self._cusp_normalizing_maps_inverse[(ca, cb)] = A.inverse()
@@ -855,9 +857,9 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         if inverse:
             return self._cusp_normalizing_maps_inverse[(ca, cb)]
         else:
-            return self._cusp_normalizing_maps[(ca,cb)]
+            return self._cusp_normalizing_maps[(ca, cb)]
 
-    def apply_cusp_normalizing_map(self,cusp, z, inverse=False):
+    def apply_cusp_normalizing_map(self, cusp, z, inverse=False):
         """
         Apply the cusp normalising map associated with the cusp to an element z
 
@@ -917,14 +919,14 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             True
 
         """
-        a,b,c,d = self.cusp_normalizing_map(cusp, inverse=inverse).list()
+        a, b, c, d = self.cusp_normalizing_map(cusp, inverse=inverse).list()
         if z == infinity:
-            return a/c
+            return a / c
         number_field = self.base_ring().number_field()
-        if isinstance(z,NFCusp) and z.number_field() == number_field:
+        if isinstance(z, NFCusp) and z.number_field() == number_field:
             return z.apply([a, b, c, d])
         if z in number_field:
-            return (a*z + b)/(c*z + d)
+            return (a * z + b) / (c * z + d)
         if isinstance(z, ComplexPlaneProductElement__class) and z.degree() == number_field.absolute_degree():
             return z.apply(matrix(2, 2, [a, b, c, d]))
         raise ValueError("Unsupported type for acting with cusp normalizer! (z={0})".format(z))

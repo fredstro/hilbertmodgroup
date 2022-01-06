@@ -3,7 +3,9 @@ General utility functions
 
 """
 from sage.rings.real_mpfi import RealIntervalField
-def upper(x,prec):
+
+
+def upper(x, prec):
     r"""
     Return an upper bound to x given by precision prec.
 
@@ -19,7 +21,8 @@ def upper(x,prec):
     """
     return RealIntervalField(prec)(x).upper()
 
-def lower(x,prec):
+
+def lower(x, prec):
     r"""
     Return a lower bound to x given by precision prec.
 

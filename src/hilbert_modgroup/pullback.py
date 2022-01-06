@@ -29,17 +29,18 @@ from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement__class,
 from hilbert_modgroup.utils import upper, lower
 
 from hilbert_modgroup.pullback_cython import lattice_elements_in_box, \
-    coordinates_to_ideal_elements,find_closest_cusp, find_candidate_cusps, distance_to_cusp
+    coordinates_to_ideal_elements, find_closest_cusp, find_candidate_cusps, distance_to_cusp
 import logging
 
 log = logging.getLogger(__name__)
+
 
 class HilbertPullback(SageObject):
     r"""
     Utility class for pullback / reduction algorithms for Hilbert modular groups.
 
     """
-    def __init__(self,G):
+    def __init__(self, G):
         r"""
         Init self.
 
@@ -55,7 +56,7 @@ class HilbertPullback(SageObject):
             Pullback class for Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
 
         """
-        if not isinstance(G,HilbertModularGroup_class):
+        if not isinstance(G, HilbertModularGroup_class):
             raise ValueError("Need a Hilbert modular group")
         self._group = G
 
@@ -195,7 +196,7 @@ class HilbertPullback(SageObject):
         """
         return self.group().base_ring().number_field().unit_group().fundamental_units()
 
-    def Y(self,z, return_error_estimate=False):
+    def Y(self, z, return_error_estimate=False):
         r"""
         Compute the coordinate of y=Im(z)/N(y)^(1/n) with respect to the logarithmic unit lattice.
 
@@ -256,10 +257,10 @@ class HilbertPullback(SageObject):
         B = self.basis_matrix_logarithmic_unit_lattice(prec=z.base_ring().prec())
         coordinate_vector = B.solve_right(log_vector, check=False)
         if return_error_estimate:
-            return vector(coordinate_vector),(B*coordinate_vector-log_vector).norm(Infinity)
+            return vector(coordinate_vector), (B*coordinate_vector-log_vector).norm(Infinity)
         return vector(coordinate_vector)
 
-    def reduce_by_units(self,z, return_map=False):
+    def reduce_by_units(self, z, return_map=False):
         r"""
         Reduce the point z with respect to action of units to a point where Im(z) belongs
         to a fundamental domain for the logarithmic unit lattice.
@@ -320,13 +321,13 @@ class HilbertPullback(SageObject):
         units = K.unit_group().gens()[1:]  # Only include the units != -1
         # To avoid overflow it is more efficient to apply the map, e.g. compute (z*u**-k)/u**k instead of z*u**-(2k)
         floors = [-floor(y/2+1/2) for y in self.Y(z)]
-        reducing_map = prod([self.group().E(u ** y) for u,y in zip(units,floors)])
+        reducing_map = prod([self.group().E(u ** y) for u, y in zip(units, floors)])
         reduced_point = z.apply(reducing_map)
         if return_map:
             return reduced_point, reducing_map
         return reduced_point
 
-    def is_reduced_by_units(self,z):
+    def is_reduced_by_units(self, z):
         r"""
         Return True if z is reduced with respect to the logarithmic unit lattice, otherwise return False.
 
@@ -519,7 +520,6 @@ class HilbertPullback(SageObject):
         B = self.basis_matrix_ideal_on_power_basis(a=a)
         return B.inverse()*x.vector()
 
-
     @cached_method
     def basis_matrix_ideal__norm(self, a=None, prec=53, row=None):
         r"""
@@ -556,7 +556,7 @@ class HilbertPullback(SageObject):
             16.407215638850133
 
         """
-        B = self.basis_matrix_ideal(a,prec=prec)
+        B = self.basis_matrix_ideal(a, prec=prec)
         if row is None:
             return B.norm(Infinity)
         elif 0 <= row < B.nrows():
@@ -635,7 +635,7 @@ class HilbertPullback(SageObject):
         z = z.as_ComplexPlaneProductElement()
         entries = [
             beta.complex_embeddings(prec) + zero.complex_embeddings(prec)
-                for beta in ideala.integral_basis()]
+            for beta in ideala.integral_basis()]
         entries += [
             (z*beta).real() + (z*beta).imag()
             for beta in ideala.integral_basis()
@@ -722,12 +722,12 @@ class HilbertPullback(SageObject):
         scaled_rows = []
         for basis_row in basis_matrix:
             row = []
-            for i,b in enumerate(basis_row):
+            for i, b in enumerate(basis_row):
                 entry = (epsilon_inverse * b / (z[i % n].imag().sqrt())).round()
                 # entry = (epsilon_inverse * b).round()
                 row.append(entry)
             scaled_rows.append(row)
-        integral_scaled_basis_matrix = Matrix(ZZ,scaled_rows)
+        integral_scaled_basis_matrix = Matrix(ZZ, scaled_rows)
         if return_scaled_matrix:
             return integral_scaled_basis_matrix
         # Apply LLL to find a reduced basis
@@ -793,10 +793,10 @@ class HilbertPullback(SageObject):
             rho = sum([vec[i] * a.basis()[i] for i in range(n)])
             sigma = sum([vec[n + i] * a.basis()[i] for i in range(n)])
             # The actual cusp that minimizes |sigma*z+rho| is of course -rho/sigma
-            d = distance_to_cusp(self,-rho,sigma,z)
+            d = distance_to_cusp(self, -rho, sigma, z)
             if not dmin or d < dmin:
                 dmin = d
-                cusp_min = -rho,sigma
+                cusp_min = -rho, sigma
         if as_cusp:
             cusp_min = self._construct_cusp(cusp_min)
         return cusp_min
@@ -823,12 +823,12 @@ class HilbertPullback(SageObject):
         elif a in self.group().base_ring() and not b:
             ideala = self.group().base_ring().ideal(a)
         elif a in self.group().base_ring() and b in self.group().base_ring():
-            ideala = self.group().base_ring().ideal(a,b)
+            ideala = self.group().base_ring().ideal(a, b)
         else:
             raise ValueError(f"Could not construct a number field ideal from a={a} and b={b}")
         return ideala
 
-    def _construct_cusp(self, c,d=None):
+    def _construct_cusp(self, c, d=None):
         r"""
         Return an instance of NFCusp for the number field of self from input c and optional d
 
@@ -846,14 +846,14 @@ class HilbertPullback(SageObject):
         sage: P1._construct_cusp(0,1)
         Cusp [0: 1] of Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
         """
-        if isinstance(c,NFCusp) and c.number_field() == self.number_field():
+        if isinstance(c, NFCusp) and c.number_field() == self.number_field():
             return c
         if isinstance(c, NFCusp) and c.number_field() != self.number_field():
             raise ValueError(f"The input cusp {c} has wrong base number field.")
-        if isinstance(c,tuple) and len(c) == 2:
-            c,d = c
+        if isinstance(c, tuple) and len(c) == 2:
+            c, d = c
         try:
-            cusp = NFCusp(self.number_field(),c,d)
+            cusp = NFCusp(self.number_field(), c, d)
         except Exception as e:
             raise ValueError(f"Could not construct a number field cusp from c={c} and d={d}")
         return cusp
@@ -887,7 +887,7 @@ class HilbertPullback(SageObject):
         B = self.basis_matrix_ideal(a, prec=z.base_ring().prec())
         return vector(B**-1 * vector(z.real()))
 
-    def reduce_by_translations(self,z, a=None, return_map=False):
+    def reduce_by_translations(self, z, a=None, return_map=False):
         r"""
         Reduce the point z with respect to the cuspidal region in a neighbourhood of the cusp .
 
@@ -960,7 +960,7 @@ class HilbertPullback(SageObject):
         correction = sum([b*floor(X[i]+0.5) for i, b in enumerate(basis)])
         reduced_point = z - correction
         if return_map:
-            return reduced_point, Matrix(2,2,[1,-correction,0,1]) #self.group().T(-correction)
+            return reduced_point, Matrix(2, 2, [1, -correction, 0, 1])
         return reduced_point
 
     def is_reduced_by_translations(self, z, a=None, prec=53):
@@ -1041,11 +1041,10 @@ class HilbertPullback(SageObject):
         # Map back to the actual cuspidal region
         w = w.apply(A)
         if return_map:
-            return w,A*B*A.inverse()*Umu
+            return w, A*B*A.inverse()*Umu
         return w
 
-
-    def reduce_in_cuspidal_region(self,z, cusp=None, check=True, return_map=False):
+    def reduce_in_cuspidal_region(self, z, cusp=None, check=True, return_map=False):
         r"""
         Reduce the point z with respect to the cuspidal region in a neighbourhood of a representative cusp .
 
@@ -1190,9 +1189,9 @@ class HilbertPullback(SageObject):
                                          use_lll=True,
                                          use_norm_bound=True)
         if as_cusp and return_multiple:
-            return [NFCusp(self.number_field(),c[0],c[1]) for c in closest_cusp]
+            return [NFCusp(self.number_field(), c[0], c[1]) for c in closest_cusp]
         if as_cusp:
-            return NFCusp(self.number_field(),closest_cusp[0],closest_cusp[1])
+            return NFCusp(self.number_field(), closest_cusp[0], closest_cusp[1])
         return closest_cusp
 
     def distance_to_cusp(self, cusp, z):
@@ -1236,11 +1235,11 @@ class HilbertPullback(SageObject):
 
         """
         cusp = self._construct_cusp(cusp)
-        if isinstance(z,ComplexPlaneProductElement__class):
+        if isinstance(z, ComplexPlaneProductElement__class):
             z = UpperHalfPlaneProductElement(z.z())
-        elif not isinstance(z,UpperHalfPlaneProductElement__class):
-            z = UpperHalfPlaneProductElement(z) # Try to make an upper half-plane element
-        return distance_to_cusp(self,cusp.numerator(),cusp.denominator(),z)
+        elif not isinstance(z, UpperHalfPlaneProductElement__class):
+            z = UpperHalfPlaneProductElement(z)  # Try to make an upper half-plane element
+        return distance_to_cusp(self, cusp.numerator(), cusp.denominator(), z)
 
     def polytope_from_bounds(self, bounds, B=None):
         r"""
@@ -1278,19 +1277,19 @@ class HilbertPullback(SageObject):
 
         """
         from sage.all import Polyhedron, vector
-        if not isinstance(bounds,(list,tuple)):
+        if not isinstance(bounds, (list, tuple)):
             raise ValueError("Need a list of bounds!")
-        if not isinstance(bounds[0],tuple):
-            bounds = [(-b,b) for b in bounds]
+        if not isinstance(bounds[0], tuple):
+            bounds = [(-b, b) for b in bounds]
         # Hypercube we want embeddings in
-        vertices = cartesian_product([[RDF(a),RDF(b)] for a,b in bounds]).list()
-        p1 = Polyhedron(vertices,base_ring=RDF)
+        vertices = cartesian_product([[RDF(a), RDF(b)] for a, b in bounds]).list()
+        p1 = Polyhedron(vertices, base_ring=RDF)
         if not B:
             return p1
         # Hypercube containing the integral points of the coordinates wrt the integral basis
         vertices = [vector([y for y in B * vector(x)]) for x in p1.vertices()]
         # Try to make a polyhedron of the mapped vertices.
-        return Polyhedron(vertices,base_ring=RDF)
+        return Polyhedron(vertices, base_ring=RDF)
 
     @cached_method
     def max_ideal_norm(self):
@@ -1315,7 +1314,6 @@ class HilbertPullback(SageObject):
         """
         return max([x.norm() for x in self.group().ideal_cusp_representatives()])
 
-
     def _matrix_BLambda_row_sum(self, i=None):
         r"""
         Compute r_i(B_{\Lambda}) = sum_j |b_ij| or sum_ij |b_ij|.
@@ -1324,7 +1322,7 @@ class HilbertPullback(SageObject):
         -`` i`` integer (default: None) if i then return sum of absolute values in specific row, otherwise return the sum.
 
         EXAMPLES::
-    
+
             sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
@@ -1524,7 +1522,7 @@ class HilbertPullback(SageObject):
         """
         n = self.group().base_ring().number_field().degree()
         return self.max_ideal_norm()**(-1) * 2**(-n/2.) / \
-                                self._exp_matrix_BLambda_row_sum()
+            self._exp_matrix_BLambda_row_sum()
 
     def _Dzi(self, z, i, initial_bd_d=None, use_initial_bd_d=True):
         """
@@ -1695,10 +1693,10 @@ class HilbertPullback(SageObject):
 
         """
         self._check_upper_half_plane_element(z)
-        d = self._Dz(z, initial_bd_d=initial_bd_d,use_initial_bd_d=use_initial_bd_d)
-        return [upper(d[i]*y**(-1/2),prec=prec) for i,y in enumerate(z.imag())]
+        d = self._Dz(z, initial_bd_d=initial_bd_d, use_initial_bd_d=use_initial_bd_d)
+        return [upper(d[i]*y**(-1/2), prec=prec) for i, y in enumerate(z.imag())]
 
-    def _bound_for_sigma_coordinates(self, z, initial_bd_d=None, prec=16,use_initial_bd_d=True):
+    def _bound_for_sigma_coordinates(self, z, initial_bd_d=None, prec=16, use_initial_bd_d=True):
         """
         Bound `c` for the coordinates, with respect to the ring of integers, of the closest cusp to z
         Reference: Lemma XXX
@@ -1743,8 +1741,8 @@ class HilbertPullback(SageObject):
         for i in range(n):
             bd = 0
             for j, y in enumerate(z.imag()):
-                bd += B[i,j].abs()*y**(-1/2)
-            bounds.append(upper(bd*d[i],prec=prec))
+                bd += B[i, j].abs()*y**(-1/2)
+            bounds.append(upper(bd*d[i], prec=prec))
         return bounds
 
     def _bound_for_rho_embeddings(self, z, sigma, initial_bd_d=None, use_initial_bd_d=True, prec=16):
@@ -1798,7 +1796,7 @@ class HilbertPullback(SageObject):
         self._check_upper_half_plane_element(z)
         n = self.group().base_ring().degree()
         d = self._Dz(z, initial_bd_d=initial_bd_d, use_initial_bd_d=use_initial_bd_d)
-        if not isinstance(sigma,list):
+        if not isinstance(sigma, list):
             sigma = self.group().base_ring().number_field()(sigma)
             sigma = sigma.complex_embeddings()
         factor = 1.01
@@ -1809,13 +1807,13 @@ class HilbertPullback(SageObject):
             dy = d[i]*y**(0.5)
             b0 = xs - dy
             b1 = xs + dy
-            bounds.append((b0,b1))
+            bounds.append((b0, b1))
         res = []
-        for b0,b1 in bounds:
+        for b0, b1 in bounds:
             # We bound the lower bound differently depending on whether it is positive or negative
-            b0 = lower(b0,prec=prec)
-            b1 = upper(b1,prec=prec)
-            res.append((b0,b1))
+            b0 = lower(b0, prec=prec)
+            b1 = upper(b1, prec=prec)
+            res.append((b0, b1))
         return res
 
     def _bound_for_rho_coordinates(self, z, sigma, initial_bd_d=None, use_initial_bd_d=True, prec=16):
@@ -1868,7 +1866,7 @@ class HilbertPullback(SageObject):
         self._check_upper_half_plane_element(z)
         n = self.group().base_ring().degree()
         d = self._Dz(z, initial_bd_d=initial_bd_d, use_initial_bd_d=use_initial_bd_d)
-        if not isinstance(sigma,list):
+        if not isinstance(sigma, list):
             sigma = self.group().base_ring().number_field()(sigma)
             sigma = sigma.complex_embeddings()
         bounds = []
@@ -1880,7 +1878,7 @@ class HilbertPullback(SageObject):
             for j, y in enumerate(z.imag()):
                 bd += dy[j] + sz[j] * self.basis_matrix_ideal()[i, j].abs()
 
-            bounds.append(upper(bd*factor,prec=prec))
+            bounds.append(upper(bd*factor, prec=prec))
         return bounds
 
     def _candidate_integers_sigma(self, z, domain='polytope', return_polyhedron=False, ideal_basis=None,
@@ -1936,17 +1934,17 @@ class HilbertPullback(SageObject):
         """
         if return_polyhedron:
             if domain == 'boundingbox':
-                bounds = self._bound_for_sigma_coordinates(z,initial_bd_d=initial_bd_d,use_initial_bd=use_initial_bd_d)
+                bounds = self._bound_for_sigma_coordinates(z, initial_bd_d=initial_bd_d, use_initial_bd=use_initial_bd_d)
                 B = None
             elif domain == 'preimage':
-                bounds = self._bound_for_sigma_embeddings(z,initial_bd_d=initial_bd_d,use_initial_bd_d=use_initial_bd_d)
+                bounds = self._bound_for_sigma_embeddings(z, initial_bd_d=initial_bd_d, use_initial_bd_d=use_initial_bd_d)
                 B = None
             else:
-                bounds = self._bound_for_sigma_embeddings(z,initial_bd_d=initial_bd_d,use_initial_bd_d=use_initial_bd_d)
+                bounds = self._bound_for_sigma_embeddings(z, initial_bd_d=initial_bd_d, use_initial_bd_d=use_initial_bd_d)
                 B = self.basis_matrix_ideal().inverse()
-            return self.polytope_from_bounds(bounds,B)
+            return self.polytope_from_bounds(bounds, B)
         # Else we use efficient methods to find candidates.
-        sigma_candidates = find_candidate_cusps(self,z,return_sigma_candidates=True,use_norm_bound=use_norm_bound,
+        sigma_candidates = find_candidate_cusps(self, z, return_sigma_candidates=True, use_norm_bound=use_norm_bound,
                                                 initial_bd_d=initial_bd_d,
                                                 use_initial_bd_d=use_initial_bd_d)
         if sorted:
@@ -2011,7 +2009,7 @@ class HilbertPullback(SageObject):
         lattice_basis = [[lattice_basis[i][j] for j in range(n)] for i in range(n)]
         return lattice_basis, ideal_basis
 
-    def _candidate_integers_rho(self, z, sigma, a=1, domain='polytope',return_polyhedron=False,
+    def _candidate_integers_rho(self, z, sigma, a=1, domain='polytope', return_polyhedron=False,
                                 ideal_basis=None,
                                 lattice_basis=None, sorted=True,
                                 use_initial_bd_d=True):
@@ -2062,7 +2060,7 @@ class HilbertPullback(SageObject):
             else:
                 bounds = self._bound_for_rho_embeddings(z, sigma)
                 B = self.basis_matrix_ideal().inverse()
-            return self.polytope_from_bounds(bounds,B)
+            return self.polytope_from_bounds(bounds, B)
         if not lattice_basis or not ideal_basis:
             lattice_basis, ideal_basis = self._get_lattice_and_ideal_basis()
         dist = None
@@ -2071,13 +2069,13 @@ class HilbertPullback(SageObject):
             if candidate_cusp:
                 dist = distance_to_cusp(self, candidate_cusp[0], candidate_cusp[1], z)
         rho_coordinate_bounds = self._bound_for_rho_coordinates(z, sigma, initial_bd_d=dist, use_initial_bd_d=use_initial_bd_d)
-        rho_coordinate_bounds = [(-b,b) for b in rho_coordinate_bounds]
+        rho_coordinate_bounds = [(-b, b) for b in rho_coordinate_bounds]
         rho_embedding_bounds = self._bound_for_rho_embeddings(z, sigma, initial_bd_d=dist, use_initial_bd_d=use_initial_bd_d)
         rho_candidates_coordinates = lattice_elements_in_box(lattice_basis,
-                                                 rho_embedding_bounds,
-                                                 rho_coordinate_bounds)
+                                                             rho_embedding_bounds,
+                                                             rho_coordinate_bounds)
         rho_candidates = coordinates_to_ideal_elements(rho_candidates_coordinates,
-                                                         ideal_basis)
+                                                       ideal_basis)
         if sorted:
             def absort(val):
                 return (sum([abs(x)**2 for x in val.complex_embeddings()]),) + tuple(val.complex_embeddings())
@@ -2085,7 +2083,7 @@ class HilbertPullback(SageObject):
         return rho_candidates
 
     def _candidate_closest_cusps(self, z, use_lll=True, use_norm_bound=True,
-                           use_initial_bd_d=True, as_cusps=False):
+                                 use_initial_bd_d=True, as_cusps=False):
         r"""
         Find candidates for the closest cusp.
 
@@ -2108,15 +2106,15 @@ class HilbertPullback(SageObject):
              [(1, 0), (-1, -1), (0, 1), (1, -1)]
 
         """
-        cusp_candidates = find_candidate_cusps(self,z, use_lll=use_lll, use_norm_bound=use_norm_bound,
+        cusp_candidates = find_candidate_cusps(self, z, use_lll=use_lll, use_norm_bound=use_norm_bound,
                                                return_sigma_candidates=False,
-                           use_initial_bd_d=use_initial_bd_d)
+                                               use_initial_bd_d=use_initial_bd_d)
         if as_cusps:
             # Convert to cusps
             cusps = []
             K = self.group().base_ring().number_field()
             for rho, sigma in cusp_candidates:
-                c = NFCusp(K,rho,sigma)
+                c = NFCusp(K, rho, sigma)
                 if c not in cusps:
                     cusps.append(c)
             return cusps
