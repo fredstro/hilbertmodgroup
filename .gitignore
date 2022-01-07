@@ -7,3 +7,4 @@ dist
 *.egg-info
 *.pgf
 .ipynb_checkpoints
+src/hilbert_modgroup/version.py
