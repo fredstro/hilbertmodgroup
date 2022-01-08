@@ -145,10 +145,10 @@ class HilbertPullback(SageObject):
 
         """
         if not isinstance(z, UpperHalfPlaneProductElement__class) or\
-                z.degree() != self.group().base_ring().degree():
+                z.degree() != self.group().base_ring().number_field().degree():
             msg = f"Need an element of type: " \
                   f"UpperHalfPlaneProductElement__class of degree {0}".format(
-                                    self.group().base_ring().degree())
+                                    self.group().base_ring().numbrer_field().degree())
             raise ValueError(msg)
         return True
 
