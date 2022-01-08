@@ -5,9 +5,11 @@ AUTHORS:
 
 - Fredrik Stromberg (2021)
 
-NOTE: I know it is often a bad idea to write utility classes but I decided to do it anyway at least for the moment.
+NOTE: I know it is often a bad idea to write utility classes but I decided to \
+        do it anyway at least for the moment.
 """
-from hilbert_modgroup.hilbert_modular_group_class import HilbertModularGroup_class
+from hilbert_modgroup.hilbert_modular_group_class import \
+    HilbertModularGroup_class
 from sage.all import ZZ
 from sage.categories.sets_cat import cartesian_product
 from sage.functions.other import floor
@@ -24,12 +26,15 @@ from sage.structure.sage_object import SageObject
 from sage.matrix.all import Matrix
 
 from hilbert_modgroup.hilbert_modular_group_class import HilbertModularGroup
-from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement__class, UpperHalfPlaneProductElement__class, UpperHalfPlaneProductElement
+from hilbert_modgroup.upper_half_plane import \
+    ComplexPlaneProductElement__class,\
+    UpperHalfPlaneProductElement__class, UpperHalfPlaneProductElement
 
 from hilbert_modgroup.utils import upper, lower
 
 from hilbert_modgroup.pullback_cython import lattice_elements_in_box, \
-    coordinates_to_ideal_elements, find_closest_cusp, find_candidate_cusps, distance_to_cusp
+    coordinates_to_ideal_elements, find_closest_cusp, find_candidate_cusps, \
+    distance_to_cusp
 import logging
 
 log = logging.getLogger(__name__)
@@ -37,7 +42,7 @@ log = logging.getLogger(__name__)
 
 class HilbertPullback(SageObject):
     r"""
-    Utility class for pullback / reduction algorithms for Hilbert modular groups.
+    Utility class for pullback/reduction algorithms for Hilbert modular groups.
 
     """
     def __init__(self, G):
@@ -50,10 +55,10 @@ class HilbertPullback(SageObject):
 
         EXAMPLES:
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: H = HilbertModularGroup(5)
             sage: HilbertPullback(H)
-            Pullback class for Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+            Pullback class ... polynomial x^2 - 5 with a = 2.236067977499790?
 
         """
         if not isinstance(G, HilbertModularGroup_class):
@@ -66,11 +71,12 @@ class HilbertPullback(SageObject):
 
          EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import HilbertModularGroup, \
+                                                    HilbertPullback
             sage: H = HilbertModularGroup(5)
             sage: P = HilbertPullback(H)
             sage: str(P)
-            'Pullback class for Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?'
+            'Pullback class ... polynomial x^2 - 5 with a = 2.236067977499790?'
 
         """
         return f"Pullback class for {self._group}"
@@ -81,11 +87,11 @@ class HilbertPullback(SageObject):
 
          EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: H = HilbertModularGroup(5)
             sage: P = HilbertPullback(H)
             sage: P
-            Pullback class for Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+            Pullback class ... polynomial x^2 - 5 with a = 2.236067977499790?
 
         """
         return str(self)
@@ -96,31 +102,32 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: H = HilbertModularGroup(5)
             sage: P = HilbertPullback(H)
             sage: P.group()
-            Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+            Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
 
         """
         return self._group
 
     def _check_upper_half_plane_element(self, z):
         r"""
-        Check if z is an element of type UpperHalfPlaneProductElement__class of the correct degree.
+        Check if z is an element of type UpperHalfPlaneProductElement__class
+         of the correct degree.
 
         INPUT:
         - `z` - potential element of a product of upper half planes.
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertPullback, HilbertModularGroup, UpperHalfPlaneProductElement, ComplexPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H = HilbertModularGroup(5)
             sage: P = HilbertPullback(H)
             sage: P._check_upper_half_plane_element([1,1])
             Traceback (most recent call last):
             ...
-            ValueError: Need an element of type: UpperHalfPlaneProductElement__class of degree 2
+            ValueError: Need ...UpperHalfPlaneProductElement__class of degree 2
             sage: z = UpperHalfPlaneProductElement([1+I,1+I])
             sage: P._check_upper_half_plane_element(z)
             True
@@ -128,18 +135,21 @@ class HilbertPullback(SageObject):
             sage: P._check_upper_half_plane_element(z)
             Traceback (most recent call last):
             ...
-            ValueError: Need an element of type: UpperHalfPlaneProductElement__class of degree 2
+            ValueError: Need ...UpperHalfPlaneProductElement__class of degree 2
             sage: z = ComplexPlaneProductElement([1+I,1+I])
             sage: P._check_upper_half_plane_element(z)
             Traceback (most recent call last):
             ...
-            ValueError: Need an element of type: UpperHalfPlaneProductElement__class of degree 2
+            ValueError: Need ...UpperHalfPlaneProductElement__class of degree 2
 
 
         """
-        if not isinstance(z, UpperHalfPlaneProductElement__class) or z.degree() != self.group().base_ring().degree():
-            raise ValueError("Need an element of type: UpperHalfPlaneProductElement__class of degree {0}".format(
-                self.group().base_ring().degree()))
+        if not isinstance(z, UpperHalfPlaneProductElement__class) or\
+                z.degree() != self.group().base_ring().degree():
+            msg = f"Need an element of type: " \
+                  f"UpperHalfPlaneProductElement__class of degree {0}".format(
+                                    self.group().base_ring().degree())
+            raise ValueError(msg)
         return True
 
     @cached_method
@@ -149,7 +159,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: P1.basis_matrix_logarithmic_unit_lattice()
@@ -172,7 +182,8 @@ class HilbertPullback(SageObject):
 
         """
         n = self.group().base_ring().degree()
-        entries = [[x.abs().log() for x in u.complex_embeddings(prec)] for u in self.fundamental_units()]
+        entries = [[x.abs().log() for x in u.complex_embeddings(prec)] for u
+                   in self.fundamental_units()]
         return matrix(RealField(prec), n-1, n, entries).transpose()
 
     @cached_method()
@@ -182,7 +193,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: P1.fundamental_units()
@@ -194,21 +205,26 @@ class HilbertPullback(SageObject):
             [-a, -a - 6]
 
         """
-        return self.group().base_ring().number_field().unit_group().fundamental_units()
+        nf = self.group().base_ring().number_field()
+        return nf.unit_group().fundamental_units()
 
     def Y(self, z, return_error_estimate=False):
         r"""
-        Compute the coordinate of y=Im(z)/N(y)^(1/n) with respect to the logarithmic unit lattice.
+        Compute the coordinate of y=Im(z)/N(y)^(1/n)
+        with respect to the logarithmic unit lattice.
 
         INPUT:
 
         - ``z`` -- element of type UpperHalfPlaneProductElement
-        - ``return_error_estimate`` -- boolean (default=False) set to True to return a tuple including an estimate of the error.
+        - ``return_error_estimate`` -- boolean (default=False) set to True
+                                        to return a tuple including an estimate
+                                        of the error.
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
-            sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
+            sage: from hilbert_modgroup.upper_half_plane import \
+                                                UpperHalfPlaneProductElement
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: u0,u1=H1.base_ring().number_field().unit_group().gens()
@@ -229,7 +245,8 @@ class HilbertPullback(SageObject):
             sage: P1.Y(u1**2*z)
             (2.42129586908836)
 
-            # The precision gets worse when the imaginary parts have large differences.
+            # The precision gets worse when the imaginary parts have large
+            # differences.
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: P3=HilbertPullback(H3)
             sage: z=UpperHalfPlaneProductElement([CC(0,1),CC(0,2),CC(0,1)])
@@ -268,11 +285,12 @@ class HilbertPullback(SageObject):
         INPUT:
 
         - ``z`` -- element of type UpperHalfPlaneProductElement
-        - ``return_map`` -- boolean (default=False) set to True to return the map which does the reduction.
+        - ``return_map`` -- boolean (default=False)
+                            Set to True to return the map which does the reduction.
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
@@ -319,7 +337,8 @@ class HilbertPullback(SageObject):
         """
         K = self.group().base_ring().number_field()
         units = K.unit_group().gens()[1:]  # Only include the units != -1
-        # To avoid overflow it is more efficient to apply the map, e.g. compute (z*u**-k)/u**k instead of z*u**-(2k)
+        # To avoid overflow it is more efficient to apply the map,
+        # e.g. compute (z*u**-k)/u**k instead of z*u**-(2k)
         floors = [-floor(y/2+1/2) for y in self.Y(z)]
         reducing_map = prod([self.group().E(u ** y) for u, y in zip(units, floors)])
         reduced_point = z.apply(reducing_map)
@@ -329,7 +348,8 @@ class HilbertPullback(SageObject):
 
     def is_reduced_by_units(self, z):
         r"""
-        Return True if z is reduced with respect to the logarithmic unit lattice, otherwise return False.
+        Return True if z is reduced with respect to the logarithmic unit lattice,
+         otherwise return False.
 
         INPUT:
 
@@ -337,7 +357,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
@@ -388,7 +408,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: P1.basis_matrix_ideal()
@@ -440,7 +460,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: P1.basis_matrix_ideal_on_power_basis()
@@ -490,7 +510,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: b1,b2=P1.number_field().ideal(1).basis()
@@ -532,7 +552,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: P1.basis_matrix_ideal__norm() # abs tol 1e-10
@@ -578,7 +598,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z=UpperHalfPlaneProductElement([CC(0,1),CC(0,1)])
@@ -607,7 +627,9 @@ class HilbertPullback(SageObject):
             [-3.16227766016838  3.16227766016838 0.000000000000000 0.000000000000000]
             [ 2.00000000000000  1.00000000000000 0.500000000000000 0.200000000000000]
             [-6.32455532033676  3.16227766016838 -1.58113883008419 0.632455532033676]
-            sage: z=UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I, 0.0200000000000000 + 0.0300000000000000*I])
+            sage: zv = [23.3400000000000 + 0.0100000000000000*I,\
+                        0.0200000000000000 + 0.0300000000000000*I]
+            sage: z=UpperHalfPlaneProductElement(zv)
             sage: P2.basis_matrix_ideal_plusz(z)
             [   1.00000000000000    1.00000000000000   0.000000000000000   0.000000000000000]
             [  -3.16227766016838    3.16227766016838   0.000000000000000   0.000000000000000]
@@ -619,19 +641,20 @@ class HilbertPullback(SageObject):
             sage: K3=P3.number_field()
             sage: z = UpperHalfPlaneProductElement([0+0.02*I,10+0.2*I,1+0.2*I])
             sage: P3.basis_matrix_ideal_plusz(z,K3.ideal(1))
-            [    1.00000000000000     1.00000000000000     1.00000000000000    0.000000000000000    0.000000000000000    0.000000000000000]
-            [   -5.98606258583498  -0.0277783731902446     6.01384095902523    0.000000000000000    0.000000000000000    0.000000000000000]
-            [    2.28229423189948    -7.67566891172438     6.39337467982490    0.000000000000000    0.000000000000000    0.000000000000000]
-            [   0.000000000000000     10.0000000000000     1.00000000000000   0.0200000000000000    0.200000000000000    0.200000000000000]
-            [  -0.000000000000000   -0.277783731902446     6.01384095902523   -0.119721251716700 -0.00555567463804893     1.20276819180505]
-            [   0.000000000000000    -76.7566891172438     6.39337467982490   0.0456458846379896    -1.53513378234488     1.27867493596498]
+            [    1.00000000000000     1.00000000000000     1.00000000000000    0.000000000000000...
+            [   -5.98606258583498  -0.0277783731902446     6.01384095902523    0.000000000000000...
+            [    2.28229423189948    -7.67566891172438     6.39337467982490    0.000000000000000...
+            [   0.000000000000000     10.0000000000000     1.00000000000000   0.0200000000000000...
+            [  -0.000000000000000   -0.277783731902446     6.01384095902523   -0.119721251716700...
+            [   0.000000000000000    -76.7566891172438     6.39337467982490   0.0456458846379896...
 
 
         """
         ideala = self._construct_ideal(a)
         zero = self.number_field()(0)
         prec = z.prec()
-        # In case it is an Upper-half plane element we need to allow multiplication by elements on the real axis.
+        # In case it is an Upper-half plane element we need to allow multiplication
+        # by elements on the real axis.
         z = z.as_ComplexPlaneProductElement()
         entries = [
             beta.complex_embeddings(prec) + zero.complex_embeddings(prec)
@@ -651,11 +674,12 @@ class HilbertPullback(SageObject):
 
         - ``z`` -- point in the upper half-plane
         - ``a`` -- ideal (default =None) if None we use the entire ring of integers as lattice.
-        - ``return_scaled_matrix`` -- boolean (default False) se to True to return the scaled matrix.
+        - ``return_scaled_matrix`` -- boolean (default False)
+                                      Set to True to return the scaled matrix.
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z=UpperHalfPlaneProductElement([CC(0,1),CC(0,1)])
@@ -684,7 +708,8 @@ class HilbertPullback(SageObject):
             [ 2  0 -1  0]
             [-3 -1  3  1]
             [-5  2  2 -1]
-            sage: z=UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I,0.0200000000000000 + 0.0300000000000000*I])
+            sage: z=UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I,\
+                                                        0.0200000000000000 + 0.0300000000000000*I])
             sage: P2._shortest_vectors_ideal_plusz(z)
             [  25   -8    1    1]
             [  10   -3   -4   -1]
@@ -708,8 +733,9 @@ class HilbertPullback(SageObject):
             The idea behind this function was taken from [BoSt2015] (especially the scaling factor)
 
         REFERENCES:
-            [BoSt2015] F. Boyer and M. Streng, "Examples of CM curves of genus two defined over the reflex field",
-                            LMS Journal of Computation and Mathematics, Vol. 18 (2015), issue 01, pp 507-538\n",
+            [BoSt2015] F. Boyer and M. Streng,
+                       "Examples of CM curves of genus two defined over the reflex field",
+                       LMS Journal of Comp. Math., Vol. 18 (2015), issue 01, pp 507-538\n",
 
 
 
@@ -742,11 +768,13 @@ class HilbertPullback(SageObject):
 
         INPUT:
         - ``z`` -- point in the uper half-plane
-        - ``a`` -- ideal or number field element (default = None) if None then this is set to the entire ring of integers.
-        - ``as_cusp`` -- boolean (default: False) if True we return an element of type NFCusp
+        - ``a`` -- ideal or number field element (default = None)
+                    If None then this is set to the entire ring of integers.
+        - ``as_cusp`` -- boolean (default: False)
+                    If True we return an element of type NFCusp
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z=UpperHalfPlaneProductElement([CC(0,1),CC(0,1)])
@@ -763,10 +791,12 @@ class HilbertPullback(SageObject):
             sage: z=UpperHalfPlaneProductElement([CC(2,0.5),CC(1,0.2)])
             sage: P2.get_heuristic_closest_cusp(z)
             (1, 1)
-            sage: z=UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I,0.0200000000000000 + 0.0300000000000000*I])
+            sage: z=UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I,\
+                                                        0.0200000000000000 + 0.0300000000000000*I])
             sage: P2.get_heuristic_closest_cusp(z)
             (3*a - 10, -a - 4)
-            sage: w=UpperHalfPlaneProductElement([-0.668903800800698 + 0.0362571615120737*I, 0.708560139622790 + 0.00414937759336099*I])
+            sage: w=UpperHalfPlaneProductElement([-0.668903800800698 + 0.0362571615120737*I,\
+                                                        0.708560139622790 + 0.00414937759336099*I])
             sage: P2.get_heuristic_closest_cusp(w)
             (-a + 4, 2*a - 5)
             sage: x = ZZ['x'].gen()
@@ -783,7 +813,8 @@ class HilbertPullback(SageObject):
         try:
             shortest_basis_vectors = self._shortest_vectors_ideal_plusz(z, a)
         except ValueError as e:
-            log.critical("The LLL 'finding shortest vector' has failed. It is likely that you need to upgrade your version of Sage to 9.4+.")
+            log.critical("The LLL 'finding shortest vector' has failed. " +
+                         "It is likely that you need to upgrade your version of Sage to 9.4+.")
             return None
         # Convert this lattice vector to two integers sigma and rho:
         n = len(a.basis())
@@ -807,7 +838,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-        sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+        sage: from hilbert_modgroup.all import *
         sage: P1=HilbertPullback(HilbertModularGroup(5))
         sage: P1._construct_ideal(1)
         Fractional ideal (1)
@@ -837,14 +868,14 @@ class HilbertPullback(SageObject):
         - ``d`` -- element of number field or None (default: None)
         EXAMPLES::
 
-        sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+        sage: from hilbert_modgroup.all import *
         sage: P1=HilbertPullback(HilbertModularGroup(5))
         sage: P1._construct_cusp(1,0)
-        Cusp Infinity of Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+        Cusp Infinity of Number Field in a with ... polynomial x^2 - 5 with a = 2.236067977499790?
         sage: P1._construct_cusp((1,0))
-        Cusp Infinity of Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+        Cusp Infinity of Number Field in a with ... polynomial x^2 - 5 with a = 2.236067977499790?
         sage: P1._construct_cusp(0,1)
-        Cusp [0: 1] of Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+        Cusp [0: 1] of Number Field in a with ... polynomial x^2 - 5 with a = 2.236067977499790?
         """
         if isinstance(c, NFCusp) and c.number_field() == self.number_field():
             return c
@@ -864,7 +895,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
@@ -895,11 +926,12 @@ class HilbertPullback(SageObject):
 
         - ``z`` -- point in the upper half-plane.
         - ``a`` -- ideal cusp (default=None) if None use the ring of integers.
-        - ``return_map`` -- boolean (default=False), if set to True also return the map that makes the reduction.
+        - ``return_map`` -- boolean (default=False),
+                            If set to True also return the map that makes the reduction.
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
@@ -943,9 +975,9 @@ class HilbertPullback(SageObject):
             [1.00000000000000*I, 1.00000000000000*I, 1.00000000000000*I], [ 0  1]
             )
             sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(2,1),CC(10,1)])
-            sage: P3.reduce_by_translations(z,return_map=True)
+            sage: P3.reduce_by_translations(z,return_map=True) # abs tol 1e-10
             (
-            [2.98606258583498 + 1.00000000000000*I, -1.97222162680976 + 1.00000000000000*I, -0.0138409590252291 + 1.00000000000000*I],
+            [2.98606258583498 + 1.0*I, -1.97222162680976 + 1.0*I,-0.0138409590252291 + 1.0*I],
             <BLANKLINE>
             [     1 -a - 4]
             [     0      1]
@@ -970,7 +1002,7 @@ class HilbertPullback(SageObject):
         EXAMPLES::
 
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
@@ -1013,11 +1045,12 @@ class HilbertPullback(SageObject):
         INPUT:
 
         - ``z`` -- point in the upper half-plane
-        - ``return_map`` -- boolean (default False) set to ``True`` to return the map which performed the reduction.
+        - ``return_map`` -- boolean (default False)
+                            Set to ``True`` to return the map which performed the reduction.
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1=HilbertModularGroup(5)
             sage: P1=HilbertPullback(H1)
             sage: z = UpperHalfPlaneProductElement([1+I,1+I])
@@ -1046,18 +1079,20 @@ class HilbertPullback(SageObject):
 
     def reduce_in_cuspidal_region(self, z, cusp=None, check=True, return_map=False):
         r"""
-        Reduce the point z with respect to the cuspidal region in a neighbourhood of a representative cusp .
+        Reduce the point z with respect to the cuspidal region in a neighbourhood of a
+        representative cusp.
 
         INPUT:
 
         - ``z`` -- point in the upper half-plane.
         - ``cusp`` -- cusp of the group of self.
-        - ``return_map`` -- boolean (default=False) return the map A such that AN^-1z is reduced where N is the cusp
-                            normalizing map for the cusp.
+        - ``return_map`` -- boolean (default=False)
+                            Return the map A such that AN^-1z is reduced where N is the
+                            cusp normalizing map for the cusp.
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
@@ -1075,8 +1110,8 @@ class HilbertPullback(SageObject):
             [1.00000000000000*I, 1.00000000000000*I], [ 0  1]
             )
 
-        :: Check that if we apply a cusp-normalizing map to a point then the reduction with respect to that cusp is the same
-        :: as the reduction of the original point with respect to infinity
+        :: Check that if we apply a cusp-normalizing map to a point then the reduction with respect
+        :: to that cusp is the same as the reduction of the original point with respect to infinity
 
             sage: c=NFCusp(P1.group().base_ring().number_field(),1,2)
             sage: N=H1.cusp_normalizing_map(c)
@@ -1107,9 +1142,10 @@ class HilbertPullback(SageObject):
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: P3=HilbertPullback(H3)
             sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(2,1),CC(10,1)])
-            sage: P3.reduce_in_cuspidal_region(z,P3.group().cusps()[0],return_map=True)
+            sage: P3.reduce_in_cuspidal_region(z,P3.group().cusps()[0],\
+                                                    return_map=True) # abs tol 1e-10
             (
-            [2.98606258583498 + 1.00000000000000*I, -1.97222162680976 + 1.00000000000000*I, -0.0138409590252291 + 1.00000000000000*I],
+            [2.98606258583498 + 1.0*I, -1.97222162680976 + 1.0*I, -0.0138409590252291 + 1.0*I],
             <BLANKLINE>
             [     1 -a - 4]
             [     0      1]
@@ -1121,7 +1157,8 @@ class HilbertPullback(SageObject):
         if not cusp:
             cusp = self.group().cusps()[0]
         ideala = cusp.ideal()**-2
-        # Then reduce with respect to the units, followed by reduction by translation with respect to the ideal a**-2
+        # Then reduce with respect to the units, followed by reduction by translation with respect
+        # to the ideal a**-2
         if return_map:
             w, A = self.reduce_by_units(z, return_map=return_map)
             w, B = self.reduce_by_translations(w, ideala, return_map=return_map)
@@ -1137,7 +1174,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: P3=HilbertPullback(H3)
             sage: P3.number_field()
@@ -1153,13 +1190,14 @@ class HilbertPullback(SageObject):
         INPUT:
 
         - `z` -- point in the upper half-plane
-        - `return_multiple` -- boolean: default False - set to True to return all cusps with the same minimal distance ,
+        - `return_multiple` -- boolean: default False
+                               Set to True to return all cusps with the same minimal distance,
                                         otherwise just return one closest cusp.
         - ``as_cusp`` -- boolean (default True) return instance(s) of NFcusps or tuple(s)
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
@@ -1167,22 +1205,22 @@ class HilbertPullback(SageObject):
             sage: P1.find_closest_cusp(z,as_cusp=False)
             (1, 0)
             sage: P1.find_closest_cusp(z)
-            Cusp Infinity of Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+            Cusp Infinity of Number Field in a ... polynomial x^2 - 5 with a = 2.236067977499790?
             sage: P1.find_closest_cusp(z,return_multiple=True)
-            [Cusp Infinity of Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?,
-             Cusp [-1: -1] of Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?]
+            [Cusp Infinity of Number Field in a ... polynomial x^2 - 5 with a = 2.236067977499790?,
+             Cusp [-1: -1] of Number Field in a ... polynomial x^2 - 5 with a = 2.236067977499790?]
             sage: H2 = HilbertModularGroup(10)
             sage: K2 = H2.base_ring().number_field()
             sage: P2 = HilbertPullback(H2)
             sage: z=UpperHalfPlaneProductElement([CC(0,1.0),CC(0,1.0)])
             sage: P2.find_closest_cusp(z)
-            Cusp Infinity of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
+            Cusp Infinity of Number Field in a ... polynomial x^2 - 10 with a = 3.162277660168380?
             sage: P2.find_closest_cusp(z,return_multiple=True)
-            [Cusp Infinity of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?,
-            Cusp [0: 1] of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?]
+            [Cusp Infinity of Number Field ... polynomial x^2 - 10 with a = 3.162277660168380?,
+            Cusp [0: 1] of Number Field in a ... polynomial x^2 - 10 with a = 3.162277660168380?]
             sage: z=UpperHalfPlaneProductElement([CC(2.58,0.5),CC(0.5,0.5)])
             sage: P2.find_closest_cusp(z)
-            Cusp [-a: -a - 2] of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
+            Cusp [-a: -a - 2] of Number Field ... polynomial x^2 - 10 with a = 3.162277660168380?
 
         """
         closest_cusp = find_closest_cusp(self, z, return_multiple=return_multiple,
@@ -1204,7 +1242,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, ComplexPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z=ComplexPlaneProductElement([CC(0,1),CC(0,1)]);
@@ -1251,15 +1289,19 @@ class HilbertPullback(SageObject):
         INPUT:
 
         - ``a`` -- ideal or algebraic integer.
-        - ``bounds`` -- list of bounds for the coordinates or scalar which then gives a cube with the same bound.
-                        can be of the form [b1,b2,...,bn] or [(a1,b1),(a2,b2)....(an,bn)]
-                        in the first case the bounds are interpreted as (-b1,b1),...,(-bn,bn)
-        - ``return_polyhedron`` -- boolean (default False) set to True to return a polyhedron of the corresponding domain
-        - ``preimage`` -- boolean (default False) set to True to return the polyhedron of the pre-image (only used when return_polyhedron=True)
+        - ``bounds`` -- list of bounds for the coordinates or scalar which then gives a cube with
+                        the same bound.
+                        Can be of the form [b1,b2,...,bn] or [(a1,b1),(a2,b2)....(an,bn)].
+                        In the first case the bounds are interpreted as (-b1,b1),...,(-bn,bn).
+        - ``return_polyhedron`` -- boolean (default False)
+                                   Set to True to return a polyhedron of the corresponding domain
+        - ``preimage`` -- boolean (default False)
+                          Set to True to return the polyhedron of the pre-image
+                          (only used when return_polyhedron=True)
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: p=P1.polytope_from_bounds([(-1,1),(-1,1)])
@@ -1298,7 +1340,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: P1.max_ideal_norm()
@@ -1319,11 +1361,13 @@ class HilbertPullback(SageObject):
         Compute r_i(B_{\Lambda}) = sum_j |b_ij| or sum_ij |b_ij|.
 
         INPUT:
-        -`` i`` integer (default: None) if i then return sum of absolute values in specific row, otherwise return the sum.
+        -`` i`` -- integer (default: None)
+                    If i is given then return sum of absolute values in row nr. i,
+                    otherwise return the sum.
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: P1._matrix_BLambda_row_sum() # abs tol 1e-10
@@ -1367,11 +1411,13 @@ class HilbertPullback(SageObject):
 
         INPUT:
 
-        -`` i`` integer (default: None) if i then return sum of absolute values in specific row, otherwise return the sum.
+        -`` i`` -- integer (default: None)
+                   If i is given then return sum of absolute values in row nr. i,
+                    otherwise return the sum.
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: P1._exp_matrix_BLambda_row_sum()
@@ -1412,7 +1458,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: P1._exp_matrix_BLambda_norm()
@@ -1438,11 +1484,13 @@ class HilbertPullback(SageObject):
 
         INPUT:
 
-        -`` i`` integer (default: None) if i then return bound with exp(r_i(B_Lambda)) else use exp(sum_i r_i(B_Lambda)
+        -`` i`` -- integer (default: None)
+                    If i is given then return the bound with exp(r_i(B_Lambda))
+                    else use exp(sum_i r_i(B_Lambda)
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: P1 = HilbertPullback(HilbertModularGroup(5))
             sage: P1.Di() # abs tol 1e-10
             1.61803398874989
@@ -1480,7 +1528,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: P1 = HilbertPullback(HilbertModularGroup(5))
             sage: P1.D() # abs tol 1e-10
             [1.272019649514069, 1.272019649514069]
@@ -1506,7 +1554,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: P1 = HilbertPullback(HilbertModularGroup(5))
             sage: P1._bound_for_closest_cusp() # abs tol 1e-10
             0.19098300562505255
@@ -1536,7 +1584,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z=UpperHalfPlaneProductElement([CC(0,1),CC(0,1)])
@@ -1553,7 +1601,8 @@ class HilbertPullback(SageObject):
             sage: z=UpperHalfPlaneProductElement([CC(2,0.5),CC(1,0.2)])
             sage: P2._Dzi(z,0)
             6.24288923183892
-            sage: z=UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I, 0.0200000000000000 + 0.0300000000000000*I])
+            sage: z=UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I,\
+                                                  0.0200000000000000 + 0.0300000000000000*I])
             sage: P2._Dzi(z,0)
             24.4704299162553
             sage: x = ZZ['x'].gen()
@@ -1594,7 +1643,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z=UpperHalfPlaneProductElement([CC(0,1),CC(0,1)])
@@ -1611,7 +1660,8 @@ class HilbertPullback(SageObject):
             sage: z=UpperHalfPlaneProductElement([CC(2,0.5),CC(1,0.2)])
             sage: P2._Dz(z) # abs tol 1e-10
             [6.24288923183892, 6.24288923183892]
-            sage: z=UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I, 0.0200000000000000 + 0.0300000000000000*I])
+            sage: z=UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I,\
+                                                  0.0200000000000000 + 0.0300000000000000*I])
             sage: P2._Dz(z) # abs tol 1e-10
             [24.4704299162553, 24.4704299162553]
             sage: x = ZZ['x'].gen()
@@ -1625,7 +1675,8 @@ class HilbertPullback(SageObject):
 
         """
         n = self.number_field().degree()
-        return [self._Dzi(z, i, initial_bd_d=initial_bd_d, use_initial_bd_d=use_initial_bd_d) for i in range(n)]
+        return [self._Dzi(z, i, initial_bd_d=initial_bd_d, use_initial_bd_d=use_initial_bd_d)
+                for i in range(n)]
 
     @cached_method()
     def _bound_for_sigma_norm(self, z, dist=None):
@@ -1634,7 +1685,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(1,0.9)])
@@ -1658,14 +1709,15 @@ class HilbertPullback(SageObject):
 
         - ``z`` -- point in the upper half-plane
         - ``prec`` -- integer - the number of bits precision in the returned values.
-        - ``initial_bd_d`` -- float - an initial bound (default None) for the distance to a specific cusp.
-                            If it is None or larger than the distance to infinity then this distance is used.
-        - ``use_initial_bd_d`` -- boolean (default: 'True') Use the initial bound or not.
-                                        This should only be set to False for demonstration or testing.
+        - ``initial_bd_d`` -- float - an initial bound (default None) for the distance to a cusp.
+                              If it is None or larger than the distance to infinity then this
+                              distance is used.
+        - ``use_initial_bd_d`` -- boolean (default: 'True') -- Use the initial bound or not.
+                                  This should only be set to False for demonstration or testing.
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(1,0.9)])
@@ -1698,21 +1750,23 @@ class HilbertPullback(SageObject):
 
     def _bound_for_sigma_coordinates(self, z, initial_bd_d=None, prec=16, use_initial_bd_d=True):
         """
-        Bound `c` for the coordinates, with respect to the ring of integers, of the closest cusp to z
+        Bound `c` for the coordinates, with respect to the ring of integers,
+        of the closest cusp to z.
         Reference: Lemma XXX
 
         INPUT:
 
         - ``z`` -- point in the upper half-plane
-        - ``initial_bd_d`` -- float - an initial bound (default None) for the distance to a specific cusp.
-                            If it is None or larger than the distance to infinity then this distance is used.
+        - ``initial_bd_d`` -- float - an initial bound (default None) for the distance to a cusp.
+                              If it is None or larger than the distance to infinity
+                              then this distance is used.
         - ``prec`` -- the number of bits precision in the returned values.
         - ``use_initial_bd_d`` -- boolean (default: 'True') Use the initial bound or not.
-                                        This should only be set to False for demonstration or testing.
+                                  This should only be set to False for demonstration or testing.
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(1,0.9)])
@@ -1745,7 +1799,8 @@ class HilbertPullback(SageObject):
             bounds.append(upper(bd*d[i], prec=prec))
         return bounds
 
-    def _bound_for_rho_embeddings(self, z, sigma, initial_bd_d=None, use_initial_bd_d=True, prec=16):
+    def _bound_for_rho_embeddings(self, z, sigma, initial_bd_d=None, use_initial_bd_d=True,
+                                  prec=16):
         """
         Bound for the embeddings of the numerator of the closest cusp to z.
         Reference: Corollary 5
@@ -1758,12 +1813,12 @@ class HilbertPullback(SageObject):
         - ``prec`` -- the number of bits precision in the returned values.
         - ``initial_bd_d`` -- an initial bound for the distance to nearest cusp (default None)
         - ``use_initial_bd_d`` -- boolean (default: 'True') Use the initial bound or not.
-                                        This should only be set to False for demonstration or testing.
+                                  This should only be set to False for demonstration or testing.
 
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(1,0.9)])
@@ -1816,9 +1871,11 @@ class HilbertPullback(SageObject):
             res.append((b0, b1))
         return res
 
-    def _bound_for_rho_coordinates(self, z, sigma, initial_bd_d=None, use_initial_bd_d=True, prec=16):
+    def _bound_for_rho_coordinates(self, z, sigma, initial_bd_d=None, use_initial_bd_d=True,
+                                   prec=16):
         """
-        Bound for the coordinates, with respect to the ring of integers, of the numerator of the closest cusp to z.
+        Bound for the coordinates, with respect to the ring of integers,
+        of the numerator of the closest cusp to z.
         Reference: Lemma XXX
             rho_i in [sigma_i x_i - delta*y_i**0.5 , sigma_i x_i - delta*y_i**0.5]
 
@@ -1834,7 +1891,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(1,0.9)])
@@ -1881,7 +1938,8 @@ class HilbertPullback(SageObject):
             bounds.append(upper(bd*factor, prec=prec))
         return bounds
 
-    def _candidate_integers_sigma(self, z, domain='polytope', return_polyhedron=False, ideal_basis=None,
+    def _candidate_integers_sigma(self, z, domain='polytope', return_polyhedron=False,
+                                  ideal_basis=None,
                                   lattice_basis=None, sorted=True,
                                   initial_bd_d=None,
                                   use_initial_bd_d=True,
@@ -1892,20 +1950,24 @@ class HilbertPullback(SageObject):
         INPUT:
 
         - ``z`` -- element of type UpperHalfPlaneProductelement_class
-        - ``a`` -- ideal or algebraic integer (default = 1). If an integer is given then the ideal is the principal ideal.
+        - ``a`` -- ideal or algebraic integer (default = 1).
+                   If an integer is given then the ideal is the principal ideal.
         - ``domain`` -- string: 'polytope' (default), 'boundingbox',
         - ``return_polyhedron`` -- boolean
         - ``ideal_basis`` -- list or =None,
-        - ``lattice_basis`` -- list of lists corresponding to a numerical basie of the lattice corresponding to the ring of integers.
-        - ``sorted`` -- boolean -- True to return a list sorted by norm first and then lexicographically with respect to embeddings.
-        - ``initial_bd_d`` -- positive number (default: `None`) - an initial bound for the distance to nearest cusp.
+        - ``lattice_basis`` -- list of lists corresponding to a numerical basis of the lattice
+                               corresponding to the ring of integers.
+        - ``sorted`` -- boolean -- True to return a list sorted by norm first and then
+                                   lexicographically with respect to embeddings.
+        - ``initial_bd_d`` -- positive number (default: `None`) - an initial bound for the distance
+                                                                  to the nearest cusp.
         - ``use_norm_bound`` -- boolean (default: `True`) -- True if using the norm bound otherwise
         - ``use_initial_bd_d`` -- boolean (default: 'True') Use the initial bound or not.
-                                        This should only be set to False for demonstration or testing.
+                                  This should only be set to False for demonstration or testing.
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z=UpperHalfPlaneProductElement([CC(0,1),CC(0,1)])
@@ -1934,28 +1996,35 @@ class HilbertPullback(SageObject):
         """
         if return_polyhedron:
             if domain == 'boundingbox':
-                bounds = self._bound_for_sigma_coordinates(z, initial_bd_d=initial_bd_d, use_initial_bd=use_initial_bd_d)
+                bounds = self._bound_for_sigma_coordinates(z, initial_bd_d=initial_bd_d,
+                                                           use_initial_bd=use_initial_bd_d)
                 B = None
             elif domain == 'preimage':
-                bounds = self._bound_for_sigma_embeddings(z, initial_bd_d=initial_bd_d, use_initial_bd_d=use_initial_bd_d)
+                bounds = self._bound_for_sigma_embeddings(z, initial_bd_d=initial_bd_d,
+                                                          use_initial_bd_d=use_initial_bd_d)
                 B = None
             else:
-                bounds = self._bound_for_sigma_embeddings(z, initial_bd_d=initial_bd_d, use_initial_bd_d=use_initial_bd_d)
+                bounds = self._bound_for_sigma_embeddings(z, initial_bd_d=initial_bd_d,
+                                                          use_initial_bd_d=use_initial_bd_d)
                 B = self.basis_matrix_ideal().inverse()
             return self.polytope_from_bounds(bounds, B)
         # Else we use efficient methods to find candidates.
-        sigma_candidates = find_candidate_cusps(self, z, return_sigma_candidates=True, use_norm_bound=use_norm_bound,
-                                                initial_bd_d=initial_bd_d,
-                                                use_initial_bd_d=use_initial_bd_d)
+        sigma_candidates = find_candidate_cusps(
+                                        self, z, return_sigma_candidates=True,
+                                        use_norm_bound=use_norm_bound,
+                                        initial_bd_d=initial_bd_d,
+                                        use_initial_bd_d=use_initial_bd_d)
         if sorted:
             def absort(val):
-                return (sum([abs(x)**2 for x in val.complex_embeddings()]),) + tuple(val.complex_embeddings())
+                return (sum([abs(x)**2 for x in val.complex_embeddings()]),) \
+                       + tuple(val.complex_embeddings())
             sigma_candidates.sort(key=absort)
         return sigma_candidates
 
     def _get_lattice_and_ideal_basis(self, ideal=None):
         """
-        Compute an integral basis for an ideal as well as a basis matrix for the associated lattice in R^n in the form of a nested list.
+        Compute an integral basis for an ideal as well as a basis matrix for the associated lattice
+         in R^n in the form of a nested list.
 
         INPUT:
 
@@ -1963,7 +2032,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: P1._get_lattice_and_ideal_basis()
@@ -2005,11 +2074,14 @@ class HilbertPullback(SageObject):
         ideal_basis = ideal.basis()
         lattice_basis = self.basis_matrix_ideal(ideal)
         n = len(lattice_basis[0])
-        # Make lattice basis to a nested list to avoid creation of FreeModule elements
-        lattice_basis = [[lattice_basis[i][j] for j in range(n)] for i in range(n)]
+        # Make lattice basis to a nested list
+        # to avoid creation of FreeModule elements
+        lattice_basis = [[lattice_basis[i][j] for j in range(n)]
+                         for i in range(n)]
         return lattice_basis, ideal_basis
 
-    def _candidate_integers_rho(self, z, sigma, a=1, domain='polytope', return_polyhedron=False,
+    def _candidate_integers_rho(self, z, sigma, a=1, domain='polytope',
+                                return_polyhedron=False,
                                 ideal_basis=None,
                                 lattice_basis=None, sorted=True,
                                 use_initial_bd_d=True):
@@ -2020,14 +2092,16 @@ class HilbertPullback(SageObject):
 
         - ``z`` -- element of type UpperHalfPlaneProductelement_class
         - ``sigma`` -- algebraic integer
-        - ``a`` -- ideal or algebraic integer (default = 1). If an integer is given then the ideal is the principal ideal.
+        - ``a`` -- ideal or algebraic integer (default = 1).
+                  If an integer is given then the ideal is the principal ideal.
         - ``algorithm`` -- string (either 'coordinates' or 'embeddings')
-        - ``use_initial_bd_d`` -- boolean (default: 'True') Use the initial bound or not.
-                                        This should only be set to False for demonstration or testing.
+        - ``use_initial_bd_d`` -- boolean (default: 'True')
+                  Use the initial bound or not.
+                  This should only be set False for demonstration or testing.
 
         EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(1,1)])
@@ -2067,18 +2141,27 @@ class HilbertPullback(SageObject):
         if use_initial_bd_d:
             candidate_cusp = self.get_heuristic_closest_cusp(z)
             if candidate_cusp:
-                dist = distance_to_cusp(self, candidate_cusp[0], candidate_cusp[1], z)
-        rho_coordinate_bounds = self._bound_for_rho_coordinates(z, sigma, initial_bd_d=dist, use_initial_bd_d=use_initial_bd_d)
+                dist = distance_to_cusp(self, candidate_cusp[0],
+                                        candidate_cusp[1], z)
+        rho_coordinate_bounds = self._bound_for_rho_coordinates(
+                                            z, sigma,
+                                            initial_bd_d=dist,
+                                            use_initial_bd_d=use_initial_bd_d)
         rho_coordinate_bounds = [(-b, b) for b in rho_coordinate_bounds]
-        rho_embedding_bounds = self._bound_for_rho_embeddings(z, sigma, initial_bd_d=dist, use_initial_bd_d=use_initial_bd_d)
-        rho_candidates_coordinates = lattice_elements_in_box(lattice_basis,
-                                                             rho_embedding_bounds,
-                                                             rho_coordinate_bounds)
+        rho_embedding_bounds = self._bound_for_rho_embeddings(
+                                            z, sigma,
+                                            initial_bd_d=dist,
+                                            use_initial_bd_d=use_initial_bd_d)
+        rho_candidates_coordinates = lattice_elements_in_box(
+                                            lattice_basis,
+                                            rho_embedding_bounds,
+                                            rho_coordinate_bounds)
         rho_candidates = coordinates_to_ideal_elements(rho_candidates_coordinates,
                                                        ideal_basis)
         if sorted:
             def absort(val):
-                return (sum([abs(x)**2 for x in val.complex_embeddings()]),) + tuple(val.complex_embeddings())
+                return (sum([abs(x)**2 for x in val.complex_embeddings()]),) \
+                       + tuple(val.complex_embeddings())
             rho_candidates.sort(key=absort)
         return rho_candidates
 
@@ -2090,15 +2173,19 @@ class HilbertPullback(SageObject):
         INPUT:
 
         - ``z`` -- point in the upper half-plane
-        - ``use_lll`` -- boolean (default: `True`)  Use the LLL method to find a preliminary bounds
-        - ``use_norm_bound`` -- boolean (default: `True`) Use the norm bound together ith the embedding bounds
-        - ``use_initial_bd_d`` -- boolean (default: `False`) Use the initial bound
+        - ``use_lll`` -- boolean (default: `True`)
+                                Use the LLL method to find a preliminary bounds
+        - ``use_norm_bound`` -- boolean (default: `True`)
+                                Use the norm bound together with the embedding
+                                bounds
+        - ``use_initial_bd_d`` -- boolean (default: `False`) Use initial bound
 
-        - ``as_cusps`` -- boolean - (default: `False`), set to True to return a list of cusps instead of tuples.
+        - ``as_cusps`` -- boolean - (default: `False`), set to True to return a
+                                            list of cusps instead of tuples.
 
 
         EXAMPLES::
-            sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+            sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z = UpperHalfPlaneProductElement([CC(0,1),CC(0,1)])
@@ -2106,7 +2193,8 @@ class HilbertPullback(SageObject):
              [(1, 0), (-1, -1), (0, 1), (1, -1)]
 
         """
-        cusp_candidates = find_candidate_cusps(self, z, use_lll=use_lll, use_norm_bound=use_norm_bound,
+        cusp_candidates = find_candidate_cusps(self, z, use_lll=use_lll,
+                                               use_norm_bound=use_norm_bound,
                                                return_sigma_candidates=False,
                                                use_initial_bd_d=use_initial_bd_d)
         if as_cusps:

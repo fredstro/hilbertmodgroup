@@ -105,7 +105,7 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
 
         sage: from hilbert_modgroup.hilbert_modular_group_class import HilbertModularGroup
         sage: H=HilbertModularGroup(5); H
-        Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+        Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
 
         """
         return repr(self.__x)
@@ -186,7 +186,7 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
             [          1 3/2*a + 1/2]
             [          0           1]
             sage: C.parent()
-            Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+            Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
           
         """
         return self.__class__(self.parent(), self.__x * (<HilbertModularGroupElement> right).__x, check=False)

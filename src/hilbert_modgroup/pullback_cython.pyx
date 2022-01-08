@@ -83,7 +83,7 @@ cpdef lattice_elements_in_box(lattice_basis, lattice_bounds, coordinate_bounds, 
         [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1)]
         sage: lattice_elements_in_box([[2,0],[0,2]],[(-2,2),(-1,1)],[(-1,1),(-1,1)])
         [(-1, 0), (0, 0), (1, 0)]
-        sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+        sage: from hilbert_modgroup.all import *
         sage: P1 = HilbertPullback(HilbertModularGroup(5))
         sage: lb, ib = P1._get_lattice_and_ideal_basis()
         sage: lattice_elements_in_box(lb,[(-2,2),(-2,2)],[(-1,1),(-1,1)])
@@ -127,7 +127,7 @@ cpdef coordinates_to_ideal_elements(coordinates,ideal_basis):
     EXAMPLES::
     
         sage: from hilbert_modgroup.pullback_cython import coordinates_to_ideal_elements
-        sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback
+        sage: from hilbert_modgroup.all import *
         sage: P1 = HilbertPullback(HilbertModularGroup(5))
         sage: lb, ib = P1._get_lattice_and_ideal_basis()
         sage: coordinates_to_ideal_elements([[1,1],(2,3)],ib)
@@ -174,7 +174,7 @@ cpdef find_candidate_cusps(p, z, use_lll=True, use_norm_bound=True, return_sigma
     
     EXAMPLES::
     
-        sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+        sage: from hilbert_modgroup.all import *
         sage: from hilbert_modgroup.pullback_cython import find_candidate_cusps
         sage: H1 = HilbertModularGroup(5)
         sage: P1 = HilbertPullback(H1)
@@ -290,7 +290,7 @@ cpdef find_closest_cusp(p, z, return_multiple=False, use_lll=True, use_norm_boun
     
     EXAMPLES::
 
-        sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+        sage: from hilbert_modgroup.all import *
         sage: from hilbert_modgroup.pullback_cython import find_closest_cusp
         sage: H1 = HilbertModularGroup(5)
         sage: P1 = HilbertPullback(H1)
@@ -378,7 +378,7 @@ cpdef distance_to_cusp(SageObject p, NumberFieldElement r, NumberFieldElement s,
     
     EXAMPLES::
     
-        sage: from hilbert_modgroup.all import HilbertModularGroup, HilbertPullback, UpperHalfPlaneProductElement
+        sage: from hilbert_modgroup.all import *
         sage: from hilbert_modgroup.pullback_cython import distance_to_cusp
         sage: H1 = HilbertModularGroup(5)
         sage: P1 = HilbertPullback(H1)
