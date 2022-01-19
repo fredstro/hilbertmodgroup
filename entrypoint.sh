@@ -1,8 +1,8 @@
 #!/bin/sh
 
 branch="${2:=develop}"
-echo "$branch"
 git pull -ff origin $branch
+echo "Pulling branch: $branch"
 case $1 in
     test)
       echo "Docker container running Sage doctests for the hilbertmodgroup package."
