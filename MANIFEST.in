@@ -1,0 +1,2 @@
+exclude src/hilbert_modgroup/hilbert_modular_group_element.c
+exclude src/hilbert_modgroup/upper_half_plane.c
