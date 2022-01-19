@@ -10,8 +10,6 @@ on:
     - main
     - develop
 
-env:
-  date: $(date +%s)
 jobs:
 
   build:
@@ -19,8 +17,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%s')"
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag hilbertmodgroup:${{ env.date }}
+      run: docker build . --file Dockerfile --tag hilbertmodgroup:${{ steps.date.outputs.date }}
     - name: Run tox on current commit
-      run: docker run -t --init hilbertmodgroup:${{ env.date }} tox-all ${{ github.sha }}
+      run: docker run -t --init hilbertmodgroup:${{ steps.date.outputs.date }} tox-all ${{ github.sha }}
