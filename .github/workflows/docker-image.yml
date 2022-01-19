@@ -20,5 +20,5 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
-    - name: Run tox
-      run: docker run -it --init hilbertmodgroup tox-all ${GITHUB_REF##*/}
+    - name: Run tox on current commit
+      run: docker run -it --init hilbertmodgroup tox-all ${{ github.sha }}
