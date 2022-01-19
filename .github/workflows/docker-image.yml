@@ -10,6 +10,8 @@ on:
     - main
     - develop
 
+env:
+  date: $(date +%s)
 jobs:
 
   build:
@@ -19,6 +21,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag hilbertmodgroup:$(date +%s)
+      run: docker build . --file Dockerfile --tag hilbertmodgroup:${{ env.date }}
     - name: Run tox on current commit
-      run: docker run -t --init hilbertmodgroup:$(date +%s) tox-all ${{ github.sha }}
+      run: docker run -t --init hilbertmodgroup:${{ env.date }} tox-all ${{ github.sha }}
