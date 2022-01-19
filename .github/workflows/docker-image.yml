@@ -21,4 +21,4 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag hilbertmodgroup:$(date +%s)
     - name: Run tox on current commit
-      run: docker run -t --init hilbertmodgroup tox-all ${{ github.sha }}
+      run: docker run -t --init hilbertmodgroup:$(date +%s) tox-all ${{ github.sha }}
