@@ -5,7 +5,11 @@ ifeq (docker-tox,$(firstword $(MAKECMDGOALS)))
   TOX_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
   $(eval $(TOX_ARGS):;@:)
 endif
-
+GIT_BRANCH := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+$(eval $(GIT_BRANCH):;@:)
+ifeq ($(GIT_BRANCH),)
+GIT_BRANCH := develop
+endif
 build:
 	sage -python setup.py build_ext --inplace $* 2>&1
 
@@ -25,25 +29,25 @@ tox:
 	sage -tox src -e $(TOX_ARGS)
 
 docker:
-	docker build -t hilbertmodgroup .
+	docker build --build-arg GIT_BRANCH=$(GIT_BRANCH) -t hilbertmodgroup-$(GIT_BRANCH) .
 
 docker-rebuild:
-	docker build --no-cache -t hilbertmodgroup .
+	docker build --build-arg GIT_BRANCH=$(GIT_BRANCH) --no-cache -t hilbertmodgroup .
 
 docker-test: docker
-	docker run -it --init hilbertmodgroup test
+	docker run -it --init hilbertmodgroup-$(GIT_BRANCH) test
 
 docker-examples: docker
-	docker run -p 8888:8888 -it --init hilbertmodgroup examples main
+	docker run -p 8888:8888 -it --init hilbertmodgroup-$(GIT_BRANCH) examples $(EXAMPLES_ARGS)
 
 docker-tox: docker
-	docker run -it --init hilbertmodgroup tox $(TOX_ARGS)
+	docker run -it --init hilbertmodgroup-$(GIT_BRANCH) tox $(TOX_ARGS)
 
 docker-shell: docker
-	docker run -it --init hilbertmodgroup shell
+	docker run -it --init hilbertmodgroup-$(GIT_BRANCH) shell
 
 docker-sage: docker
-	docker run -it --init hilbertmodgroup run
+	docker run -it --init hilbertmodgroup-$(GIT_BRANCH) run
 
 
 clean:
