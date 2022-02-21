@@ -75,7 +75,7 @@ The following commands are run in your local SagMath environment:
 4. `clean` -- remove all build and temporary files
 5. `test` -- run sage's doctests (same as `sage -t src/*`)
 6. `examples` -- run a Jupyter notebook with the SageMath kernel initialised at the `/examples` directory.
-7. `tox` -- run `sage -tox` with all environments: `doctest`, `coverage`, `pycodestyle-minimal`, `relint`, `codespell`
+7. `tox` -- run `sage -tox` with all environments: `doctest`, `coverage`, `pycodestyle`, `relint`, `codespell`
    Note: If your local SageMath installation does not contain tox this will run `sage -pip install tox`.
 
 The following commands are run in an isolated docker container 
@@ -85,7 +85,7 @@ and requires docker to be installed and running:
 3. `docker-test` -- run SageMath's doctests in the docker container
 4. `docker-examples` -- run a Jupyter notebook with the SageMath kernel initialised at the `/examples` directory 
   and exposing the notebook at http://127.0.0.1:8888. The port used can be modified by 
-5. `docker-tox` -- run tox with all environments: `doctest`, `coverage`, `pycodestyle-minimal`, `relint`, `codespell`. 
+5. `docker-tox` -- run tox with all environments: `doctest`, `coverage`, `pycodestyle`, `relint`, `codespell`. 
 6. `docker-shell` -- run a shell in a docker container
 7. `docker-sage` -- run a sage interactive shell in a docker container
 
@@ -110,6 +110,8 @@ Run relint on the local source with docker version of sage:
 
 ## Development
 
+### GitHub Actions
+
 Each commit is tested and checked using gitHub actions with tox running:
 - `doctest` -- run all doctests
 - `coverage` -- ensure that all functions and classes are documented 
@@ -117,4 +119,23 @@ Each commit is tested and checked using gitHub actions with tox running:
 - `relint` -- relint against some patterns taken from the SageMath source (config file .relint.yaml)
 - `codespell` -- spellchecker
 
-To make sure that your commit passes all tests you can run `make tox` or `make docker-tox` on the command line. 
+To make sure that your commit passes all tests you should `make tox` or `make docker-tox REMOTE_SRC=0` on the command line.
+
+### Versions
+
+Versioning of this project is managed by setuptools_scm.
+To bump the version create a git tag `x.y.z` and the file 
+ `src/hilbert_modgroup/version.py` will then be automatically updated to contain 
+```
+version = 'x.y.z.???'
+version_tuple = (x, y, z, '???')
+```
+where ??? depends on the state of the current directory. 
+If you are creating a new version to release the source directory should be clean.
+
+### PyPi
+
+To upload new versions to PyPi: 
+1. `make sdist` -- creates a source distribution `dist/hilbert_modular_group-x.y.z`
+2. `twine check dist/hilbert_modular_group-x.y.z`
+3. `twine upload --repository pypi dist/hilbert_modular_group-z.y.z`

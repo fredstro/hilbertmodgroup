@@ -3,6 +3,9 @@
 if [ -z "$NBPORT" ]; then
   NBPORT=8888
 fi
+if [ -z "$TOX_ARGS" ]; then
+  TOX_ARGS="doctest,coverage,pycodestyle,relint,codespell"
+fi
 if [ -n "$GIT_BRANCH" ]; then
   echo "PULL from $GIT_BRANCH"
   git pull -ff origin $GIT_BRANCH;
@@ -16,7 +19,7 @@ case $1 in
       ;;
     tox)
       echo "Docker container running tox with $TOX_ARGS"
-      sage -python -m tox src -e $TOX_ARGS
+      sage -python -m tox -c tox.ini src -e $TOX_ARGS
       ;;
     examples)
       echo "Docker container with Jupyter Notebook interface to run example notebooks."
