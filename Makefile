@@ -1,15 +1,30 @@
-ifeq (, $(shell which sage))
- $(error "No sage in $(PATH), please install sage first or add the relevant path.")
+# SageMath is needed in path unless we use docker
+ifeq (docker,$(findstring docker, $(MAKECMDGOALS)))
+  DOCKER = 1
 endif
-ifeq (docker-tox,$(firstword $(MAKECMDGOALS)))
-  TOX_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-  $(eval $(TOX_ARGS):;@:)
+ifeq (,$(DOCKER)$(shell which sage))
+  $(error "No sage in $(PATH). Please install sage first or add the relevant path.")
 endif
-GIT_BRANCH := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-$(eval $(GIT_BRANCH):;@:)
-ifeq ($(GIT_BRANCH),)
-GIT_BRANCH := develop
+# Command line arguments:
+# Set to 0 to use local source instead of GIT
+REMOTE_SRC=1
+# Set to desired git branch
+GIT_BRANCH=main
+# Port for notebook
+NBPORT=8888
+# Arguments for tox
+TOX_ARGS=doctest coverage pycodestyle-minimal relint codespell
+
+
+ifeq (0,$(REMOTE_SRC))
+  TAG=local
+  GIT_BRANCH=
+else
+  TAG=$(GIT_BRANCH)
 endif
+
+EXAMPLES_ARGS:=$(GIT_BRANCH) $(NBPORT)
+
 build:
 	sage -python setup.py build_ext --inplace $* 2>&1
 
@@ -23,31 +38,36 @@ test:
 	sage -t src/*
 
 examples:
-	./entrypoint.sh examples
+	sage -n jupyter --no-browser --ip='0.0.0.0' --port=$(NBPORT)\
+                            --notebook-dir=examples\
+                            --NotebookApp.custom_display_url=http://127.0.0.1:$(NBPORT)\
+                            --NotebookApp.use_redirect_file=False\
+                            --NotebookApp.browser=x-www-browser
 
 tox:
-	sage -tox src -e $(TOX_ARGS)
+	sage -pip install tox
+	sage --python -m tox src -c tox.ini -e $(TOX_ARGS)
 
 docker:
-	docker build --build-arg GIT_BRANCH=$(GIT_BRANCH) -t hilbertmodgroup-$(GIT_BRANCH) .
+	docker build --build-arg GIT_BRANCH=$(GIT_BRANCH) --build-arg REMOTE_SRC=$(REMOTE_SRC) -t hilbertmodgroup-$(TAG) .
 
 docker-rebuild:
-	docker build --build-arg GIT_BRANCH=$(GIT_BRANCH) --no-cache -t hilbertmodgroup .
+	docker build --build-arg GIT_BRANCH=$(GIT_BRANCH) --build-arg REMOTE_SRC=$(REMOTE_SRC) --no-cache -t hilbertmodgroup=$(TAG) .
 
 docker-test: docker
 	docker run -it --init hilbertmodgroup-$(GIT_BRANCH) test
 
 docker-examples: docker
-	docker run -p 8888:8888 -it --init hilbertmodgroup-$(GIT_BRANCH) examples $(EXAMPLES_ARGS)
+	docker run -p $(NBPORT):$(NBPORT) -it -e GIT_BRANCH=$(GIT_BRANCH) -e NBPORT=$(NBPORT) --init hilbertmodgroup-$(TAG) examples $(EXAMPLES_ARGS)
 
 docker-tox: docker
-	docker run -it --init hilbertmodgroup-$(GIT_BRANCH) tox $(TOX_ARGS)
+	docker run -it -e GIT_BRANCH=$(GIT_BRANCH) -e TOX_ARGS=$(TOX_ARGS) --init hilbertmodgroup-$(TAG) tox
 
 docker-shell: docker
-	docker run -it --init hilbertmodgroup-$(GIT_BRANCH) shell
+	docker run -it -e GIT_BRANCH=$(GIT_BRANCH) --init hilbertmodgroup-$(TAG) shell
 
 docker-sage: docker
-	docker run -it --init hilbertmodgroup-$(GIT_BRANCH) run
+	docker run -it -e GIT_BRANCH=$(GIT_BRANCH) --init hilbertmodgroup-$(TAG) run
 
 
 clean:
@@ -58,5 +78,5 @@ clean:
 	rm -rf build
 	rm -rf dist
 	rm -rf Library
-.PHONY: build sdist install docker test examples clean shell tox docker docker-examples docker-examples docker-rebuild \
+.PHONY: build sdist install test examples clean shell tox docker docker-examples docker-examples docker-rebuild \
 		docker-shell docker-test docker-tox
