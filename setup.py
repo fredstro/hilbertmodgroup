@@ -15,21 +15,27 @@ if not os.path.isdir(SAGE_LIB):
     raise ValueError(f"The library path {SAGE_LIB} is not a directory.")
 
 # Extension modules using Cython
-ext_modules=[
+extra_compile_args = ['-Wno-unused-function',
+                      '-Wno-implicit-function-declaration',
+                      '-Wno-unused-variable',
+                      '-Wno-deprecated-declarations',
+                      '-Wno-deprecated-register']
+ext_modules = [
     Extension(
         'hilbert_modgroup.hilbert_modular_group_element',
-        sources=[os.path.join('src/hilbert_modgroup/hilbert_modular_group_element.pyx')]
+        sources=[os.path.join('src/hilbert_modgroup/hilbert_modular_group_element.pyx')],
+        extra_compile_args=extra_compile_args
     ),
     Extension(
         'hilbert_modgroup.upper_half_plane',
         sources=[os.path.join('src/hilbert_modgroup/upper_half_plane.pyx')],
-        extra_compile_args=['-Wno-unused-function']
+        extra_compile_args=extra_compile_args
     ),
     Extension(
         'hilbert_modgroup.pullback_cython',
         sources=[os.path.join('src/hilbert_modgroup/pullback_cython.pyx')],
         language='c++',
-        extra_compile_args=['-std=c++11'])
+        extra_compile_args=extra_compile_args+['-std=c++11'])
 ]
 
 setuptools.setup(
