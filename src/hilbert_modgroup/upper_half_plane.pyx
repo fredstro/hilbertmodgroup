@@ -582,7 +582,7 @@ cdef class ComplexPlaneProductElement__class(Element):
             self._z = zl
         self._x = [z.real() for z in zl]
         self._y = [z.imag() for z in zl]
-        if all([x>0 for x in self._y]):
+        if all([x>=0 for x in self._y]):
             self._is_in_upper_half_plane = True
         else:
             self._is_in_upper_half_plane = False
