@@ -12,13 +12,10 @@ from sage.structure.element cimport MultiplicativeGroupElement
 from sage.structure.richcmp cimport richcmp
 from sage.rings.all import ZZ
 from sage.rings.infinity import infinity
-
-
 from sage.matrix.matrix_space import MatrixSpace
 from sage.matrix.matrix_generic_dense cimport Matrix_generic_dense
 from sage.misc.cachefunc import cached_method
 
-from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement
 from hilbert_modgroup.upper_half_plane cimport ComplexPlaneProductElement__class, UpperHalfPlaneProductElement__class
 
 cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
@@ -463,9 +460,11 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
         
         """
         result = []
+        if len(z) != len(self.complex_embeddings()):
+            raise ValueError("Need element of the same degree!")
         for i, Aemb in enumerate(self.complex_embeddings()):
             a, b, c, d = Aemb.list()
-            result.append((a*z._z[i] + b)/(c*z._z[i]+d))
+            result.append((a*z[i] + b)/(c*z[i]+d))
         return z.parent()(result)
 
     def __getitem__(self, q):

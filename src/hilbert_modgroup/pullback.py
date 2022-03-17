@@ -25,7 +25,6 @@ from sage.rings.real_mpfr import RealField
 from sage.structure.sage_object import SageObject
 from sage.matrix.all import Matrix
 
-from hilbert_modgroup.hilbert_modular_group_class import HilbertModularGroup
 from hilbert_modgroup.upper_half_plane import \
     ComplexPlaneProductElement__class,\
     UpperHalfPlaneProductElement__class, UpperHalfPlaneProductElement
@@ -683,7 +682,7 @@ class HilbertPullback(SageObject):
             beta.complex_embeddings(prec) + zero.complex_embeddings(prec)
             for beta in ideala.integral_basis()]
         entries += [
-            (z*beta).real() + (z*beta).imag()
+            (z*z.parent()(beta)).real() + (z*z.parent()(beta)).imag()
             for beta in ideala.integral_basis()
         ]
         n = self.group().base_ring().degree()
@@ -835,7 +834,7 @@ class HilbertPullback(SageObject):
         a = self._construct_ideal(a)
         try:
             shortest_basis_vectors = self._shortest_vectors_ideal_plusz(z, a)
-        except ValueError as e:
+        except ValueError:
             log.critical("The LLL 'finding shortest vector' has failed. " +
                          "It is likely that you need to upgrade your version of Sage to 9.4+.")
             return None
@@ -908,7 +907,7 @@ class HilbertPullback(SageObject):
             c, d = c
         try:
             cusp = NFCusp(self.number_field(), c, d)
-        except Exception as e:
+        except Exception:
             raise ValueError(f"Could not construct a number field cusp from c={c} and d={d}")
         return cusp
 
@@ -1877,7 +1876,6 @@ class HilbertPullback(SageObject):
         if not isinstance(sigma, list):
             sigma = self.group().base_ring().number_field()(sigma)
             sigma = sigma.complex_embeddings()
-        factor = 1.01
         bounds = []
         for i in range(n):
             y = z.imag()[i]
