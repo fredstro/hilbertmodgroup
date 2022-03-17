@@ -57,13 +57,36 @@ class HilbertPullback(SageObject):
 
             sage: from hilbert_modgroup.all import *
             sage: H = HilbertModularGroup(5)
-            sage: HilbertPullback(H)
+            sage: P = HilbertPullback(H)
+            sage: TestSuite(P).run()
+            sage: P
             Pullback class ... polynomial x^2 - 5 with a = 2.236067977499790?
 
         """
         if not isinstance(G, HilbertModularGroup_class):
             raise ValueError("Need a Hilbert modular group")
         self._group = G
+
+    def __eq__(self, other):
+        r"""
+        Check if self is equal to other.
+
+        EXAMPLES::
+
+            sage: from hilbert_modgroup.all import *
+            sage: H1 = HilbertModularGroup(5)
+            sage: P1 = HilbertPullback(H1)
+            sage: P12 = HilbertPullback(H1)
+            sage: P1 == P12
+            True
+            sage: H2 = HilbertModularGroup(3)
+            sage: P2 = HilbertPullback(H2)
+            sage: P1 == P2
+            False
+        """
+        if not isinstance(other, type(self)) or self._group != other._group:
+            return False
+        return True
 
     def __str__(self):
         r"""

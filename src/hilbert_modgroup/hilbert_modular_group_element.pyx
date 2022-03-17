@@ -43,6 +43,7 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
             sage: from hilbert_modgroup.hilbert_modular_group_class import HilbertModularGroup
             sage: from hilbert_modgroup.hilbert_modular_group_element import HilbertModularGroupElement
             sage: H=HilbertModularGroup(5)
+            sage: TestSuite(H).run()
             sage: x,y=H.base_ring().gens()
             sage: HilbertModularGroupElement(H,[1,x,0,1])
             [          1 1/2*a + 1/2]

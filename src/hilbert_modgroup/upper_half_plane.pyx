@@ -8,34 +8,23 @@ Note: The structure of this class is based on ArithmeticSubgroupElement from sag
 
 """
 from sage.groups.perm_gps.permgroup_element import is_PermutationGroupElement
-from sage.modules.free_module_element import vector
 from sage.rings.number_field.number_field import is_NumberField
-from sage.structure.element cimport MultiplicativeGroupElement
-from sage.structure.richcmp cimport richcmp
-from sage.rings.all import ZZ, Integer
-from sage.rings.infinity import infinity, Infinity
-from sage.structure.sage_object import SageObject
-
-from sage.matrix.matrix_space import MatrixSpace
-from sage.matrix.matrix_generic_dense cimport Matrix_generic_dense
-from sage.misc.cachefunc import cached_method
-from sage.structure.unique_representation import UniqueRepresentation
+from sage.rings.real_mpfr import RealField
 from sage.structure.element cimport Element
+from sage.rings.all import Integer, CC
+from sage.rings.infinity import Infinity
 from sage.structure.parent import Parent
 from sage.structure.element cimport parent
 
 from sage.rings.complex_mpfr cimport ComplexNumber
 from sage.rings.complex_mpc cimport MPComplexNumber, MPComplexField_class
 from sage.rings.complex_mpc import MPComplexField
-from sage.categories.semigroups import Semigroups
-from cysignals.memory cimport sig_free,sig_malloc,check_allocarray
-from sage.structure.sage_object cimport SageObject
 from cpython.object cimport Py_EQ, Py_NE
 from sage.rings.number_field.number_field_element import is_NumberFieldElement
 from sage.modules.free_module_element import vector
 
 
-# Constructors for products Cpmplex planes and upper half-planes
+# Constructors for products Complex planes and upper half-planes
 def ComplexPlaneProduct(degree, **kwds):
     r"""
     Construct a product of complex planes.
@@ -188,10 +177,24 @@ cdef class ComplexPlaneProduct__class(Parent):
             sage: from hilbert_modgroup.upper_half_plane import ComplexPlaneProduct__class
             sage: ComplexPlaneProduct__class(2)
             Product of complex planes of degree 2
+            sage: TestSuite(ComplexPlaneProduct__class(2)).run()
 
         """
         Parent.__init__(self)
         self._degree = degree
+
+    def __hash__(self):
+        """
+        Return hash of self.
+
+        EXAMPLES::
+
+            sage: from hilbert_modgroup.upper_half_plane import ComplexPlaneProduct
+            sage: hash(ComplexPlaneProduct(2)) == hash('Product of complex planes of degree 2')
+            True
+
+        """
+        return hash(str(self))
 
     def construction(self):
         r"""
@@ -244,6 +247,37 @@ cdef class ComplexPlaneProduct__class(Parent):
         except:
             pass
         return super(ComplexPlaneProduct__class,self)._internal_coerce_map_from(S)
+
+    def _an_element_(self):
+        r"""
+        Create a typical element of self.
+
+        EXAMPLES::
+
+            sage: from hilbert_modgroup.upper_half_plane import ComplexPlaneProduct
+            sage: ComplexPlaneProduct(2)._an_element_()
+            [ - 1.00000000000000*I,  - 1.00000000000000*I]
+
+        """
+        return self._element_constructor_([CC(0,-1)]*self.degree())
+
+    def __eq__(self, other):
+        r"""
+        Check if self is equal to other
+
+        EXAMPLES::
+
+            sage: from hilbert_modgroup.upper_half_plane import ComplexPlaneProduct
+            sage: ComplexPlaneProduct(2) == ComplexPlaneProduct(2)
+            True
+            sage: ComplexPlaneProduct(2) == ComplexPlaneProduct(3)
+            False
+
+        """
+        if not isinstance(other,type(self)):
+            return False
+        return self.degree() == other.degree()
+
     def __str__(self):
         r"""
         String representation of self.
@@ -269,6 +303,20 @@ cdef class ComplexPlaneProduct__class(Parent):
 
         """
         return str(self)
+
+    def __reduce__(self):
+        r"""
+        Prepare self for pickling
+
+        TESTS::
+
+            sage: from hilbert_modgroup.upper_half_plane import ComplexPlaneProduct
+            sage: c = ComplexPlaneProduct(2)
+            sage: loads(dumps(c)) == c
+            True
+
+        """
+        return ComplexPlaneProduct, (self.degree(),)
 
     def degree(self):
         r"""
@@ -402,6 +450,19 @@ cdef class UpperHalfPlaneProduct__class(ComplexPlaneProduct__class):
         kwds['parent'] = self
         return UpperHalfPlaneProductElement(z, **kwds)
 
+    def _an_element_(self):
+        r"""
+        Create a typical element of self.
+
+        EXAMPLES::
+
+            sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProduct
+            sage: UpperHalfPlaneProduct(2)._an_element_()
+            [1.00000000000000*I, 1.00000000000000*I]
+
+        """
+        return self._element_constructor_([CC(0.0,1.0)]*self.degree())
+
     def __str__(self):
         r"""
         String representation of self.
@@ -413,7 +474,7 @@ cdef class UpperHalfPlaneProduct__class(ComplexPlaneProduct__class):
             Product of upper half-planes of degree 2
 
         """
-        return f"Product of upper half-planes of degree {self._degree}"
+        return f"Product of upper half-planes of degree {self.degree()}"
 
     def __repr__(self):
         """
@@ -428,6 +489,20 @@ cdef class UpperHalfPlaneProduct__class(ComplexPlaneProduct__class):
         """
         return str(self)
 
+    def __reduce__(self):
+        r"""
+        Prepare self for pickling
+
+        TESTS::
+
+            sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProduct
+            sage: c = UpperHalfPlaneProduct(2)
+            sage: loads(dumps(c)) == c
+            True
+
+        """
+        return UpperHalfPlaneProduct, (self.degree(),)
+
 
 cdef class ComplexPlaneProductElement__class(Element):
     r"""
@@ -441,6 +516,9 @@ cdef class ComplexPlaneProductElement__class(Element):
         sage: from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement__class
         sage: z=ComplexPlaneProductElement__class([CC(1,1),CC(1,1)]); z
         [1.00000000000000 + 1.00000000000000*I, 1.00000000000000 + 1.00000000000000*I]
+        sage: z.parent()
+        Product of complex planes of degree 2
+        sage: TestSuite(z).run()
         sage: a=QuadraticField(5).gen()
         sage: ComplexPlaneProductElement__class(a.complex_embeddings())
         [-2.23606797749979, 2.23606797749979]
@@ -533,6 +611,20 @@ cdef class ComplexPlaneProductElement__class(Element):
 
         """
         return (self.__class__.__name__,tuple(self._z))
+
+    def __reduce__(self):
+        r"""
+        Prepare self for pickling
+
+        TESTS::
+
+            sage: from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement
+            sage: c = ComplexPlaneProductElement([1,1])
+            sage: loads(dumps(c)) == c
+            True
+
+        """
+        return ComplexPlaneProductElement, (self.z(),)
 
     def __hash__(self):
         """
@@ -1569,7 +1661,9 @@ cdef class UpperHalfPlaneProductElement__class(ComplexPlaneProductElement__class
             sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement__class
             sage: from sage.rings.complex_mpc import MPComplexField
             sage: MPC = MPComplexField(53)
-            sage: UpperHalfPlaneProductElement__class([MPC(1,1),MPC(1,1)])
+            sage: z = UpperHalfPlaneProductElement__class([MPC(1,1),MPC(1,1)])
+            sage: TestSuite(z).run()
+            sage: z
             [1.00000000000000 + 1.00000000000000*I, 1.00000000000000 + 1.00000000000000*I]
             sage: UpperHalfPlaneProductElement__class([MPC(1,1),MPC(1,1),MPC(1,1)])
             [1.00000000000000 + 1.00000000000000*I, 1.00000000000000 + 1.00000000000000*I, 1.00000000000000 + 1.00000000000000*I]
@@ -1585,6 +1679,19 @@ cdef class UpperHalfPlaneProductElement__class(ComplexPlaneProductElement__class
         if not self.is_in_upper_half_plane():
             raise ValueError("Point {0} not in upper half-plane!".format(zl))
 
+    def __reduce__(self):
+        r"""
+        Prepare self for pickling
+
+        TESTS::
+
+            sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
+            sage: c = UpperHalfPlaneProductElement([1,1])
+            sage: loads(dumps(c)) == c
+            True
+
+        """
+        return UpperHalfPlaneProductElement, (self.z(),)
 
     def imag_log(self):
         r"""

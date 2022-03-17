@@ -99,7 +99,7 @@ def HilbertModularGroup(number_field, projective=True):
     if not projective:
         raise NotImplementedError("Only PSL2 is implemented at the moment.")
     degree = Integer(2)
-    name = 'Hilbert Modular Group PSL(2) over {1}'.format(degree, ring)
+    name = f'Hilbert Modular Group PSL({degree}) over {ring}'
     ltx = 'PSL({0}, {1})'.format(degree, latex(ring))
     return HilbertModularGroup_class(base_ring=ring, sage_name=name, latex_string=ltx)
 
@@ -131,7 +131,21 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: ltx = f'PSL(2, {latex(OK)})'
             sage: HilbertModularGroup_class(base_ring=OK,sage_name=name,latex_string=ltx)
             Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
-
+            sage: H1=HilbertModularGroup(5)
+            sage: TestSuite(H1).run()
+            sage: H1(1)
+            [1 0]
+            [0 1]
+            sage: H1(2)
+            Traceback (most recent call last):
+            ...
+            TypeError: matrix must have determinant 1
+            sage: H1([1,1,0,1])
+            [1 1]
+            [0 1]
+            sage: H1([1,H1.base_ring().gens()[0],0,1])
+            [          1 1/2*a + 1/2]
+            [          0           1]
         """
         if not is_NumberFieldOrder(base_ring) or not base_ring.number_field().is_totally_real():
             raise ValueError("Input (={0}) can not be used to create a Hilbert modular group. " +
