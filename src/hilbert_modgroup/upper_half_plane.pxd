@@ -1,7 +1,18 @@
-from sage.structure.sage_object cimport SageObject
+from sage.structure.element cimport Element
+from sage.structure.parent cimport Parent
 from sage.rings.complex_mpc cimport MPComplexField_class, MPComplexNumber
 from sage.rings.real_mpfr cimport RealNumber
-cdef class ComplexPlaneProductElement__class(SageObject):
+from sage.categories.map cimport Map
+
+cdef class ComplexPlaneProduct__class(Parent):
+    cdef int _degree
+
+cdef class UpperHalfPlaneProduct__class(ComplexPlaneProduct__class):
+    pass
+
+cdef class AnytoCPP(Map):
+    pass
+cdef class ComplexPlaneProductElement__class(Element):
     # cdef double *_x
     # cdef double *_y
     cdef int _degree
@@ -10,7 +21,7 @@ cdef class ComplexPlaneProductElement__class(SageObject):
     cdef list _z
     cdef int _prec
     cdef int _verbose
-    cpdef MPComplexField_class _base_ring
+    cdef MPComplexField_class _base_ring
 
     cdef MPComplexNumber _norm
     cdef RealNumber _imag_norm
@@ -23,10 +34,6 @@ cdef class ComplexPlaneProductElement__class(SageObject):
     cdef int _is_in_upper_half_plane
     cpdef imag(self)
     cpdef real(self)
-    cpdef _sub(self, ComplexPlaneProductElement__class other, parent)
-    cpdef _add(self, ComplexPlaneProductElement__class other, parent)
-    cpdef _mul(self, ComplexPlaneProductElement__class other, parent)
-    cpdef _div(self, ComplexPlaneProductElement__class other, parent)
     cpdef _is_equal(self, ComplexPlaneProductElement__class other)
     cpdef __copy__(self)
     cpdef z(self)

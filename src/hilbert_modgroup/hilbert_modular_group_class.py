@@ -157,34 +157,6 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
                                                         category=Groups().Infinite(),
                                                         invariant_form=None)
 
-    def __call__(self, a):
-        r"""
-        Create an element of this Hilbert modular group if possible
-
-        INPUT:
-
-        - ``a`` - something that can be converted to a matrix in this Hilbert modular group
-
-        EXAMPLES::
-            sage: from hilbert_modgroup.all import HilbertModularGroup
-            sage: H1=HilbertModularGroup(5)
-            sage: H1(1)
-            [1 0]
-            [0 1]
-            sage: H1(2)
-            Traceback (most recent call last):
-            ...
-            TypeError: matrix must have determinant 1
-            sage: H1([1,1,0,1])
-            [1 1]
-            [0 1]
-            sage: H1([1,H1.base_ring().gens()[0],0,1])
-            [          1 1/2*a + 1/2]
-            [          0           1]
-
-        """
-        return super(HilbertModularGroup_class, self).__call__(a)
-
     @cached_method
     def generators(self, algorithm='standard'):
         r"""
