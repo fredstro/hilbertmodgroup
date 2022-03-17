@@ -13,7 +13,7 @@ GIT_BRANCH=main
 # Port for notebook
 NBPORT=8888
 # Arguments for tox
-TOX_ARGS=doctest,coverage,pycodestyle,relint,codespell
+TOX_ARGS=doctest,coverage,pycodestyle,relint,codespell,flake8
 
 
 ifeq (0,$(REMOTE_SRC))
