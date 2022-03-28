@@ -12,8 +12,13 @@ and is dependent on SageMath.
 This package needs to be installed in the virtual environment provided by SageMath, and it is therefore necessary 
 to run the following command 
 ```console
-$ sage -pip install hilbert-modular-group
+$ sage -pip install --no-build-isolation hilbert-modular-group
 ```
+**Note**: The `--no-build-isolation` is necessary as the compiler needs access 
+to certain library files from the sage installation and SageMath itself is 
+too large to be required as a build dependency. 
+As an alternative to this flag you can also specify the environment variable 
+SAGE_LIB explicitly.
 
 ### From git source
 If the SageMath executable `sage` is in the current path you can install from source using the Makefile
