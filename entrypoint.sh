@@ -19,6 +19,7 @@ case $1 in
       ;;
     tox)
       echo "Docker container running tox with $TOX_ARGS"
+      sage -pip install tox
       sage -python -m tox -c tox.ini src -e $TOX_ARGS
       ;;
     examples)

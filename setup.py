@@ -1,16 +1,20 @@
 import os
-import sys
 import setuptools
 from setuptools.extension import Extension
 from Cython.Build import cythonize
-
-# Find correct value for SAGE_LIB without importing sage (to allow for build isolation)
+# Check if we are currently in a SageMath environment.
 SAGE_LOCAL = os.getenv('SAGE_LOCAL')
 if not SAGE_LOCAL:
     raise ValueError("This package can only be installed inside SageMath (http://www.sagemath.org)")
-# Need to find the correct site-packages directory
-PYTHON_VERSION = f"{sys.version_info.major}.{sys.version_info.minor}"
-SAGE_LIB = f"{SAGE_LOCAL}/lib/python{PYTHON_VERSION}/site-packages"
+# Find correct value for SAGE_LIB which is needed to compile the Cython extensions.
+SAGE_LIB = os.getenv('SAGE_LIB')
+if not SAGE_LIB:
+    try:
+        from sage.env import SAGE_LIB
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError("To install this package you need to either specify the "
+                                  "environment variable 'SAGE_LIB' or call pip with "
+                                  "'--no-build-isolation'")
 if not os.path.isdir(SAGE_LIB):
     raise ValueError(f"The library path {SAGE_LIB} is not a directory.")
 
@@ -41,7 +45,7 @@ ext_modules = [
 setuptools.setup(
     ext_modules=cythonize(
         ext_modules,
-        include_path=[SAGE_LIB,'src'],
+        include_path=['src',SAGE_LIB],
         compiler_directives={
             'embedsignature': True,
             'language_level': '3',
