@@ -335,6 +335,23 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         """
         return tuple(self.generators(algorithm))
 
+    def ngens(self, algorithm='standard'):
+        r"""
+            Return the number of generators of self as given by the function 'gens'.
+
+        INPUT:
+
+        - ``algorithm`` -- string (default='standard') give the algorithm to compute the generators
+
+        EXAMPLES::
+
+            sage: from hilbert_modgroup.all import HilbertModularGroup
+            sage: HilbertModularGroup(5).ngens()
+            3
+
+        """
+        return len(self.generators(algorithm))
+
     def gen(self, i):
         r"""
         Return the i-th generator of self, i.e. the i-th element of the
@@ -348,6 +365,30 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             [          0           1]
         """
         return self.generators()[i]
+
+    def random_element(self, *args, **kwds):
+        r"""
+        Return a 'random' element of this Hilbert Modular Group.
+
+        INPUT:
+
+        - `args`, `kwds` -- arguments passed to the base ring's random element function
+                            and are in turn passed to the random integer function.
+                            See the documentation for "ZZ.random_element()" for details.
+
+
+        EXAMPLES::
+
+            sage: from hilbert_modgroup.all import HilbertModularGroup
+            sage: H = HilbertModularGroup(5)
+            sage: A = H.random_element()
+            sage: A in H
+            True
+
+        """
+        a = self.base_ring().random_element(**kwds)
+        b = self.base_ring().random_element(**kwds)
+        return self.T(a)*self.L(b)
 
     def level(self):
         """
