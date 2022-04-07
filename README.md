@@ -66,6 +66,13 @@ You can either open them manually from SageMath or run one of the following comm
 `make examples`
 `make docker-examples`
 which will start up a Jupyter notebook server from sagemath either locally or in a docker container. 
+## Community Guidelines
+### How to Contribute?
+- Open an issue on GitHub and create a pull / merge request.
+### How to report an issue or a problem? 
+- Open an issue on GitHub.
+### How to seek help and support?
+- Contact the maintainer, Fredrik Stromberg, at: fredrik314@gmail.com (alternatively at fredrik.stromberg@nottingham.ac.uk)
 
 ## Development and testing
 
