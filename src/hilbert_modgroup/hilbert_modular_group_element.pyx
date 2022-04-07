@@ -12,13 +12,10 @@ from sage.structure.element cimport MultiplicativeGroupElement
 from sage.structure.richcmp cimport richcmp
 from sage.rings.all import ZZ
 from sage.rings.infinity import infinity
-
-
 from sage.matrix.matrix_space import MatrixSpace
 from sage.matrix.matrix_generic_dense cimport Matrix_generic_dense
 from sage.misc.cachefunc import cached_method
 
-from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement
 from hilbert_modgroup.upper_half_plane cimport ComplexPlaneProductElement__class, UpperHalfPlaneProductElement__class
 
 cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
@@ -43,6 +40,7 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
             sage: from hilbert_modgroup.hilbert_modular_group_class import HilbertModularGroup
             sage: from hilbert_modgroup.hilbert_modular_group_element import HilbertModularGroupElement
             sage: H=HilbertModularGroup(5)
+            sage: TestSuite(H).run()
             sage: x,y=H.base_ring().gens()
             sage: HilbertModularGroupElement(H,[1,x,0,1])
             [          1 1/2*a + 1/2]
@@ -105,7 +103,7 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
 
         sage: from hilbert_modgroup.hilbert_modular_group_class import HilbertModularGroup
         sage: H=HilbertModularGroup(5); H
-        Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+        Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
 
         """
         return repr(self.__x)
@@ -186,7 +184,7 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
             [          1 3/2*a + 1/2]
             [          0           1]
             sage: C.parent()
-            Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+            Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
           
         """
         return self.__class__(self.parent(), self.__x * (<HilbertModularGroupElement> right).__x, check=False)
@@ -462,9 +460,11 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
         
         """
         result = []
+        if len(z) != len(self.complex_embeddings()):
+            raise ValueError("Need element of the same degree!")
         for i, Aemb in enumerate(self.complex_embeddings()):
             a, b, c, d = Aemb.list()
-            result.append((a*z._z[i] + b)/(c*z._z[i]+d))
+            result.append((a*z[i] + b)/(c*z[i]+d))
         return z.parent()(result)
 
     def __getitem__(self, q):
@@ -587,7 +587,7 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
         """
         Return a list of matrices which are entry-wise complex embeddings of self
 
-        INPUT::
+        INPUT:
         - ``prec`` integer (default=53) number of bits precision
 
         EXAMPLES::

@@ -5,9 +5,9 @@ EXAMPLES::
 
     sage: from hilbert_modgroup.all import HilbertModularGroup
     sage: HilbertModularGroup(5)
-    Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+    Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
     sage: HilbertModularGroup(QuadraticField(5))
-    Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+    Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
 
 
 AUTHORS:
@@ -29,6 +29,7 @@ from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement__class
 from .hilbert_modular_group_element import HilbertModularGroupElement
 
 import logging
+
 logger = logging.getLogger(__name__)
 logger.setLevel(10)
 
@@ -37,11 +38,11 @@ def is_HilbertModularGroup(x):
     """
     Return `True` if ``x`` is an instance of a HilbertModularGroup
 
-    INPUT::
+    INPUT:
 
     - ``x`` -- something to test if it is a Hilbert modular group or not
 
-    OUTPUT::
+    OUTPUT:
 
     - boolean
 
@@ -54,7 +55,7 @@ def is_HilbertModularGroup(x):
         sage: is_HilbertModularGroup(H)
         True
     """
-    return isinstance(x,HilbertModularGroup_class)
+    return isinstance(x, HilbertModularGroup_class)
 
 
 def HilbertModularGroup(number_field, projective=True):
@@ -64,8 +65,9 @@ def HilbertModularGroup(number_field, projective=True):
 
         INPUT:
 
-        - ``number_field`` (NumberField) -- a totally real number field or positive integer. If a positive integer D is specified
-            then the number field $Q(\sqrt(D))$ is used.
+        - ``number_field`` (NumberField) -- a totally real number field or positive integer.
+                                            If a positive integer D is specified
+                                            then the number field $Q(\sqrt(D))$ is used.
         - ``projective`` (bool) - True if you want PSL(2,K) and False for SL(2,K)
 
 
@@ -73,18 +75,18 @@ def HilbertModularGroup(number_field, projective=True):
 
             sage: from hilbert_modgroup.all import HilbertModularGroup
             sage: HilbertModularGroup(5)
-            Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+            Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
             sage: HilbertModularGroup(QuadraticField(5))
-            Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+            Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
 
 
         TESTS::
 
             sage: from hilbert_modgroup.all import HilbertModularGroup
             sage: HilbertModularGroup(5)
-            Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+            Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
             sage: HilbertModularGroup(QuadraticField(5))
-            Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+            Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
 
 
     """
@@ -97,14 +99,15 @@ def HilbertModularGroup(number_field, projective=True):
     if not projective:
         raise NotImplementedError("Only PSL2 is implemented at the moment.")
     degree = Integer(2)
-    name = 'Hilbert Modular Group PSL(2) over {1}'.format(degree, ring)
+    name = f'Hilbert Modular Group PSL({degree}) over {ring}'
     ltx = 'PSL({0}, {1})'.format(degree, latex(ring))
     return HilbertModularGroup_class(base_ring=ring, sage_name=name, latex_string=ltx)
 
 
 class HilbertModularGroup_class(LinearMatrixGroup_generic):
     r"""
-    Class for Hilbert modular groups, here defined as either PSL(2) (default) or  SL(2) over rings of integers in totally real number fields.
+    Class for Hilbert modular groups, here defined as either PSL(2) (default) or  SL(2)
+    over rings of integers in totally real number fields.
 
 
     """
@@ -122,17 +125,31 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         - ``latex_string`` - string
 
         EXAMPLES::
-            sage: from hilbert_modgroup.hilbert_modular_group_class import HilbertModularGroup_class
+            sage: from hilbert_modgroup.hilbert_modular_group_class import *
             sage: OK=QuadraticField(5).OK()
             sage: name = f'Hilbert Modular Group PSL(2) over {OK}'
             sage: ltx = f'PSL(2, {latex(OK)})'
             sage: HilbertModularGroup_class(base_ring=OK,sage_name=name,latex_string=ltx)
-            Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
-
+            Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
+            sage: H1=HilbertModularGroup(5)
+            sage: TestSuite(H1).run()
+            sage: H1(1)
+            [1 0]
+            [0 1]
+            sage: H1(2)
+            Traceback (most recent call last):
+            ...
+            TypeError: matrix must have determinant 1
+            sage: H1([1,1,0,1])
+            [1 1]
+            [0 1]
+            sage: H1([1,H1.base_ring().gens()[0],0,1])
+            [          1 1/2*a + 1/2]
+            [          0           1]
         """
         if not is_NumberFieldOrder(base_ring) or not base_ring.number_field().is_totally_real():
-            raise ValueError("Input (={0}) can not be used to create a Hilbert modular group. Need an order of a "+
-                             "totally real number field")
+            raise ValueError("Input (={0}) can not be used to create a Hilbert modular group. " +
+                             "Need an order of a totally real number field")
         # Instance data related to elliptic elements
         self._elliptic_elements_traces = []
         self._elliptic_elements_orders = []
@@ -147,44 +164,19 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         self._cusp_normalizing_maps_inverse = {}
         # At the moment we only deal with full level (1)
         self._level = base_ring.ideal(1)
-        super(HilbertModularGroup_class, self).__init__(degree=Integer(2), base_ring=base_ring, special=True, sage_name=sage_name,
-                                                        latex_string=latex_string, category=Groups().Infinite(),
+        super(HilbertModularGroup_class, self).__init__(degree=Integer(2), base_ring=base_ring,
+                                                        special=True,
+                                                        sage_name=sage_name,
+                                                        latex_string=latex_string,
+                                                        category=Groups().Infinite(),
                                                         invariant_form=None)
-
-    def __call__(self,a):
-        r"""
-        Create an element of this Hilbert modular group if possible
-
-        INPUT:
-
-        - ``a`` - something that can be converted to a matrix in this Hilbert modular group
-
-        EXAMPLES::
-            sage: from hilbert_modgroup.all import HilbertModularGroup
-            sage: H1=HilbertModularGroup(5)
-            sage: H1(1)
-            [1 0]
-            [0 1]
-            sage: H1(2)
-            Traceback (most recent call last):
-            ...
-            TypeError: matrix must have determinant 1
-            sage: H1([1,1,0,1])
-            [1 1]
-            [0 1]
-            sage: H1([1,H1.base_ring().gens()[0],0,1])
-            [          1 1/2*a + 1/2]
-            [          0           1]
-
-        """
-        return super(HilbertModularGroup_class,self).__call__(a)
 
     @cached_method
     def generators(self, algorithm='standard'):
         r"""
         Return a list of generators of self.
 
-        INPUT::
+        INPUT:
 
 
         - ``algorithm`` (string) either 'standard' or 'elementary'.
@@ -221,7 +213,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
                 gens.append(self.T(x))
                 gens.append(self.L(x))
         else:
-            raise ValueError("Unknown algorithm (={0}). Expected one of 'standard' or 'elementary'")
+            raise ValueError("Unknown algorithm '{0}'. Expected one of 'standard' or 'elementary'")
         return gens
 
     @cached_method
@@ -242,11 +234,11 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         return self([0, -1, 1, 0])
 
     @cached_method
-    def T(self,a=1):
+    def T(self, a=1):
         """
         Return the element T^a = ( 1 & a // 0 & 1 ) of self.
 
-        INPUT::
+        INPUT:
 
         - ``a`` -- integer in number field (default=1)
 
@@ -268,7 +260,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         return self([1, a, 0, 1])
 
     @cached_method
-    def L(self,a):
+    def L(self, a):
         """
         Return the element L=( 1 & 0 // a & 1 ) of self.
 
@@ -298,7 +290,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         """
         Return the element U=( u & 0 // 0 & u**-1 ) of self.
 
-        INPUT::
+        INPUT:
         - `u` unit in self.base_ring()
 
         EXAMPLES::
@@ -317,7 +309,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             [          0 1/2*a + 1/2]
 
         """
-        return self([u, 0, 0, u**-1])
+        return self([u, 0, 0, u ** -1])
 
     def gens(self, algorithm='standard'):
         r"""
@@ -325,7 +317,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
 
             The generators need not be minimal. For arguments, see :meth:`~generators`.
 
-        INUPUT::
+        INPUT:
 
         - ``algorithm`` -- string (default='standard') give the algorithm to compute the generators
 
@@ -343,6 +335,23 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         """
         return tuple(self.generators(algorithm))
 
+    def ngens(self, algorithm='standard'):
+        r"""
+            Return the number of generators of self as given by the function 'gens'.
+
+        INPUT:
+
+        - ``algorithm`` -- string (default='standard') give the algorithm to compute the generators
+
+        EXAMPLES::
+
+            sage: from hilbert_modgroup.all import HilbertModularGroup
+            sage: HilbertModularGroup(5).ngens()
+            3
+
+        """
+        return len(self.generators(algorithm))
+
     def gen(self, i):
         r"""
         Return the i-th generator of self, i.e. the i-th element of the
@@ -356,6 +365,30 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             [          0           1]
         """
         return self.generators()[i]
+
+    def random_element(self, *args, **kwds):
+        r"""
+        Return a 'random' element of this Hilbert Modular Group.
+
+        INPUT:
+
+        - `args`, `kwds` -- arguments passed to the base ring's random element function
+                            and are in turn passed to the random integer function.
+                            See the documentation for "ZZ.random_element()" for details.
+
+
+        EXAMPLES::
+
+            sage: from hilbert_modgroup.all import HilbertModularGroup
+            sage: H = HilbertModularGroup(5)
+            sage: A = H.random_element()
+            sage: A in H
+            True
+
+        """
+        a = self.base_ring().random_element(**kwds)
+        b = self.base_ring().random_element(**kwds)
+        return self.T(a)*self.L(b)
 
     def level(self):
         """
@@ -412,22 +445,22 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: from hilbert_modgroup.all import HilbertModularGroup
             sage: H1=HilbertModularGroup(5)
             sage: H1.cusps()
-            [Cusp Infinity of Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?]
+            [Cusp Infinity of Number Field ... polynomial x^2 - 5 with a = 2.236067977499790?]
 
             sage: H2=HilbertModularGroup(10)
             sage: H2.cusps()
-            [Cusp Infinity of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?,
-            Cusp [2: a] of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?]
+            [Cusp Infinity of Number Field ... polynomial x^2 - 10 with a = 3.162277660168380?,
+            Cusp [2: a] of Number Field ... polynomial x^2 - 10 with a = 3.162277660168380?]
             sage: x=var('x')
             sage: K = NumberField(x^3-36*x-1, names='a')
             sage: H3=HilbertModularGroup(K); H3
-            Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^3 - 36*x - 1
+            Hilbert Modular Group ... x^3 - 36*x - 1
             sage: H3.cusps()
              [Cusp Infinity of Number Field in a with defining polynomial x^3 - 36*x - 1,
              Cusp [2: a + 1] of Number Field in a with defining polynomial x^3 - 36*x - 1,
-             Cusp [3: 1/3*a^2 + 1/3*a - 26/3] of Number Field in a with defining polynomial x^3 - 36*x - 1,
-             Cusp [2: 1/3*a^2 + 1/3*a - 23/3] of Number Field in a with defining polynomial x^3 - 36*x - 1,
-             Cusp [6: 1/3*a^2 + 1/3*a - 26/3] of Number Field in a with defining polynomial x^3 - 36*x - 1]
+             Cusp [3: 1/3*a^2 + 1/3*a - 26/3] of Number Field ... polynomial x^3 - 36*x - 1,
+             Cusp [2: 1/3*a^2 + 1/3*a - 23/3] of Number Field ... polynomial x^3 - 36*x - 1,
+             Cusp [6: 1/3*a^2 + 1/3*a - 26/3] of Number Field ... polynomial x^3 - 36*x - 1]
 
             sage: K4 = NumberField(x**4 - 17*x**2 + 36,names='a'); a=K4.gen()
             sage: H4=HilbertModularGroup(NumberField(x**4 - 17*x**2 + 36,names='a'))
@@ -440,11 +473,14 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         for a in self.ideal_cusp_representatives():
             logger.debug("Set cusp info for ideal a={0}".format(a))
             if a.is_trivial():
-                ca = NFCusp(self.base_ring().number_field(), self.base_ring()(1), self.base_ring()(0),
+                ca = NFCusp(self.base_ring().number_field(),
+                            self.base_ring()(1),
+                            self.base_ring()(0),
                             lreps=self.ideal_cusp_representatives())
             else:
                 ag = a.gens_reduced()
-                ca = NFCusp(self.base_ring().number_field(), ag[0], ag[1], lreps=self.ideal_cusp_representatives())
+                ca = NFCusp(self.base_ring().number_field(), ag[0], ag[1],
+                            lreps=self.ideal_cusp_representatives())
             self._cusps.append(ca)
             if ca.ideal() != a:
                 raise ArithmeticError("Failed to associate a cusp to ideal {0}".format(a))
@@ -470,7 +506,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: x=var('x')
             sage: K = NumberField(x^3-36*x-1, names='a')
             sage: H3=HilbertModularGroup(K); H3
-            Hilbert Modular Group PSL(2) over Maximal Order in Number Field in a with defining polynomial x^3 - 36*x - 1
+            Hilbert Modular Group ... x^3 - 36*x - 1
             sage: H3.ideal_cusp_representatives()
             [Fractional ideal (1),
              Fractional ideal (2, a + 1),
@@ -488,16 +524,17 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             self._ideal_cusp_representatives = []
 
             def _find_equivalent_ideal_of_minimal_norm(c):
-                for a in self.base_ring().number_field().ideals_of_bdd_norm(c.norm()-1).items():
+                for a in self.base_ring().number_field().ideals_of_bdd_norm(c.norm() - 1).items():
                     for ideala in a[1]:
-                        if (ideala*c**-1).is_principal():
+                        if (ideala * c ** -1).is_principal():
                             return ideala
                 return c
 
             for ideal_class in self.base_ring().class_group():
                 c = ideal_class.ideal().reduce_equiv()
-                # NOTE: Even though we use 'reduce_equiv' we are not guaranteed a representative with minimal **norm**
-                #       To make certain we choose a representative of minmal norm explicitly.
+                # NOTE: Even though we use 'reduce_equiv' we are not guaranteed a representative
+                #       with minimal **norm**
+                #       To make certain we choose a representative of minimal norm explicitly.
                 c = _find_equivalent_ideal_of_minimal_norm(c)
                 self._ideal_cusp_representatives.append(c)
             # We finally sort all representatives according to norm.
@@ -511,7 +548,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
 
         INPUT:
         - ``cusp`` -- cusp
-        - ``return_map`` -- bool (default: False) set to True to also return the map giving the equivalence.
+        - ``return_map`` -- bool (default: False)
+                            Set to True to also return the map giving the equivalence.
 
         EXAMPLES::
 
@@ -519,18 +557,18 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H1=HilbertModularGroup(5)
             sage: c = NFCusp(H1.base_ring().number_field(),2,4)
             sage: H1.cusp_representative(c)
-            Cusp Infinity of Number Field in a with defining polynomial x^2 - 5 with a = 2.236067977499790?
+            Cusp Infinity of Number Field ... polynomial x^2 - 5 with a = 2.236067977499790?
 
             sage: H2=HilbertModularGroup(10)
             sage: c = NFCusp(H2.base_ring().number_field(),2,4)
             sage: H2.cusp_representative(c)
-            Cusp Infinity of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
+            Cusp Infinity of Number Field ... polynomial x^2 - 10 with a = 3.162277660168380?
 
             sage: a = H2.base_ring().number_field().gen()
             sage: x,y = 3*a - 10, a - 4
             sage: c = NFCusp(H2.base_ring().number_field(),x,y)
             sage: H2.cusp_representative(c)
-            Cusp [2: a] of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
+            Cusp [2: a] of Number Field ... polynomial x^2 - 10 with a = 3.162277660168380?
 
             sage: x = ZZ['x'].gen()
             sage: K = NumberField(x^3-36*x-1, names='a')
@@ -542,20 +580,20 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: x,y = 3*a - 10, a - 4
             sage: c = NFCusp(H3.base_ring().number_field(),16,a+3)
             sage: H3.cusp_representative(c)
-            Cusp [2: 1/3*a^2 + 1/3*a - 23/3] of Number Field in a with defining polynomial x^3 - 36*x - 1
+            Cusp [2: 1/3*a^2 + 1/3*a - 23/3] of Number Field ... polynomial x^3 - 36*x - 1
 
 
         """
         for c in self.cusps():
             if return_map:
-                t,B = cusp.is_Gamma0_equivalent(c,self.level(),Transformation=True)
+                t, B = cusp.is_Gamma0_equivalent(c, self.level(), Transformation=True)
                 if t:
-                    return c,self(B)
-            elif cusp.is_Gamma0_equivalent(c,self.level()):
+                    return c, self(B)
+            elif cusp.is_Gamma0_equivalent(c, self.level()):
                 return c
         raise ArithmeticError(f"Could not find cusp representative for {cusp}")
 
-    ## Functions for elliptic elements
+    # Functions for elliptic elements
 
     def _compute_traces_of_elliptic_elements(self):
         r"""
@@ -575,7 +613,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         ALGORITHM: (from the paper "Dimension formulas...", by Boylan, Skoruppa and Stromberg)
 
         If m is an elliptic element then:
-        1. The order, l, must satisfy euler_phi(l)=2d where  d | n = degree of the number field of self.
+        1. The order, l, must satisfy euler_phi(l)=2d where  d | n = degree of the number field.
         2. The trace t must satisfy z+z^-1 where z is an l-th root of unity.
         3. The subfield QQ(z+z^-1) of QQ(z) must be a subfield of the base field K
         Conversely, if t is such then there is an elliptic element with t as trace.
@@ -587,9 +625,9 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             return self._elliptic_elements_traces
         K = self.base_ring().number_field()
         n = K.degree()
-        list_of_possible_orders = [l for l in range(2, 8*n**2+1) if euler_phi(l).divides(2*n)]
-        for l in list_of_possible_orders:
-            C = CyclotomicField(l, 'z')
+        list_of_possible_orders = [o for o in range(2, 8*n**2+1) if euler_phi(o).divides(2*n)]
+        for o in list_of_possible_orders:
+            C = CyclotomicField(o, 'z')
             z = C.gen()
             F, emb = C.subfield(z+z**-1, 't')
             if not F.embeddings(K):
@@ -601,7 +639,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             logger.debug("t={0}".format(t))
             logger.debug("|F.emb(K)|={0}".format(len(F.embeddings(K))))
             logger.debug("t={0}".format(possible_traces_in_K))
-            traces_of_order_l = []
+            traces_of_order_o = []
             for st in possible_traces_in_K:
                 # Make sure that the trace have all embeddings with absolute value <2
                 test = [x for x in st.complex_embeddings() if abs(x) >= 2]
@@ -611,15 +649,17 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
                     continue
                 # We want to choose a representative since the point only depends
                 # on t^2 we don't need t and -t
-                if st not in traces_of_order_l:
-                    traces_of_order_l.append(st)
-            if traces_of_order_l:
-                self._elliptic_elements_traces.extend(traces_of_order_l)
-                self._elliptic_elements_fields_of_orders[l] = F
-                self._elliptic_elements_traces_of_orders[l] = traces_of_order_l
-                self._elliptic_elements_orders.append(l)
-        self._elliptic_elements_orders_of_traces = {value: key for key in self._elliptic_elements_traces_of_orders
-                                                    for value in self._elliptic_elements_traces_of_orders[key]}
+                if st not in traces_of_order_o:
+                    traces_of_order_o.append(st)
+            if traces_of_order_o:
+                self._elliptic_elements_traces.extend(traces_of_order_o)
+                self._elliptic_elements_fields_of_orders[o] = F
+                self._elliptic_elements_traces_of_orders[o] = traces_of_order_o
+                self._elliptic_elements_orders.append(o)
+        self._elliptic_elements_orders_of_traces = {
+            value: key
+            for key in self._elliptic_elements_traces_of_orders
+            for value in self._elliptic_elements_traces_of_orders[key]}
         return self._elliptic_elements_traces
 
     def orders_of_elliptic_elements(self):
@@ -691,7 +731,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             self._compute_traces_of_elliptic_elements()
         return self._elliptic_elements_traces
 
-    def traces_of_elliptic_elements_of_order(self, l):
+    def traces_of_elliptic_elements_of_order(self, o):
         r"""
         Return a list of traces of elliptic elements of given order.
 
@@ -723,16 +763,17 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         """
         if not self._elliptic_elements_traces_of_orders:
             self._compute_traces_of_elliptic_elements()
-        return self._elliptic_elements_traces_of_orders.get(l,[])
+        return self._elliptic_elements_traces_of_orders.get(o, [])
 
-    def order_of_elliptic_element_of_trace(self,t):
+    def order_of_elliptic_element_of_trace(self, t):
         r"""
-        Return the order of elliptic elements of a given trace. Returns None if no elliptic element with this trace exists.
+        Return the order of elliptic elements of a given trace.
+        Returns None if no elliptic element with this trace exists.
 
-        INPUT::
+        INPUT:
         - `t` number field element
 
-        OUTPUT::
+        OUTPUT:
         - integer or None
 
 
@@ -777,14 +818,14 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         Given a cusp (a:c) Return a matrix A = [[ a ,b ], [c , d]] in SL(2,K) such that
         A(Infinity)=(a:c) and b, d in self.base_ring().ideal(a,c)**-1
 
-        INPUT::
+        INPUT:
 
         - ``cusp`` -- Instance of NFCusp
         - ``inverse`` -- bool (default: False) set to True to return the inverse map
         - ``check`` -- bool (default: False) set to True to check the result
 
-        NOTE: The sage function NFCusp.ABmatrix() returns a matrix with determinant which is not necessarily 1 even
-            though 1 is a generator of the ideal (1)=(a,c)*(a,c)**-1
+        NOTE: The sage function NFCusp.ABmatrix() returns a matrix with determinant which is not
+            necessarily equal to 1 even though 1 is a generator of the ideal (1)=(a,c)*(a,c)**-1
 
         If inverse = True then return A^-1
 
@@ -830,8 +871,9 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             [                 a                 -1]
 
         """
-        if not isinstance(cusp, NFCusp) or cusp.number_field() != self.base_ring().number_field():
-            raise ValueError("Input should be a NF cusp defined over {0}!".format(self.base_ring().number_field()))
+        base_nf = self.base_ring().number_field()
+        if not isinstance(cusp, NFCusp) or cusp.number_field() != base_nf:
+            raise ValueError(f"Input should be a NF cusp defined over {base_nf}!")
         ca, cb = (cusp.numerator(), cusp.denominator())
         if not (ca, cb) in self._cusp_normalizing_maps:
             # First find the equivalent representative
@@ -841,13 +883,14 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             # if not crep_normalizing_map:
             # Find a normalizing map of the cusp representative
             a, b, c, d = cusp.ABmatrix()
-            det = a*d - b*c
-            A = Matrix(self.base_ring().number_field(), 2, 2, [a, b/det, c, d/det])
+            det = a * d - b * c
+            A = Matrix(self.base_ring().number_field(), 2, 2, [a, b / det, c, d / det])
             # A = B.matrix().inverse()*crep_normalizing_map
             if check:
-                infinity = NFCusp(self.base_ring().number_field(),1,0)
+                infinity = NFCusp(self.base_ring().number_field(), 1, 0)
                 if infinity.apply(A.list()) != cusp or A.det() != 1:
-                    raise ArithmeticError("did not get correct normalizing map A={0} to cusp: {1}".format(A,cusp))
+                    msg = f"Did not get correct normalizing map A={A} to cusp: {cusp}"
+                    raise ArithmeticError(msg)
             logger.debug(f"A={0}".format(A))
             logger.debug("A.det()={0}".format(A.det().complex_embeddings()))
             self._cusp_normalizing_maps_inverse[(ca, cb)] = A.inverse()
@@ -855,13 +898,13 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         if inverse:
             return self._cusp_normalizing_maps_inverse[(ca, cb)]
         else:
-            return self._cusp_normalizing_maps[(ca,cb)]
+            return self._cusp_normalizing_maps[(ca, cb)]
 
-    def apply_cusp_normalizing_map(self,cusp, z, inverse=False):
+    def apply_cusp_normalizing_map(self, cusp, z, inverse=False):
         """
         Apply the cusp normalising map associated with the cusp to an element z
 
-        INPUT::
+        INPUT:
 
         - `cusp` - an instance of NFcusp
         - `z` - an element in
@@ -880,7 +923,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             1/6*a - 1/6
             sage: z = NFCusp(H2.base_ring().number_field(),1)
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],z)
-            Cusp [a - 1: 6] of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
+            Cusp [a - 1: 6] of Number Field ... polynomial x^2 - 10 with a = 3.162277660168380?
             sage: a=H2.base_ring().gens()[1]
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],a)
             3/16*a
@@ -900,31 +943,33 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
 
             # If we apply the matrix to a cusp we return a cusp.
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],H2.cusps()[1])
-            Cusp Infinity of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
+            Cusp Infinity of Number Field ... polynomial x^2 - 10 with a = 3.162277660168380?
 
             # Applying the inverse of a cusp normalising map to the same cusp returns infinity.
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],H2.cusps()[1],inverse=True)
-            Cusp Infinity of Number Field in a with defining polynomial x^2 - 10 with a = 3.162277660168380?
+            Cusp Infinity of Number Field ... polynomial x^2 - 10 with a = 3.162277660168380?
             sage: c1 = H2.cusps()[1]
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],Infinity)
             1/5*a
             sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],Infinity) == c1
             False
-            sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],Infinity) == c1.numerator()/c1.denominator()
+            sage: q = c1.numerator()/c1.denominator()
+            sage: H2.apply_cusp_normalizing_map(H2.cusps()[1],Infinity) == q
             True
             sage: c0, c1 = H2.cusps()
             sage: H2.apply_cusp_normalizing_map(c1,c0) == c1
             True
 
         """
-        a,b,c,d = self.cusp_normalizing_map(cusp, inverse=inverse).list()
+        a, b, c, d = self.cusp_normalizing_map(cusp, inverse=inverse).list()
         if z == infinity:
-            return a/c
+            return a / c
         number_field = self.base_ring().number_field()
-        if isinstance(z,NFCusp) and z.number_field() == number_field:
+        if isinstance(z, NFCusp) and z.number_field() == number_field:
             return z.apply([a, b, c, d])
         if z in number_field:
-            return (a*z + b)/(c*z + d)
-        if isinstance(z, ComplexPlaneProductElement__class) and z.degree() == number_field.absolute_degree():
+            return (a * z + b) / (c * z + d)
+        if isinstance(z, ComplexPlaneProductElement__class) and \
+                z.degree() == number_field.absolute_degree():
             return z.apply(matrix(2, 2, [a, b, c, d]))
         raise ValueError("Unsupported type for acting with cusp normalizer! (z={0})".format(z))

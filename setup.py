@@ -1,49 +1,51 @@
-
 import os
 import setuptools
-
 from setuptools.extension import Extension
 from Cython.Build import cythonize
-
-from sage.env import sage_include_directories,SAGE_LIB,SAGE_LOCAL,NTL_INCDIR,NTL_LIBDIR
-SAGE_INC=SAGE_LOCAL + "/include"
-
-include_path=[SAGE_INC,SAGE_LIB]
+# Check if we are currently in a SageMath environment.
+SAGE_LOCAL = os.getenv('SAGE_LOCAL')
+if not SAGE_LOCAL:
+    raise ValueError("This package can only be installed inside SageMath (http://www.sagemath.org)")
+# Find correct value for SAGE_LIB which is needed to compile the Cython extensions.
+SAGE_LIB = os.getenv('SAGE_LIB')
+if not SAGE_LIB:
+    try:
+        from sage.env import SAGE_LIB
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError("To install this package you need to either specify the "
+                                  "environment variable 'SAGE_LIB' or call pip with "
+                                  "'--no-build-isolation'")
+if not os.path.isdir(SAGE_LIB):
+    raise ValueError(f"The library path {SAGE_LIB} is not a directory.")
 
 # Extension modules using Cython
-ext_modules=[
+extra_compile_args = ['-Wno-unused-function',
+                      '-Wno-implicit-function-declaration',
+                      '-Wno-unused-variable',
+                      '-Wno-deprecated-declarations',
+                      '-Wno-deprecated-register']
+ext_modules = [
     Extension(
         'hilbert_modgroup.hilbert_modular_group_element',
-        sources=[os.path.join('src/hilbert_modgroup/hilbert_modular_group_element.pyx')]
+        sources=[os.path.join('src/hilbert_modgroup/hilbert_modular_group_element.pyx')],
+        extra_compile_args=extra_compile_args
     ),
     Extension(
         'hilbert_modgroup.upper_half_plane',
         sources=[os.path.join('src/hilbert_modgroup/upper_half_plane.pyx')],
-        extra_compile_args=['-Wno-unused-function']
+        extra_compile_args=extra_compile_args
     ),
     Extension(
         'hilbert_modgroup.pullback_cython',
         sources=[os.path.join('src/hilbert_modgroup/pullback_cython.pyx')],
-        include_dirs=[os.path.join(SAGE_LIB,'cypari2'),
-                      NTL_INCDIR],
-        library_dirs=[NTL_LIBDIR],
         language='c++',
-        extra_compile_args=['-std=c++11'])
-    ,
+        extra_compile_args=extra_compile_args+['-std=c++11'])
 ]
 
 setuptools.setup(
-    name='hilbert_modular_group',
-    version='1.0',
-    license='GPL v3+',
-    author='Fredrik Stromberg',
-    author_email='fredrik314@gmail.com',
-    packages=['hilbert_modgroup'],
-    package_dir={'hilbert_modgroup':'src/hilbert_modgroup'},
-    zip_safe=False,
     ext_modules=cythonize(
         ext_modules,
-        include_path=['src'],
+        include_path=['src',SAGE_LIB],
         compiler_directives={
             'embedsignature': True,
             'language_level': '3',

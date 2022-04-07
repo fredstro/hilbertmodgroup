@@ -1,0 +1,12 @@
+[build-system]
+requires = [
+    "setuptools>=49.6.0",
+    "wheel>=0.36.2",
+    "cython>=0.29.21, <1.0",
+    "setuptools_scm[toml]>=6.2",
+        ]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "src/hilbert_modgroup/version.py"
+git_describe_command = "git describe --tags --long --match *.*"
