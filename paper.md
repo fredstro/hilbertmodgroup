@@ -21,7 +21,7 @@ bibliography: paper.bib
 This package implements basic classes and a new reduction algorithm for Hilbert modular groups. 
 The main improvement over previous algorithms is that
 this implementation works in theory for all Hilbert modular groups and in practice for a much 
-wider range of examples. A more in-depth discussion of the theoretical background and details about the implementation can be found in [@reductionalghilbert].
+wider range of examples. A more in-depth discussion of the theoretical background and details about the implementation can be found in @reductionalghilbert.
 
 
 # A Brief Mathematical Background 
@@ -55,10 +55,10 @@ integral points in higher-dimensional polytopes.
 
 # Statement of need
 
-There has been several previous attempts at giving a reduction algorithm for Hilbert modular groups 
-but they have all been limited in at least one of two ways with 
- the number field either being restricted to degree 2, or the class number to be $1$, or a combination of both. 
-See for example the algorithms by Boyer and Streng [@MR3376741], and Quinn and Verjovsky [@MR4091535].
+There have been several previous attempts at giving a reduction algorithm for Hilbert modular groups 
+but they have all been limited in at least one of two ways: 
+the number field either being restricted to degree 2, or the class number to be $1$, or a combination of both. 
+See for example the algorithms by @MR3376741 and @MR4091535.
 
 
 Having access to the algorithm in this package, which is valid for any totally real number field, 
@@ -76,9 +76,9 @@ number fields, which is in turn is in many cases using the backend from PARI/gp 
 # Documentation and Examples
 All functions are documented using docstrings with integrated doctests 
 following the guide for SageMath development. 
-In addition, the directory `/examples` contains  
+In addition, the `/examples` directory contains  
 Jupyter notebooks illustrating the use of the package with 
-a selection of fundamental examples, corresponding to examples presented in [@reductionalghilbert].
+a selection of fundamental examples, corresponding to examples presented in @reductionalghilbert.
 
 # Acknowledgements
 This work was partially supported by the Engineering and Physical Sciences Research Council [EP/N007360/1] and [EP/V026321/1].
