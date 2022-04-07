@@ -66,11 +66,13 @@ You can either open them manually from SageMath or run one of the following comm
 `make examples`
 `make docker-examples`
 which will start up a Jupyter notebook server from sagemath either locally or in a docker container. 
+
 ## Community Guidelines
+
 ### How to Contribute?
-- Open an issue on GitHub and create a pull / merge request.
+- Open an issue on GitHub and create a pull / merge request against the `develop` branch.
 ### How to report an issue or a problem? 
-- Open an issue on GitHub.
+- First check if the issue is resolved in the `develop` branch. If not, open an issue on GitHub. 
 ### How to seek help and support?
 - Contact the maintainer, Fredrik Stromberg, at: fredrik314@gmail.com (alternatively at fredrik.stromberg@nottingham.ac.uk)
 
@@ -121,6 +123,15 @@ Run relint on the local source with docker version of sage:
 `make docker-tox REMOTE_SRC=0 TOX_ARGS=relint`
 
 ## Development
+
+### GitHub Workflow
+
+- There are two long-lived branches `main` and `develop`.
+- The `develop` branch is used for development and can contain new / experimental features.  
+- Pull-requests should be based on `develop`.
+- Releases should be based on `main`.
+- The `main` branch should always be as stable and functional as possible. In particular, merges should always happen from `develop` into `main`. 
+- Git-Flow is enabled (and encouraged) with feature branches based on `develop` and hotfixes based on `main`. 
 
 ### GitHub Actions
 
