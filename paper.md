@@ -35,7 +35,7 @@ finds an element, $A=\left(\begin{smallmatrix} a & b \\ c & d\end{smallmatrix}\r
 belongs to a specific set, a so-called "fundamental domain". 
 This type of algorithm was first introduced in the context of binary quadratic forms in the 
 18th century by Lagrange, Gauss and others, with the main contribution 
-published by Gauss in his famous *Disquisitiones Arithmeticae*.
+published by @MR0197380 in the famous *Disquisitiones Arithmeticae*.
 
 A natural generalisation of the modular group over $\mathbb{Z}$
 is given by the family of Hilbert modular groups, $\Gamma_K=\mathrm{PSL}_2(\mathcal{O}_K)$, 
