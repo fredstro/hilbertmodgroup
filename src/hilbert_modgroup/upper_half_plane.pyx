@@ -7,8 +7,8 @@ Elements in the upper half plane of degree n
 Note: The structure of this class is based on ArithmeticSubgroupElement from sage/modular/arithgroup/arithgroup_element.pyx
 
 """
+import sage
 from sage.groups.perm_gps.permgroup_element import is_PermutationGroupElement
-from sage.rings.number_field.number_field import is_NumberField
 from sage.rings.real_mpfr import RealField
 from sage.structure.element cimport Element
 from sage.rings.all import Integer, CC
@@ -20,7 +20,6 @@ from sage.rings.complex_mpfr cimport ComplexNumber
 from sage.rings.complex_mpc cimport MPComplexNumber, MPComplexField_class
 from sage.rings.complex_mpc import MPComplexField
 from cpython.object cimport Py_EQ, Py_NE
-from sage.rings.number_field.number_field_element import is_NumberFieldElement
 from sage.modules.free_module_element import vector
 
 
@@ -42,7 +41,7 @@ def ComplexPlaneProduct(degree, **kwds):
         Product of complex planes of degree 3
 
     """
-    if is_NumberField(degree):
+    if isinstance(degree, sage.rings.number_field.number_field_base.NumberField):
         degree = degree.absolute_degree()
     return ComplexPlaneProduct__class(degree, **kwds)
 
@@ -63,7 +62,7 @@ def UpperHalfPlaneProduct(degree, **kwds):
         Product of upper half-planes of degree 3
 
     """
-    if is_NumberField(degree):
+    if isinstance(degree, sage.rings.number_field.number_field_base.NumberField):
         degree = degree.absolute_degree()
     return UpperHalfPlaneProduct__class(degree, **kwds)
 
@@ -106,7 +105,7 @@ def UpperHalfPlaneProductElement(z, **kwds):
     prec = kwds.get('prec',getattr(z,'prec',lambda : 53)())
     if hasattr(z,'value'):
         z = z.value()
-    if is_NumberFieldElement(z):
+    if isinstance(z, sage.rings.number_field.number_field_element.NumberFieldElement):
         z = z.complex_embeddings(prec)
     if isinstance(z,list) and not isinstance(z[0], (ComplexNumber, MPComplexNumber)):
        z  = [MPComplexField(prec)(x) for x in z]
@@ -153,7 +152,7 @@ def ComplexPlaneProductElement(z,**kwds):
         return z
     # Get precision in the first hand from kwds, second from z and third set default to 53 bits
     prec = kwds.get('prec',getattr(z,'prec',lambda : 53)())
-    if is_NumberFieldElement(z):
+    if isinstance(z, sage.rings.number_field.number_field_element.NumberFieldElement):
         z = z.complex_embeddings(prec)
     if hasattr(z,'value'):
         z = z.value().complex_embeddings(prec)

@@ -874,9 +874,9 @@ class HilbertPullback(SageObject):
         elif is_NumberFieldIdeal(a):
             ideala = a
         elif a in self.group().base_ring() and not b:
-            ideala = self.group().base_ring().ideal(a)
+            ideala = self.group().base_ring().fractional_ideal(a)
         elif a in self.group().base_ring() and b in self.group().base_ring():
-            ideala = self.group().base_ring().ideal(a, b)
+            ideala = self.group().base_ring().fractional_ideal(a, b)
         else:
             raise ValueError(f"Could not construct a number field ideal from a={a} and b={b}")
         return ideala
@@ -2060,7 +2060,7 @@ class HilbertPullback(SageObject):
             ([[1.00000000000000, -1.61803398874989],
               [1.00000000000000, 0.618033988749895]],
              [1, 1/2*a - 1/2])
-            sage: P1._get_lattice_and_ideal_basis(H1.base_ring().ideal(2))
+            sage: P1._get_lattice_and_ideal_basis(H1.base_ring().fractional_ideal(2))
             ([[2.00000000000000, -3.23606797749979], [2.00000000000000, 1.23606797749979]],
             [2, a - 1])
             sage: H2=HilbertModularGroup(10)
@@ -2068,7 +2068,7 @@ class HilbertPullback(SageObject):
             sage: P2._get_lattice_and_ideal_basis()
              ([[1.00000000000000, -3.16227766016838], [1.00000000000000, 3.16227766016838]],
               [1, a])
-            sage: a=H2.base_ring().ideal(H2.base_ring().gen(1)+1)
+            sage: a=H2.base_ring().fractional_ideal(H2.base_ring().gen(1)+1)
             sage: P2._get_lattice_and_ideal_basis(a)
              ([[9.00000000000000, -2.16227766016838], [9.00000000000000, 4.16227766016838]],
               [9, a + 1])

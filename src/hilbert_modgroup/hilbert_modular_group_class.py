@@ -15,6 +15,7 @@ AUTHORS:
 
 
 """
+import sage
 from sage.categories.groups import Groups
 from sage.groups.matrix_gps.linear import LinearMatrixGroup_generic
 from sage.modular.cusps_nf import NFCusp
@@ -92,7 +93,8 @@ def HilbertModularGroup(number_field, projective=True):
     """
     if isinstance(number_field, (int, Integer)) and number_field > 0:
         ring = QuadraticField(number_field).ring_of_integers()
-    elif is_NumberField(number_field) and number_field.is_totally_real():
+    elif isinstance(number_field, sage.rings.number_field.number_field_base.NumberField) \
+            and number_field.is_totally_real():
         ring = number_field.ring_of_integers()
     else:
         raise ValueError("The input must be a totally real Number Field or a positive integer")
