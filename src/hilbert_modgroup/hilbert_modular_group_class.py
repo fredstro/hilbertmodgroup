@@ -163,7 +163,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         self._cusp_normalizing_maps = {}
         self._cusp_normalizing_maps_inverse = {}
         # At the moment we only deal with full level (1)
-        self._level = base_ring.ideal(1)
+        self._level = base_ring.fractional_ideal(1)
         super(HilbertModularGroup_class, self).__init__(degree=Integer(2), base_ring=base_ring,
                                                         special=True,
                                                         sage_name=sage_name,

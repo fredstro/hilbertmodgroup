@@ -535,14 +535,14 @@ class HilbertPullback(SageObject):
             sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
-            sage: b1,b2=P1.number_field().ideal(1).basis()
+            sage: b1,b2=P1.number_field().fractional_ideal(1).basis()
             sage: P1.coordinates_in_number_field_ideal(b1)
             (1, 0)
             sage: P1.coordinates_in_number_field_ideal(b2)
             (0, 1)
             sage: H2=HilbertModularGroup(10)
             sage: P2 = HilbertPullback(H2)
-            sage: b1,b2=P2.number_field().ideal(1).basis()
+            sage: b1,b2=P2.number_field().fractional_ideal(1).basis()
             sage: P2.coordinates_in_number_field_ideal(b1)
             (1, 0)
             sage: P2.coordinates_in_number_field_ideal(b2)
@@ -550,7 +550,7 @@ class HilbertPullback(SageObject):
             sage: x=var('x')
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: P3=HilbertPullback(H3)
-            sage: b1,b2,b3=P3.number_field().ideal(1).basis()
+            sage: b1,b2,b3=P3.number_field().fractional_ideal(1).basis()
             sage: P3.coordinates_in_number_field_ideal(b1)
             (1, 0, 0)
             sage: P3.coordinates_in_number_field_ideal(b2)
@@ -662,7 +662,7 @@ class HilbertPullback(SageObject):
             sage: P3=HilbertPullback(H3)
             sage: K3=P3.number_field()
             sage: z = UpperHalfPlaneProductElement([0+0.02*I,10+0.2*I,1+0.2*I])
-            sage: P3.basis_matrix_ideal_plusz(z,K3.ideal(1))
+            sage: P3.basis_matrix_ideal_plusz(z,K3.fractional_ideal(1))
             [    1.00000000000000     1.00000000000000     1.00000000000000    0.000000000000000...
             [   -5.98606258583498  -0.0277783731902446     6.01384095902523    0.000000000000000...
             [    2.28229423189948    -7.67566891172438     6.39337467982490    0.000000000000000...
@@ -742,7 +742,7 @@ class HilbertPullback(SageObject):
             sage: P3=HilbertPullback(H3)
             sage: K3=P3.number_field()
             sage: z = UpperHalfPlaneProductElement([0+0.02*I,10+0.2*I,1+0.2*I])
-            sage: P3._shortest_vectors_ideal_plusz(z,K3.ideal(1))
+            sage: P3._shortest_vectors_ideal_plusz(z,K3.fractional_ideal(1))
             [  2   0  -1  -1   1   0]
             [ 15   1  -4   3  -1   1]
             [-28  -2   7   8  -2   0]
@@ -864,13 +864,13 @@ class HilbertPullback(SageObject):
         sage: P1=HilbertPullback(HilbertModularGroup(5))
         sage: P1._construct_ideal(1)
         Fractional ideal (1)
-        sage: P1._construct_ideal(P1.number_field().ideal(1))
+        sage: P1._construct_ideal(P1.number_field().fractional_ideal(1))
         Fractional ideal (1)
 
 
         """
         if a is None:
-            ideala = self.group().base_ring().ideal(1)
+            ideala = self.group().base_ring().fractional_ideal(1)
         elif is_NumberFieldIdeal(a):
             ideala = a
         elif a in self.group().base_ring() and not b:
@@ -924,7 +924,7 @@ class HilbertPullback(SageObject):
             sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(1,1)])
             sage: P1.X(z)
             (1.00000000000000, 0.000000000000000)
-            sage: b1,b2 = H1.base_ring().ideal(1).integral_basis(); b1,b2
+            sage: b1,b2 = H1.base_ring().fractional_ideal(1).integral_basis(); b1,b2
             (1, 1/2*a - 1/2)
             sage: P1.X(z+b1)
             (2.00000000000000, 0.000000000000000)
