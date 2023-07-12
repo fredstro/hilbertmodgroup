@@ -219,12 +219,12 @@ class HilbertPullback(SageObject):
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: P1.fundamental_units()
-            [1/2*a - 1/2]
+            [-1/2*a + 1/2]
             sage: x = ZZ['x'].gen()
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: P3=HilbertPullback(H3)
             sage: P3.fundamental_units()
-            [-a, -a - 6]
+            [a, -a - 6]
 
         """
         nf = self.group().base_ring().number_field()
@@ -272,15 +272,15 @@ class HilbertPullback(SageObject):
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: P3=HilbertPullback(H3)
             sage: z=UpperHalfPlaneProductElement([CC(0,1),CC(0,2),CC(0,1)])
-            sage: P3.Y(z,return_error_estimate=True)
+            sage: P3.Y(z,return_error_estimate=True) # abs tol 1e-10
             ((-0.128907673154173, 0.0000882959672881647), 2.220446049250313e-16)
             sage: z=UpperHalfPlaneProductElement([CC(0,100),CC(0,200),CC(0,100)])
-            sage: P3.Y(z,return_error_estimate=True)
+            sage: P3.Y(z,return_error_estimate=True) # abs tol 1e-10
             ((-0.128907673154173, 0.0000882959672880335), 6.38378239159465e-16)
             sage: z=UpperHalfPlaneProductElement([CC(0,1),CC(0,2),CC(0,100)])
             sage: P3.Y(z)
             (0.638975592292095, 0.680877344221728)
-            sage: P3.Y(z,return_error_estimate=True)
+            sage: P3.Y(z,return_error_estimate=True) # abs tol 1e-10
             ((0.638975592292095, 0.680877344221728), 1.1546319456101628e-14)
             sage: CF=ComplexField(106)
             sage: z=UpperHalfPlaneProductElement([CF(0,1),CF(0,2),CF(0,100)])
@@ -352,8 +352,8 @@ class HilbertPullback(SageObject):
             (
             [0.0143665696311556*I, 3.63341121163000*I, 0.0191572146738068*I],
             <BLANKLINE>
-            [    a - 6         0]
-            [        0 a^2 + 6*a]
+            [   -a + 6          0]
+            [        0 -a^2 - 6*a]
             )
 
         """
@@ -1082,8 +1082,8 @@ class HilbertPullback(SageObject):
             sage: P1.reduce(z) # abs tol 1e-10
             [0.694427190999916 + 0.611145618000168*I, -0.309016994374947 + 1.30901699437495*I]
             sage: P1.reduce(z, return_map=True)[1]
-            [-1/2*a + 1/2  1/2*a + 1/2]
-            [-1/2*a + 1/2            0]
+            [ 1/2*a - 1/2  -1/2*a - 1/2]
+            [ 1/2*a - 1/2             0]
 
         """
         c = self.find_closest_cusp(z, return_multiple=False, as_cusp=True)
@@ -1533,11 +1533,11 @@ class HilbertPullback(SageObject):
             sage: P3.Di() # abs tol 1e-10
             5.04891733952231
             sage: P3.Di(0) # abs tol 1e-10
-            2.01219217261232
-            sage: P3.Di(1) # abs tol 1e-10
-            1.49899286313093
-            sage: P3.Di(2) # abs tol 1e-10
             1.67389896224499
+            sage: P3.Di(1) # abs tol 1e-10
+            2.01219217261232
+            sage: P3.Di(2) # abs tol 1e-10
+            1.49899286313093
         """
         n = self.group().base_ring().number_field().degree()
         return float(self.max_ideal_norm()**(1/n)*self._exp_matrix_BLambda_row_sum(i).sqrt())
@@ -1561,7 +1561,7 @@ class HilbertPullback(SageObject):
             sage: K3.<a> = NumberField(x^3-x^2-2*x+1)
             sage: P3 = HilbertPullback(HilbertModularGroup(K3))
             sage: P3.D() # abs tol 1e-10
-            [2.0121921726123237, 1.4989928631309313, 1.6738989622449851]
+            [1.673898962244985, 2.012192172612324, 1.4989928631309313]
         """
         n = self.group().base_ring().number_field().degree()
         return [self.Di(i) for i in range(n)]

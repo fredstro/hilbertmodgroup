@@ -255,7 +255,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H.T(u0)
             [ 1 -1]
             [ 0  1]
-            sage: H.T(u1)
+            sage: H.T(u0*u1)
             [          1 1/2*a - 1/2]
             [          0           1]
         """
@@ -280,7 +280,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H.L(u0)
             [ 1 0]
             [-1 1]
-            sage: H.L(u1)
+            sage: H.L(u0*u1)
             [          1           0]
             [1/2*a - 1/2           1]
 
@@ -306,7 +306,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H.E(u0)
             [-1  0]
             [ 0 -1]
-            sage: H.E(u1)
+            sage: H.E(u0*u1)
             [1/2*a - 1/2           0]
             [          0 1/2*a + 1/2]
 
@@ -468,7 +468,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H4=HilbertModularGroup(NumberField(x**4 - 17*x**2 + 36,names='a'))
             sage: H4.cusps()
             [Cusp Infinity of Number Field in a with defining polynomial x^4 - 17*x^2 + 36,
-             Cusp [2: a] of Number Field in a with defining polynomial x^4 - 17*x^2 + 36]
+             Cusp [2: a + 1] of Number Field in a with defining polynomial x^4 - 17*x^2 + 36]
 
 
         """
@@ -493,7 +493,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         Return a list of ideals corresponding to cusp representatives, i.e.
         ideal representatives of ideal classes.
 
-        Note: We choose the ideal of smallest norm in each class.
+        Note: We choose an ideal of smallest norm in each class.
+            If the ideal given by sage is already minimal we return this.
 
         EXAMPLES::
 
@@ -518,7 +519,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: K4 = NumberField(x**4 - 17*x**2 + 36,names='a'); a=K4.gen()
             sage: H4=HilbertModularGroup(NumberField(x**4 - 17*x**2 + 36,names='a'))
             sage: H4.ideal_cusp_representatives()
-            [Fractional ideal (1), Fractional ideal (2, a)]
+            [Fractional ideal (1), Fractional ideal (2, a + 1)]
 
 
         """
@@ -529,6 +530,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
                 for a in self.base_ring().number_field().ideals_of_bdd_norm(c.norm() - 1).items():
                     for ideala in a[1]:
                         if (ideala * c ** -1).is_principal():
+                            if c.norm() <= ideala.norm():
+                                return c
                             return ideala
                 return c
 
@@ -869,8 +872,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: K4 = NumberField(x**4 - 17*x**2 + 36,names='a'); a=K4.gen()
             sage: H4=HilbertModularGroup(K4)
             sage: H4.cusp_normalizing_map(H4.cusps()[1])
-            [                 2 1/12*a^3 - 17/12*a]
-            [                 a                 -1]
+            [                          2 1/4*a^3 - 1/4*a^2 - 4*a + 4]
+            [                      a + 1                          -2]
 
         """
         base_nf = self.base_ring().number_field()

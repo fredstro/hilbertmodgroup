@@ -140,7 +140,7 @@ def ComplexPlaneProductElement(z,**kwds):
         sage: ComplexPlaneProductElement(u0)
         [-1.00000000000000, -1.00000000000000]
         sage: ComplexPlaneProductElement(u1)
-        [-1.61803398874989, 0.618033988749895]
+        [1.61803398874989, -0.618033988749895]
 
     """
     if isinstance(z,ComplexPlaneProductElement__class):
@@ -527,7 +527,7 @@ cdef class ComplexPlaneProductElement__class(Element):
         sage: ComplexPlaneProductElement__class(u0.complex_embeddings())
         [-1.00000000000000, -1.00000000000000]
         sage: ComplexPlaneProductElement__class(u1.complex_embeddings())
-        [-1.61803398874989, 0.618033988749895]
+        [1.61803398874989, -0.618033988749895]
 
     TODO: Inherit from Ring or something? (for speed probably NO!)
 
@@ -1316,7 +1316,7 @@ cdef class ComplexPlaneProductElement__class(Element):
             [5.00000000000000 + 5.00000000000000*I, 10.0000000000000 - 5.00000000000000*I]
             sage: u0,u1=K.unit_group().gens()
             sage: z*u1
-            [-1.61803398874989 - 1.61803398874989*I, 1.23606797749979 - 0.618033988749895*I]
+            [1.61803398874989 + 1.61803398874989*I, -1.23606797749979 + 0.618033988749895*I]
 
             # check Upper half plane elements
             sage: from hilbert_modgroup.all import UpperHalfPlaneProduct
