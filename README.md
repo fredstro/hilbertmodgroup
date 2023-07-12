@@ -5,7 +5,8 @@ for Hilbert modular groups, in particular a reduction algorithm. The implementat
 and is dependent on SageMath.
 
 ## Requirements
-- SageMath v9.4+ (https://www.sagemath.org/)
+- SageMath v9.6+ (https://www.sagemath.org/)
+  (Tested on v9.6, v9.7 and v10.0)
 
 ## Installation
 ### Using sage pip
@@ -162,3 +163,7 @@ To upload new versions to PyPi:
 1. `make sdist` -- creates a source distribution `dist/hilbert_modular_group-x.y.z`
 2. `twine check dist/hilbert_modular_group-x.y.z`
 3. `twine upload --repository pypi dist/hilbert_modular_group-z.y.z`
+
+## References:
+
+- [![DOI](https://joss.theoj.org/papers/10.21105/joss.03996/status.svg)](https://doi.org/10.21105/joss.03996)

@@ -789,7 +789,7 @@ class HilbertPullback(SageObject):
         Try to find a heuristic closest cusp using LLL.
 
         INPUT:
-        - ``z`` -- point in the uper half-plane
+        - ``z`` -- point in the upper half-plane
         - ``a`` -- ideal or number field element (default = None)
                     If None then this is set to the entire ring of integers.
         - ``as_cusp`` -- boolean (default: False)

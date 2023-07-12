@@ -20,7 +20,7 @@ from sage.categories.groups import Groups
 from sage.groups.matrix_gps.linear import LinearMatrixGroup_generic
 from sage.modular.cusps_nf import NFCusp
 from sage.rings.infinity import infinity
-from sage.rings.number_field.number_field import is_NumberField, QuadraticField, CyclotomicField
+from sage.rings.number_field.number_field import QuadraticField, CyclotomicField
 from sage.all import latex, Integer, Matrix, matrix
 from sage.misc.cachefunc import cached_method
 from sage.rings.number_field.order import is_NumberFieldOrder
