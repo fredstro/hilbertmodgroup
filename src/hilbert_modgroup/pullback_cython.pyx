@@ -404,7 +404,7 @@ cpdef distance_to_cusp(SageObject p, NumberFieldElement r, NumberFieldElement s,
  
     """
     cdef list rlist,slist
-    ideal_rs = r.parent().ideal(r,s)
+    ideal_rs = r.parent().fractional_ideal(r,s)
     rlist = r.complex_embeddings()
     slist = s.complex_embeddings()
     n = len(slist)
