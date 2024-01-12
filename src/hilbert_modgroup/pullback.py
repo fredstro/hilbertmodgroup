@@ -26,7 +26,7 @@ from sage.structure.sage_object import SageObject
 from sage.matrix.all import Matrix
 
 from hilbert_modgroup.upper_half_plane import \
-    ComplexPlaneProductElement__class,\
+    ComplexPlaneProductElement__class, \
     UpperHalfPlaneProductElement__class, UpperHalfPlaneProductElement
 
 from hilbert_modgroup.utils import upper, lower
@@ -466,7 +466,7 @@ class HilbertPullback(SageObject):
 
         """
         ideala = self._construct_ideal(a)
-        entries = [[x for x in beta.complex_embeddings(prec)] for beta in ideala.integral_basis()]
+        entries = [list(beta.complex_embeddings(prec)) for beta in ideala.integral_basis()]
         n = self.group().base_ring().degree()
         return matrix(RealField(prec), n, n, entries).transpose()
 
@@ -517,7 +517,7 @@ class HilbertPullback(SageObject):
 
         """
         ideala = self._construct_ideal(a)
-        entries = [[x for x in beta.vector()] for beta in ideala.integral_basis()]
+        entries = [list(beta.vector()) for beta in ideala.integral_basis()]
         n = self.group().base_ring().degree()
         return matrix(self.number_field(), n, n, entries).transpose()
 
@@ -1351,7 +1351,7 @@ class HilbertPullback(SageObject):
         if not B:
             return p1
         # Hypercube containing the integral points of the coordinates wrt the integral basis
-        vertices = [vector([y for y in B * vector(x)]) for x in p1.vertices()]
+        vertices = [vector(list(B * vector(x))) for x in p1.vertices()]
         # Try to make a polyhedron of the mapped vertices.
         return Polyhedron(vertices, base_ring=RDF)
 
