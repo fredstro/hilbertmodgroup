@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(10)
 
 
-def is_HilbertModularGroup(x):
+def is_HilbertModularGroup(x) -> bool:
     """
     Return `True` if ``x`` is an instance of a HilbertModularGroup
 
@@ -61,34 +61,32 @@ def is_HilbertModularGroup(x):
 
 def HilbertModularGroup(number_field, projective=True):
     r"""
-        Create the Hilbert modular group over the ring of integers in the given number field
+    Create the Hilbert modular group over the ring of integers in the given number field
 
 
-        INPUT:
+    INPUT:
 
-        - ``number_field`` (NumberField) -- a totally real number field or positive integer.
-                                            If a positive integer D is specified
-                                            then the number field $Q(\sqrt(D))$ is used.
-        - ``projective`` (bool) - True if you want PSL(2,K) and False for SL(2,K)
-
-
-        EXAMPLES::
-
-            sage: from hilbert_modgroup.all import HilbertModularGroup
-            sage: HilbertModularGroup(5)
-            Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
-            sage: HilbertModularGroup(QuadraticField(5))
-            Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
+    - ``number_field`` (NumberField) -- a totally real number field or positive integer.
+      If a positive integer D is specified
+      then the number field $Q(\sqrt(D))$ is used.
+    - ``projective`` (bool) - ``True`` if you want PSL(2,K) and ``False`` for SL(2,K)
 
 
-        TESTS::
+    EXAMPLES::
 
-            sage: from hilbert_modgroup.all import HilbertModularGroup
-            sage: HilbertModularGroup(5)
-            Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
-            sage: HilbertModularGroup(QuadraticField(5))
-            Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
+        sage: from hilbert_modgroup.all import HilbertModularGroup
+        sage: HilbertModularGroup(5)
+        Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
+        sage: HilbertModularGroup(QuadraticField(5))
+        Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
 
+    TESTS::
+
+        sage: from hilbert_modgroup.all import HilbertModularGroup
+        sage: HilbertModularGroup(5)
+        Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
+        sage: HilbertModularGroup(QuadraticField(5))
+        Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
 
     """
     if isinstance(number_field, (int, Integer)) and number_field > 0:
@@ -120,13 +118,14 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         r"""
          Init a Hilbert modular group over the ring of integers in the given number field
 
-
         INPUT:
+
         - ``base_ring`` - ring
         - ``sage_name`` - string
         - ``latex_string`` - string
 
         EXAMPLES::
+
             sage: from hilbert_modgroup.hilbert_modular_group_class import *
             sage: OK=QuadraticField(5).OK()
             sage: name = f'Hilbert Modular Group PSL(2) over {OK}'
@@ -166,12 +165,12 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         self._cusp_normalizing_maps_inverse = {}
         # At the moment we only deal with full level (1)
         self._level = base_ring.fractional_ideal(1)
-        super(HilbertModularGroup_class, self).__init__(degree=Integer(2), base_ring=base_ring,
-                                                        special=True,
-                                                        sage_name=sage_name,
-                                                        latex_string=latex_string,
-                                                        category=Groups().Infinite(),
-                                                        invariant_form=None)
+        super().__init__(degree=Integer(2), base_ring=base_ring,
+                         special=True,
+                         sage_name=sage_name,
+                         latex_string=latex_string,
+                         category=Groups().Infinite(),
+                         invariant_form=None)
 
     @cached_method
     def generators(self, algorithm='standard'):
@@ -179,7 +178,6 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         Return a list of generators of self.
 
         INPUT:
-
 
         - ``algorithm`` (string) either 'standard' or 'elementary'.
             If 'elementary' is given return a set of generators
@@ -207,15 +205,14 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         """
         if algorithm == 'standard':
             gens = [self.S()]
-            for x in self.base_ring().basis():
-                gens.append(self.T(x))
+            gens.extend(self.T(x) for x in self.base_ring().basis())
         elif algorithm == 'elementary':
             gens = []
             for x in self.base_ring().basis():
                 gens.append(self.T(x))
                 gens.append(self.L(x))
         else:
-            raise ValueError("Unknown algorithm '{0}'. Expected one of 'standard' or 'elementary'")
+            raise ValueError(f"Unknown algorithm '{algorithm}'. Expected one of 'standard' or 'elementary'")
         return gens
 
     @cached_method
@@ -269,6 +266,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         INPUT:
 
         - ``a`` -- integer in number field
+
         EXAMPLES::
 
             sage: from hilbert_modgroup.all import HilbertModularGroup
@@ -441,7 +439,6 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         """
         A set of cusp representatives of self.
 
-
         EXAMPLES::
 
             sage: from hilbert_modgroup.all import HilbertModularGroup
@@ -552,6 +549,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         Return a representative cusp and optionally a corresponding map.
 
         INPUT:
+
         - ``cusp`` -- cusp
         - ``return_map`` -- bool (default: False)
                             Set to True to also return the map giving the equivalence.
@@ -776,12 +774,12 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         Returns None if no elliptic element with this trace exists.
 
         INPUT:
+
         - `t` number field element
 
         OUTPUT:
-        - integer or None
 
-
+        - integer or ``None``
 
         EXAMPLES::
 
@@ -880,7 +878,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         if not isinstance(cusp, NFCusp) or cusp.number_field() != base_nf:
             raise ValueError(f"Input should be a NF cusp defined over {base_nf}!")
         ca, cb = (cusp.numerator(), cusp.denominator())
-        if not (ca, cb) in self._cusp_normalizing_maps:
+        if (ca, cb) not in self._cusp_normalizing_maps:
             # First find the equivalent representative
             # crep, B = self.cusp_representative(cusp,return_map=True)
             # crepa,crepb = crep.numerator(),crep.denominator()
