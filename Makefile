@@ -46,7 +46,7 @@ examples:
 
 tox:
 	sage -pip install tox meson
-	sage --python -m tox src -c tox.ini -e $(TOX_ARGS)
+	sage --python -m tox -c tox.ini -e $(TOX_ARGS)
 
 docker:
 	docker build --build-arg GIT_BRANCH=$(GIT_BRANCH) --build-arg REMOTE_SRC=$(REMOTE_SRC) -t hilbertmodgroup-$(TAG) .

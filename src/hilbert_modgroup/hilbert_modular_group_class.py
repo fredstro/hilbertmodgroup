@@ -212,7 +212,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
                 gens.append(self.T(x))
                 gens.append(self.L(x))
         else:
-            raise ValueError(f"Unknown algorithm '{algorithm}'. Expected one of 'standard' or 'elementary'")
+            raise ValueError(f"Unknown algorithm '{algorithm}'. "
+                             f"Expected one of 'standard' or 'elementary'")
         return gens
 
     @cached_method
