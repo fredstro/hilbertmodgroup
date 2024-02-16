@@ -175,20 +175,20 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
     @cached_method
     def generators(self, algorithm='standard'):
         r"""
-        Return a list of generators of self.
+        Return a list of generators of ``self``.
 
         INPUT:
 
         - ``algorithm`` (string) either 'standard' or 'elementary'.
-            If 'elementary' is given return a set of generators
-         consisting of elementary (i.e. upper- and lower-triangular) matrices.
-         Otherwise return a set of reflections and translations.
 
+        If 'elementary' is given return a set of generators
+        consisting of elementary (i.e. upper- and lower-triangular) matrices.
+        Otherwise return a set of reflections and translations.
 
         EXAMPLES::
 
             sage: from hilbert_modgroup.all import HilbertModularGroup
-            sage: H=HilbertModularGroup(5)
+            sage: H = HilbertModularGroup(5)
             sage: H.generators()
             [
             [ 0 -1]  [          1 1/2*a + 1/2]  [1 a]
@@ -245,7 +245,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         EXAMPLES::
 
             sage: from hilbert_modgroup.all import HilbertModularGroup
-            sage: H=HilbertModularGroup(5)
+            sage: H = HilbertModularGroup(5)
             sage: H.T()
             [1 1]
             [0 1]
@@ -703,7 +703,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         EXAMPLES::
 
             sage: from hilbert_modgroup.all import HilbertModularGroup
-            sage: H=HilbertModularGroup(5)
+            sage: H = HilbertModularGroup(5)
             sage: H.traces_of_elliptic_elements()
             [-1, 0, -1/2*a - 1/2, 1/2*a - 1/2, 1, -1/2*a + 1/2, 1/2*a + 1/2]
 
@@ -714,7 +714,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: var('x')
             x
             sage: K = NumberField(x^3-36*x-1, names='a')
-            sage: H=HilbertModularGroup(K)
+            sage: H = HilbertModularGroup(K)
             sage: H2.traces_of_elliptic_elements()
             [-1, 0, 1]
 
