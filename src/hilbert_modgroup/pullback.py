@@ -895,11 +895,14 @@ class HilbertPullback(SageObject):
             sage: from hilbert_modgroup.all import *
             sage: P1=HilbertPullback(HilbertModularGroup(5))
             sage: P1._construct_cusp(1,0)
-            Cusp Infinity of Number Field in a with ... polynomial x^2 - 5 with a = 2.236067977499790?
+            Cusp Infinity of Number Field in a with ... polynomial
+            x^2 - 5 with a = 2.236067977499790?
             sage: P1._construct_cusp((1,0))
-            Cusp Infinity of Number Field in a with ... polynomial x^2 - 5 with a = 2.236067977499790?
+            Cusp Infinity of Number Field in a with ... polynomial
+            x^2 - 5 with a = 2.236067977499790?
             sage: P1._construct_cusp(0,1)
-            Cusp [0: 1] of Number Field in a with ... polynomial x^2 - 5 with a = 2.236067977499790?
+            Cusp [0: 1] of Number Field in a with ... polynomial
+            x^2 - 5 with a = 2.236067977499790?
         """
         if isinstance(c, NFCusp) and c.number_field() == self.number_field():
             return c
