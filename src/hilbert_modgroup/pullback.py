@@ -1168,8 +1168,9 @@ class HilbertPullback(SageObject):
             sage: H3 = HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: P3 = HilbertPullback(H3)
             sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(2,1),CC(10,1)])
-            sage: P3.reduce_in_cuspidal_region(z,P3.group().cusps()[0],
-            ....:                   return_map=True) # abs tol 1e-10
+            sage: cusp = P3.group().cusps()[0]
+            sage: P3.reduce_in_cuspidal_region(z, cusp,  # abs tol 1e-10
+            ....:                   return_map=True)
             (
             [2.98606258583498 + 1.0*I, -1.97222162680976 + 1.0*I, -0.0138409590252291 + 1.0*I],
             <BLANKLINE>
