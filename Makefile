@@ -55,19 +55,19 @@ docker-rebuild:
 	docker build --build-arg GIT_BRANCH=$(GIT_BRANCH) --build-arg REMOTE_SRC=$(REMOTE_SRC) --no-cache -t hilbertmodgroup-$(TAG) .
 
 docker-test: docker
-	docker run -it -e GIT_BRANCH=$(GIT_BRANCH) --init hilbertmodgroup-$(TAG) test
+	docker run --platform linux/amd64 -it -e GIT_BRANCH=$(GIT_BRANCH) --init hilbertmodgroup-$(TAG) test
 
 docker-examples: docker
-	docker run -p $(NBPORT):$(NBPORT) -it -e GIT_BRANCH=$(GIT_BRANCH) -e NBPORT=$(NBPORT) --init hilbertmodgroup-$(TAG) examples $(EXAMPLES_ARGS)
+	docker run --platform linux/amd64 -p $(NBPORT):$(NBPORT) -it -e GIT_BRANCH=$(GIT_BRANCH) -e NBPORT=$(NBPORT) --init hilbertmodgroup-$(TAG) examples $(EXAMPLES_ARGS)
 
 docker-tox: docker
-	docker run -it -e GIT_BRANCH=$(GIT_BRANCH) -e TOX_ARGS=$(TOX_ARGS) --init hilbertmodgroup-$(TAG) tox
+	docker run --platform linux/amd64 -it -e GIT_BRANCH=$(GIT_BRANCH) -e TOX_ARGS=$(TOX_ARGS) --init hilbertmodgroup-$(TAG) tox
 
 docker-shell: docker
-	docker run -it -e GIT_BRANCH=$(GIT_BRANCH) --init hilbertmodgroup-$(TAG) shell
+	docker run --platform linux/amd64 -it -e GIT_BRANCH=$(GIT_BRANCH) --init hilbertmodgroup-$(TAG) shell
 
 docker-sage: docker
-	docker run -it -e GIT_BRANCH=$(GIT_BRANCH) --init hilbertmodgroup-$(TAG) run
+	docker run --platform linux/amd64 -it -e GIT_BRANCH=$(GIT_BRANCH) --init hilbertmodgroup-$(TAG) run
 
 
 clean:
