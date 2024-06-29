@@ -789,31 +789,33 @@ class HilbertPullback(SageObject):
         Try to find a heuristic closest cusp using LLL.
 
         INPUT:
+
         - ``z`` -- point in the upper half-plane
         - ``a`` -- ideal or number field element (default = None)
-                    If None then this is set to the entire ring of integers.
+          If None then this is set to the entire ring of integers.
         - ``as_cusp`` -- boolean (default: False)
-                    If True we return an element of type NFCusp
+          If True we return an element of type NFCusp
+
         EXAMPLES::
 
             sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
-            sage: z=UpperHalfPlaneProductElement([CC(0,1),CC(0,1)])
+            sage: z = UpperHalfPlaneProductElement([CC(0,1),CC(0,1)])
             sage: P1.get_heuristic_closest_cusp(z)
             (-1, 0)
-            sage: z=UpperHalfPlaneProductElement([CC(0,0.5),CC(0,1)])
+            sage: z = UpperHalfPlaneProductElement([CC(0,0.5),CC(0,1)])
             sage: P1.get_heuristic_closest_cusp(z)
             (0, 1)
-            sage: z=UpperHalfPlaneProductElement([CC(2.2,0.5),CC(1,0.5)])
+            sage: z = UpperHalfPlaneProductElement([CC(2.2,0.5),CC(1,0.5)])
             sage: P1.get_heuristic_closest_cusp(z)
             (-1/2*a + 3/2, 1)
             sage: H2 = HilbertModularGroup(10)
             sage: P2 = HilbertPullback(H2)
-            sage: z=UpperHalfPlaneProductElement([CC(2,0.5),CC(1,0.2)])
+            sage: z = UpperHalfPlaneProductElement([CC(2,0.5),CC(1,0.2)])
             sage: P2.get_heuristic_closest_cusp(z)
             (1, 1)
-            sage: z=UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I,\
+            sage: z = UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I,\
                                                         0.0200000000000000 + 0.0300000000000000*I])
             sage: P2.get_heuristic_closest_cusp(z)
             (3*a - 10, -a - 4)
@@ -856,18 +858,16 @@ class HilbertPullback(SageObject):
 
     def _construct_ideal(self, a, b=None):
         r"""
-        Construct an ideal of the number field associated with self from a
+        Construct an ideal of the number field associated with self from a.
 
         EXAMPLES::
 
-        sage: from hilbert_modgroup.all import *
-        sage: P1=HilbertPullback(HilbertModularGroup(5))
-        sage: P1._construct_ideal(1)
-        Fractional ideal (1)
-        sage: P1._construct_ideal(P1.number_field().fractional_ideal(1))
-        Fractional ideal (1)
-
-
+            sage: from hilbert_modgroup.all import *
+            sage: P1 = HilbertPullback(HilbertModularGroup(5))
+            sage: P1._construct_ideal(1)
+            Fractional ideal (1)
+            sage: P1._construct_ideal(P1.number_field().fractional_ideal(1))
+            Fractional ideal (1)
         """
         if a is None:
             ideala = self.group().base_ring().fractional_ideal(1)
@@ -886,18 +886,23 @@ class HilbertPullback(SageObject):
         Return an instance of NFCusp for the number field of self from input c and optional d
 
         INPUT:
+
         - ``c`` -- instance of NFCusp, element or tuple of elements of number field
         - ``d`` -- element of number field or None (default: None)
+
         EXAMPLES::
 
-        sage: from hilbert_modgroup.all import *
-        sage: P1=HilbertPullback(HilbertModularGroup(5))
-        sage: P1._construct_cusp(1,0)
-        Cusp Infinity of Number Field in a with ... polynomial x^2 - 5 with a = 2.236067977499790?
-        sage: P1._construct_cusp((1,0))
-        Cusp Infinity of Number Field in a with ... polynomial x^2 - 5 with a = 2.236067977499790?
-        sage: P1._construct_cusp(0,1)
-        Cusp [0: 1] of Number Field in a with ... polynomial x^2 - 5 with a = 2.236067977499790?
+            sage: from hilbert_modgroup.all import *
+            sage: P1=HilbertPullback(HilbertModularGroup(5))
+            sage: P1._construct_cusp(1,0)
+            Cusp Infinity of Number Field in a with ... polynomial
+            x^2 - 5 with a = 2.236067977499790?
+            sage: P1._construct_cusp((1,0))
+            Cusp Infinity of Number Field in a with ... polynomial
+            x^2 - 5 with a = 2.236067977499790?
+            sage: P1._construct_cusp(0,1)
+            Cusp [0: 1] of Number Field in a with ... polynomial
+            x^2 - 5 with a = 2.236067977499790?
         """
         if isinstance(c, NFCusp) and c.number_field() == self.number_field():
             return c
@@ -921,7 +926,7 @@ class HilbertPullback(SageObject):
             sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
-            sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(1,1)])
+            sage: z = UpperHalfPlaneProductElement([CC(1,1),CC(1,1)])
             sage: P1.X(z)
             (1.00000000000000, 0.000000000000000)
             sage: b1,b2 = H1.base_ring().fractional_ideal(1).integral_basis(); b1,b2
@@ -957,7 +962,7 @@ class HilbertPullback(SageObject):
             sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
-            sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(1,1)])
+            sage: z = UpperHalfPlaneProductElement([CC(1,1),CC(1,1)])
             sage: P1.reduce_by_translations(z,return_map=True)
             (
                                                       [ 1 -1]
@@ -965,7 +970,7 @@ class HilbertPullback(SageObject):
             )
 
 
-            sage: z=UpperHalfPlaneProductElement([CC(3,1),CC(-1,1)])
+            sage: z = UpperHalfPlaneProductElement([CC(3,1),CC(-1,1)])
             sage: P1.reduce_by_translations(z,return_map=True) # abs tol 1e-10
             (
             [-0.236067977499790 + 1.00000000000000*I, 0.236067977499790 + 1.00000000000000*I],
@@ -985,12 +990,12 @@ class HilbertPullback(SageObject):
 
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: P3=HilbertPullback(H3)
-            sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(1,1)])
+            sage: z = UpperHalfPlaneProductElement([CC(1,1),CC(1,1)])
             sage: P3.reduce_by_translations(z,return_map=True)
             Traceback (most recent call last):
             ...
             ValueError: Need an element of type: UpperHalfPlaneProductElement__class of degree 3
-            sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(1,1),CC(1,1)])
+            sage: z = UpperHalfPlaneProductElement([CC(1,1),CC(1,1),CC(1,1)])
             sage: P3.reduce_by_translations(z,return_map=True)
             (
                                                                           [ 1 -1]
@@ -1022,7 +1027,6 @@ class HilbertPullback(SageObject):
         Check if the given point is reduced in the cuspidal region.
 
         EXAMPLES::
-
 
             sage: from hilbert_modgroup.all import *
             sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
@@ -1068,7 +1072,7 @@ class HilbertPullback(SageObject):
 
         - ``z`` -- point in the upper half-plane
         - ``return_map`` -- boolean (default False)
-                            Set to ``True`` to return the map which performed the reduction.
+          Set to ``True`` to return the map which performed the reduction.
 
         EXAMPLES::
 
@@ -1109,8 +1113,8 @@ class HilbertPullback(SageObject):
         - ``z`` -- point in the upper half-plane.
         - ``cusp`` -- cusp of the group of self.
         - ``return_map`` -- boolean (default=False)
-                            Return the map A such that AN^-1z is reduced where N is the
-                            cusp normalizing map for the cusp.
+          Return the map A such that AN^-1z is reduced where N is the
+          cusp normalizing map for the cusp.
 
         EXAMPLES::
 
@@ -1132,8 +1136,8 @@ class HilbertPullback(SageObject):
             [1.00000000000000*I, 1.00000000000000*I], [ 0  1]
             )
 
-        :: Check that if we apply a cusp-normalizing map to a point then the reduction with respect
-        :: to that cusp is the same as the reduction of the original point with respect to infinity
+        Check that if we apply a cusp-normalizing map to a point then the reduction with respect
+        to that cusp is the same as the reduction of the original point with respect to infinity ::
 
             sage: c=NFCusp(P1.group().base_ring().number_field(),1,2)
             sage: N=H1.cusp_normalizing_map(c)
@@ -1161,19 +1165,18 @@ class HilbertPullback(SageObject):
             [     1 a - 1]
             [     0      1]
             )
-            sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
-            sage: P3=HilbertPullback(H3)
+            sage: H3 = HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
+            sage: P3 = HilbertPullback(H3)
             sage: z=UpperHalfPlaneProductElement([CC(1,1),CC(2,1),CC(10,1)])
-            sage: P3.reduce_in_cuspidal_region(z,P3.group().cusps()[0],\
-                                                    return_map=True) # abs tol 1e-10
+            sage: cusp = P3.group().cusps()[0]
+            sage: P3.reduce_in_cuspidal_region(z, cusp,  # abs tol 1e-10
+            ....:                   return_map=True)
             (
             [2.98606258583498 + 1.0*I, -1.97222162680976 + 1.0*I, -0.0138409590252291 + 1.0*I],
             <BLANKLINE>
             [     1 -a - 4]
             [     0      1]
             )
-
-
         """
         self._check_upper_half_plane_element(z)
         if not cusp:
@@ -1380,9 +1383,10 @@ class HilbertPullback(SageObject):
 
     def _matrix_BLambda_row_sum(self, i=None):
         r"""
-        Compute r_i(B_{\Lambda}) = sum_j |b_ij| or sum_ij |b_ij|.
+        Compute ``r_i(B_{\Lambda}) = sum_j |b_ij|`` or ``sum_ij |b_ij|``.
 
         INPUT:
+
         -`` i`` -- integer (default: None)
                     If i is given then return sum of absolute values in row nr. i,
                     otherwise return the sum.
@@ -1429,7 +1433,7 @@ class HilbertPullback(SageObject):
     @cached_method
     def _exp_matrix_BLambda_row_sum(self, i=None):
         r"""
-        Compute exp(r_i(B_{\Lambda})) = sum_j |b_ij| or sum_ij |b_ij|.
+        Compute ``exp(r_i(B_{\Lambda})) = sum_j |b_ij|`` or ``sum_ij |b_ij|``.
 
         INPUT:
 
@@ -1599,6 +1603,7 @@ class HilbertPullback(SageObject):
         Return the constant `a_i` used to bound the embeddings of sigma in Algorithm XXX.
 
         INPUT:
+
         - ``z`` -- point in the upper half-plane
         - ``initial_bd_d`` -- an initial bound for the distance to nearest cusp (default None)
         - ``use_initial_bd_d`` -- boolean (default: 'True') Use the initial bound or not.
@@ -1658,6 +1663,7 @@ class HilbertPullback(SageObject):
         Return the vector of all bounds Dzi
 
         INPUT:
+
         - ``z`` -- point in the upper half-plane
         - ``initial_bd_d`` -- an initial bound for the distance to nearest cusp (default None)
         - ``use_initial_bd_d`` -- boolean (default: 'True') Use the initial bound or not.
@@ -1825,9 +1831,11 @@ class HilbertPullback(SageObject):
                                   prec=16):
         """
         Bound for the embeddings of the numerator of the closest cusp to z.
+
         Reference: Corollary 5
 
-            rho_i in [sigma_i x_i - delta*y_i**0.5 , sigma_i x_i - delta*y_i**0.5]
+        ``rho_i in [sigma_i x_i - delta*y_i**0.5 , sigma_i x_i - delta*y_i**0.5]``
+
         INPUT:
 
         - ``z`` -- point in the upper half-plane
@@ -1897,8 +1905,10 @@ class HilbertPullback(SageObject):
         """
         Bound for the coordinates, with respect to the ring of integers,
         of the numerator of the closest cusp to z.
+
         Reference: Lemma XXX
-            rho_i in [sigma_i x_i - delta*y_i**0.5 , sigma_i x_i - delta*y_i**0.5]
+
+        ``rho_i in [sigma_i x_i - delta*y_i**0.5 , sigma_i x_i - delta*y_i**0.5]``
 
         INPUT:
 
@@ -2206,13 +2216,13 @@ class HilbertPullback(SageObject):
 
 
         EXAMPLES::
+
             sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: z = UpperHalfPlaneProductElement([CC(0,1),CC(0,1)])
             sage: P1._candidate_closest_cusps(z)
              [(1, 0), (-1, -1), (0, 1), (1, -1)]
-
         """
         cusp_candidates = find_candidate_cusps(self, z, use_lll=use_lll,
                                                use_norm_bound=use_norm_bound,
