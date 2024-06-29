@@ -1,7 +1,7 @@
 ARG REMOTE_SRC=1
 ARG GIT_BRANCH=develop
 
-FROM sagemath/sagemath:9.7 as base
+FROM --platform=linux/amd64 sagemath/sagemath:10.3 as base
 RUN sudo apt-get update
 RUN sudo apt-get -y install git
 

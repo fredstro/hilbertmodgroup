@@ -6,15 +6,9 @@ Note: These are the algorithms that needs optimizing to make it all faster.
 """
 from sage.all import ceil,floor,cartesian_product
 from sage.arith.misc import gcd
-from sage.modular.cusps_nf import NFCusp
-from sage.rings.infinity import Infinity
 from sage.structure.sage_object cimport SageObject
 from hilbert_modgroup.upper_half_plane cimport UpperHalfPlaneProductElement__class
-# from sage.rings.number_field.number_field_ideal import NumberFieldIdeal
 from sage.rings.number_field.number_field_element cimport NumberFieldElement
-from sage.rings.number_field.number_field_element import is_NumberFieldElement
-from sage.matrix.constructor import identity_matrix
-from sage.matrix.all import Matrix
 
 cpdef integral_coordinates_in_box(bounds):
     """

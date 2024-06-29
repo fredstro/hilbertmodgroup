@@ -19,7 +19,7 @@ from sage.misc.misc_c import prod
 from sage.modular.cusps_nf import NFCusp
 from sage.modules.free_module_element import vector
 from sage.rings.infinity import Infinity
-from sage.rings.number_field.number_field_ideal import is_NumberFieldIdeal
+from sage.rings.number_field.number_field_ideal import NumberFieldIdeal
 from sage.rings.real_double import RDF
 from sage.rings.real_mpfr import RealField
 from sage.structure.sage_object import SageObject
@@ -868,11 +868,18 @@ class HilbertPullback(SageObject):
             Fractional ideal (1)
             sage: P1._construct_ideal(P1.number_field().fractional_ideal(1))
             Fractional ideal (1)
+            sage: a = P1.number_field().fractional_ideal(1)
+            sage: b = P1.number_field().fractional_ideal(2)
+            sage: P1._construct_ideal(a, b)
+            Fractional ideal (1/2)
         """
         if a is None:
             ideala = self.group().base_ring().fractional_ideal(1)
-        elif is_NumberFieldIdeal(a):
-            ideala = a
+        elif isinstance(a, NumberFieldIdeal):
+            if b:
+                ideala = a / b
+            else:
+                ideala = a
         elif a in self.group().base_ring() and not b:
             ideala = self.group().base_ring().fractional_ideal(a)
         elif a in self.group().base_ring() and b in self.group().base_ring():

@@ -21,9 +21,9 @@ from sage.groups.matrix_gps.linear import LinearMatrixGroup_generic
 from sage.modular.cusps_nf import NFCusp
 from sage.rings.infinity import infinity
 from sage.rings.number_field.number_field import QuadraticField, CyclotomicField
-from sage.all import latex, Integer, Matrix, matrix
+from sage.all import latex, Integer, Matrix, matrix, ZZ
 from sage.misc.cachefunc import cached_method
-from sage.rings.number_field.order import is_NumberFieldOrder
+from sage.rings.number_field.order import Order
 
 # from .upper_half_plane import ComplexPlaneOtimesK
 from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement__class
@@ -148,7 +148,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             [          1 1/2*a + 1/2]
             [          0           1]
         """
-        if not is_NumberFieldOrder(base_ring) or not base_ring.number_field().is_totally_real():
+        if base_ring != ZZ and (not isinstance(base_ring, Order)
+                                or not base_ring.number_field().is_totally_real()):
             raise ValueError("Input (={0}) can not be used to create a Hilbert modular group. " +
                              "Need an order of a totally real number field")
         # Instance data related to elliptic elements

@@ -8,7 +8,7 @@ Note: The structure of this class is based on ArithmeticSubgroupElement from sag
 
 """
 import sage
-from sage.groups.perm_gps.permgroup_element import is_PermutationGroupElement
+from sage.groups.perm_gps.permgroup_element import PermutationGroupElement
 from sage.rings.real_mpfr import RealField
 from sage.structure.element cimport Element
 from sage.rings.all import Integer, CC
@@ -1625,7 +1625,7 @@ cdef class ComplexPlaneProductElement__class(Element):
 
 
         """
-        if not is_PermutationGroupElement(s):
+        if not isinstance(s, PermutationGroupElement):
             raise ValueError("Input must be a permutation group element")
         znew = [0 for i in range(self._degree)]
         for i in range(self._degree):

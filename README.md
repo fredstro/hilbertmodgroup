@@ -6,7 +6,7 @@ and is dependent on SageMath.
 
 ## Requirements
 - SageMath v9.6+ (https://www.sagemath.org/)
-  (Tested on v9.6, v9.7 and v10.0)
+  (Tested on v9.6, v9.7, v10.0 and v10.2)
 
 ## Installation
 ### Using sage pip
