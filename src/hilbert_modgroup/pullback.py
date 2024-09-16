@@ -1095,8 +1095,13 @@ class HilbertPullback(SageObject):
             sage: P1.reduce(z, return_map=True)[1]
             [ 1/2*a - 1/2  -1/2*a - 1/2]
             [ 1/2*a - 1/2             0]
-
+            sage: CF = ComplexField(103)
+            sage: z = UpperHalfPlaneProductElement([CF(0.5, 0.5),CF(1,1)])
+            sage: P1.reduce(z)
+            [1.00000000000000000000000000000 + 1.00000000000000000000000000000*I, ...
         """
+        if z.norm() == 0:
+            raise ValueError("Can not reduce point at the boundary of one of the half-planes.")
         c = self.find_closest_cusp(z, return_multiple=False, as_cusp=True)
         c_rep, Umu = self.group().cusp_representative(c, return_map=True)
         A = self._group.cusp_normalizing_map(c_rep)

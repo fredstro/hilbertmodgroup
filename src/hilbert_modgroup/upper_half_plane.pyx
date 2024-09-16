@@ -8,9 +8,10 @@ Note: The structure of this class is based on ArithmeticSubgroupElement from sag
 
 """
 import sage
+from .utils import get_prec
 from sage.groups.perm_gps.permgroup_element import PermutationGroupElement
 from sage.rings.real_mpfr import RealField
-from sage.structure.element cimport Element
+from sage.structure.element cimport Element, Vector
 from sage.rings.all import Integer, CC
 from sage.rings.infinity import Infinity
 from sage.structure.parent import Parent
@@ -93,7 +94,10 @@ def UpperHalfPlaneProductElement(z, **kwds):
         Traceback (most recent call last):
         ...
         ValueError: Point [1.00000000000000, 1.00000000000000 - 1.00000000000000*I] not in upper half-plane!
-
+        sage: CF = ComplexField(103)
+        sage: z= UpperHalfPlaneProductElement([CF(0.25, 0.25),CF(1,1)])
+        sage: z[0]
+            0.250000000000000000000000000000 + 0.250000000000000000000000000000*I
     """
     if isinstance(z,UpperHalfPlaneProductElement__class):
         parent = kwds.get('parent')
@@ -102,7 +106,7 @@ def UpperHalfPlaneProductElement(z, **kwds):
         if parent:
             return UpperHalfPlaneProductElement__class(list(z), parent=parent)
         return z
-    prec = kwds.get('prec',getattr(z,'prec',lambda : 53)())
+    prec = get_prec(z, **kwds)
     if hasattr(z,'value'):
         z = z.value()
     if isinstance(z, sage.rings.number_field.number_field_element.NumberFieldElement):
@@ -112,7 +116,7 @@ def UpperHalfPlaneProductElement(z, **kwds):
     elif not isinstance(z,list) and kwds.get('degree',0)>0:
         z = [MPComplexField(prec)(z)]*kwds.get('degree')
     if 'parent' not in kwds:
-        kwds['parent'] = UpperHalfPlaneProduct(degree=len(z))
+        kwds['parent'] = UpperHalfPlaneProduct(degree=len(z),prec=prec)
     return UpperHalfPlaneProductElement__class(z,**kwds)
 
 def ComplexPlaneProductElement(z,**kwds):
@@ -141,7 +145,12 @@ def ComplexPlaneProductElement(z,**kwds):
         [-1.00000000000000, -1.00000000000000]
         sage: ComplexPlaneProductElement(u1)
         [1.61803398874989, -0.618033988749895]
-
+        sage: CF = ComplexField(103)
+        sage: z = [CF(1,0), CF(0,1)]
+        sage: ComplexPlaneProductElement(z)
+        [1.00000000000000000000000000000, 1.00000000000000000000000000000*I]
+        sage: ComplexPlaneProductElement(z).parent().prec()
+        103
     """
     if isinstance(z,ComplexPlaneProductElement__class):
         parent = kwds.get('parent')
@@ -151,15 +160,18 @@ def ComplexPlaneProductElement(z,**kwds):
             return ComplexPlaneProductElement__class(list(z), parent=parent)
         return z
     # Get precision in the first hand from kwds, second from z and third set default to 53 bits
-    prec = kwds.get('prec',getattr(z,'prec',lambda : 53)())
+    prec = get_prec(z, **kwds)
     if isinstance(z, sage.rings.number_field.number_field_element.NumberFieldElement):
         z = z.complex_embeddings(prec)
     if hasattr(z,'value'):
         z = z.value().complex_embeddings(prec)
     if isinstance(z,list) and not isinstance(z[0],(ComplexNumber,MPComplexNumber)):
+        prec = kwds.get('prec', getattr(z[0], 'prec', lambda: 53)())
         z = [MPComplexField(prec)(x) for x in z]
     elif not isinstance(z,list) and kwds.get('degree',0)>0:
         z = [MPComplexField(prec)(z)]*kwds.get('degree')
+    if 'parent' not in kwds:
+        kwds['parent'] = ComplexPlaneProduct(degree=len(z), prec=prec)
     return ComplexPlaneProductElement__class(z,**kwds)
 
 
@@ -181,6 +193,7 @@ cdef class ComplexPlaneProduct__class(Parent):
         """
         Parent.__init__(self)
         self._degree = degree
+        self._prec = kwds.get('prec', 53)
 
     def __hash__(self):
         """
@@ -332,6 +345,20 @@ cdef class ComplexPlaneProduct__class(Parent):
         """
         return self._degree
 
+    def prec(self):
+        r"""
+        Return the precision of this product of complex planes.
+
+        EXAMPLES::
+
+            sage: from hilbert_modgroup.upper_half_plane import ComplexPlaneProduct
+            sage: ComplexPlaneProduct(2).prec()
+            53
+            sage: ComplexPlaneProduct(3, prec=103).prec()
+            103
+        """
+        return self._prec
+
     def _element_constructor_(self,z, **kwds):
         r"""
 
@@ -342,9 +369,14 @@ cdef class ComplexPlaneProduct__class(Parent):
             [1.00000000000000, 1.00000000000000]
             sage: ComplexPlaneProduct(degree=2)._element_constructor_([1,1+I])
             [1.00000000000000, 1.00000000000000 + 1.00000000000000*I]
+            sage: F=QuadraticField(5)
+            sage: ComplexPlaneProduct(2,prec=103)(F(1))
+            [1.00000000000000000000000000000, 1.00000000000000000000000000000]
+
         """
         kwds['degree'] = self.degree()
         kwds['parent'] = self
+        kwds['prec'] = self._prec
         return ComplexPlaneProductElement(z, **kwds)
 
     cpdef coerce(self, x):
@@ -442,11 +474,14 @@ cdef class UpperHalfPlaneProduct__class(ComplexPlaneProduct__class):
             ValueError: Point [1.00000000000000, 1.00000000000000 - 1.00000000000000*I] not in upper half-plane!
             sage: UpperHalfPlaneProduct(degree=2)._element_constructor_([1+I,1+2*I])
             [1.00000000000000 + 1.00000000000000*I, 1.00000000000000 + 2.00000000000000*I]
-
+            sage: F=QuadraticField(5)
+            sage: UpperHalfPlaneProduct(2,prec=103)(F(1))
+            [1.00000000000000000000000000000, 1.00000000000000000000000000000]
 
         """
         kwds['degree'] = self.degree()
         kwds['parent'] = self
+        kwds['prec'] = self._prec
         return UpperHalfPlaneProductElement(z, **kwds)
 
     def _an_element_(self):
@@ -538,7 +573,7 @@ cdef class ComplexPlaneProductElement__class(Element):
     def __init__(self,zl, verbose=0, *argv, **kwds):
         r"""
         Init self from a list of complex numbers.
-        Currently we only work with double (53 bits) precision.
+        Currently, we only work with double (53 bits) precision.
 
         INPUT:
 
@@ -662,7 +697,7 @@ cdef class ComplexPlaneProductElement__class(Element):
 
     def is_in_upper_half_plane(self):
         """
-        Base ring of self.
+        Return True if self is in the upper half plane or its boundary.
 
         EXAMPLES::
 
@@ -1547,14 +1582,18 @@ cdef class ComplexPlaneProductElement__class(Element):
             sage: z=UpperHalfPlaneProductElement([CC(3,1),CC(-1,1)])
             sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement__class
             sage: z.apply(A)
-            [-0.300000000000000 + 0.100000000000000*I, 0.500000000000000 + 0.500000000000000*I]            
+            [-0.300000000000000 + 0.100000000000000*I, 0.500000000000000 + 0.500000000000000*I]                        
             sage: isinstance(_, UpperHalfPlaneProductElement__class)
             True
+            sage: CF = ComplexField(103)
+            sage: z = UpperHalfPlaneProductElement([CF(0.5, 0.5),CF(1,1)])
+            sage: z.apply(A)
+            [-1.00000000000000000000000000000 + 1.00000000000000000000000000000*I, ...
             sage: a=H5.base_ring().number_field().gen()
             sage: A = H5.cusp_normalizing_map(NFCusp(H5.base_ring().number_field(),a,1+a))
             sage: z.apply(A)
-            [1.67855780465319 + 0.0271280367431345*I, 0.717919314224174 + 0.0871677256896697*I]
-    
+            [1.53825552559559453517100534830 + 0.0586313287080522798416723065016*I, ...
+            
         """
         try:
             aa, bb, cc, dd = m.list()
@@ -1566,16 +1605,17 @@ cdef class ComplexPlaneProductElement__class(Element):
         except (AttributeError, ValueError):
             raise ValueError(
                 "Need a 2 x 2 matrix or object that contains a list of 4 elements to act on self.")
+        prec = self.prec()
         if hasattr(aa,'complex_embeddings'):
-            a = aa.complex_embeddings()
-            b = bb.complex_embeddings()
-            c = cc.complex_embeddings()
-            d = dd.complex_embeddings()
+            a = aa.complex_embeddings(prec)
+            b = bb.complex_embeddings(prec)
+            c = cc.complex_embeddings(prec)
+            d = dd.complex_embeddings(prec)
         else:
-            a = [RealField()(aa)]*self._degree
-            b = [RealField()(bb)]*self._degree
-            c = [RealField()(cc)]*self._degree
-            d = [RealField()(dd)]*self._degree
+            a = [RealField(prec)(aa)]*self._degree
+            b = [RealField(prec)(bb)]*self._degree
+            c = [RealField(prec)(cc)]*self._degree
+            d = [RealField(prec)(dd)]*self._degree
         ## Component - wise application of map
         denominators = [(c[i]*z+d[i]) for i, z in enumerate(self._z)]
         if 0 in denominators:
@@ -1601,7 +1641,7 @@ cdef class ComplexPlaneProductElement__class(Element):
         """
         if self.__class__ == ComplexPlaneProductElement__class:
             return self
-        return ComplexPlaneProductElement(list(self))
+        return ComplexPlaneProductElement(list(self), prec=self.parent().prec())
 
     def permute(self,s):
         r"""

@@ -6,6 +6,7 @@ from sage.categories.map cimport Map
 
 cdef class ComplexPlaneProduct__class(Parent):
     cdef int _degree
+    cdef int _prec
 
 cdef class UpperHalfPlaneProduct__class(ComplexPlaneProduct__class):
     pass

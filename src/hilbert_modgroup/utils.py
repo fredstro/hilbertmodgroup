@@ -3,6 +3,7 @@ General utility functions
 
 """
 from sage.rings.real_mpfi import RealIntervalField
+from sage.structure.element import Vector
 
 
 def upper(x, prec):
@@ -37,3 +38,29 @@ def lower(x, prec):
         3.141
     """
     return RealIntervalField(prec)(x).lower()
+
+
+def get_prec(x, **kwds):
+    r"""
+    Return the precision of x.
+
+    EXAMPLES::
+
+        sage: from hilbert_modgroup.utils import get_prec
+        sage: get_prec(0.1)
+        53
+        sage: get_prec(RR.pi())
+        53
+        sage: get_prec([RealField(103).pi(), RealField(103)(1)])
+        103
+    """
+    if 'prec' in kwds:
+        return kwds['prec']
+    try:
+        if isinstance(x, (list, tuple, Vector)):
+            prec = x[0].prec()
+        else:
+            prec = x.prec()
+    except AttributeError:
+        prec = 53
+    return prec
