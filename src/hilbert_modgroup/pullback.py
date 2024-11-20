@@ -10,7 +10,7 @@ NOTE: I know it is often a bad idea to write utility classes but I decided to \
 """
 from hilbert_modgroup.hilbert_modular_group_class import \
     HilbertModularGroup_class
-from sage.all import ZZ
+from sage.rings.integer_ring import Z as ZZ
 from sage.categories.sets_cat import cartesian_product
 from sage.functions.other import floor
 from sage.matrix.constructor import matrix
@@ -23,7 +23,7 @@ from sage.rings.number_field.number_field_ideal import NumberFieldIdeal
 from sage.rings.real_double import RDF
 from sage.rings.real_mpfr import RealField
 from sage.structure.sage_object import SageObject
-from sage.matrix.all import Matrix
+from sage.matrix.constructor import Matrix
 
 from hilbert_modgroup.upper_half_plane import \
     ComplexPlaneProductElement__class, \
@@ -1355,7 +1355,8 @@ class HilbertPullback(SageObject):
              A vertex at (1.0, 1.0))
 
         """
-        from sage.all import Polyhedron, vector
+        from sage.geometry.polyhedron.constructor import Polyhedron
+        from sage.modules.free_module_element import free_module_element as vector
         if not isinstance(bounds, (list, tuple)):
             raise ValueError("Need a list of bounds!")
         if not isinstance(bounds[0], tuple):

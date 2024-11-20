@@ -12,7 +12,8 @@ from .utils import get_prec
 from sage.groups.perm_gps.permgroup_element import PermutationGroupElement
 from sage.rings.real_mpfr import RealField
 from sage.structure.element cimport Element, Vector
-from sage.rings.all import Integer, CC
+from sage.rings.integer import Integer
+from sage.rings.cc import CC
 from sage.rings.infinity import Infinity
 from sage.structure.parent import Parent
 from sage.structure.element cimport parent

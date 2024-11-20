@@ -4,7 +4,9 @@ Cython versions of Pullback algorithms.
 
 Note: These are the algorithms that needs optimizing to make it all faster.
 """
-from sage.all import ceil,floor,cartesian_product
+from sage.functions.other import ceil
+from sage.functions.other import floor
+from sage.categories.sets_cat import cartesian_product
 from sage.arith.misc import gcd
 from sage.structure.sage_object cimport SageObject
 from hilbert_modgroup.upper_half_plane cimport UpperHalfPlaneProductElement__class

@@ -10,7 +10,7 @@ NOTE: The structure of this class is based on ArithmeticSubgroupElement from sag
 """
 from sage.structure.element cimport MultiplicativeGroupElement
 from sage.structure.richcmp cimport richcmp
-from sage.rings.all import ZZ
+from sage.rings.integer_ring import Z as ZZ
 from sage.rings.infinity import infinity
 from sage.matrix.matrix_space import MatrixSpace
 from sage.matrix.matrix_generic_dense cimport Matrix_generic_dense
