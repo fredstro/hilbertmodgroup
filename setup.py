@@ -56,13 +56,23 @@ ext_modules = [
     )
 ]
 
-setuptools.setup(
-    ext_modules=cythonize(
-        ext_modules,
-        include_path=['src', SAGE_LIB],
-        compiler_directives={
-            'embedsignature': True,
-            'language_level': '3',
-        },
-    ),
-)
+from contextlib import contextmanager
+
+try:
+    from sage.misc.package_dir import cython_namespace_package_support
+except ImportError:
+    @contextmanager
+    def cython_namespace_package_support():
+        yield
+
+with cython_namespace_package_support():
+    setuptools.setup(
+        ext_modules=cythonize(
+            ext_modules,
+            include_path=['src', SAGE_LIB],
+            compiler_directives={
+                'embedsignature': True,
+                'language_level': '3',
+            },
+        ),
+    )
