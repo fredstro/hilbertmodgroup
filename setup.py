@@ -19,7 +19,7 @@ if not os.path.isdir(SAGE_LIB):
 INCLUDE_DIRS = []
 LIBRARY_DIRS = []
 if shutil.which('brew') is not None:
-    proc = subprocess.Popen("/opt/homebrew/bin/brew --prefix", shell=True,
+    proc = subprocess.Popen("brew --prefix", shell=True,
                             stdout=subprocess.PIPE, stdin=subprocess.PIPE,
                             stderr=subprocess.STDOUT, close_fds=True)
     HOMEBREW_PREFIX = proc.stdout.readline().decode('utf-8').strip()
