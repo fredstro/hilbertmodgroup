@@ -4,10 +4,6 @@ import subprocess
 import setuptools
 from setuptools.extension import Extension
 from Cython.Build import cythonize
-# Check if we are currently in a SageMath environment.
-SAGE_LOCAL = os.getenv('SAGE_LOCAL')
-if not SAGE_LOCAL:
-    raise ValueError("This package can only be installed inside SageMath (http://www.sagemath.org)")
 # Find correct value for SAGE_LIB which is needed to compile the Cython extensions.
 SAGE_LIB = os.getenv('SAGE_LIB')
 if not SAGE_LIB:
