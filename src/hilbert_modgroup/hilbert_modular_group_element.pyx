@@ -8,13 +8,14 @@ AUTHORS:
 
 NOTE: The structure of this class is based on ArithmeticSubgroupElement from sage/modular/arithgroup/arithgroup_element.pyx
 """
-from sage.structure.element cimport MultiplicativeGroupElement
+from sage.structure.element cimport MultiplicativeGroupElement, InfinityElement
 from sage.structure.richcmp cimport richcmp
 from sage.rings.integer_ring import Z as ZZ
 from sage.rings.infinity import infinity
 from sage.matrix.matrix_space import MatrixSpace
 from sage.matrix.matrix_generic_dense cimport Matrix_generic_dense
 from sage.misc.cachefunc import cached_method
+from sage.rings.infinity import infinity
 
 from hilbert_modgroup.upper_half_plane cimport ComplexPlaneProductElement__class, UpperHalfPlaneProductElement__class
 
@@ -414,8 +415,7 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
             sage: H([1, K.gen(), 0, 1]).acton(infinity)
             +Infinity
         """
-        from sage.rings.infinity import is_Infinite, infinity
-        if is_Infinite(z):
+        if isinstance(z, InfinityElement):
             if self.c() != 0:
                 return self.a() / self.c()
             else:
