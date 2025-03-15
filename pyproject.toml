@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools>=49.6.0",
+    "setuptools>=61.0",
     "cython>=3.0.8,<3.1.0",
     "setuptools_scm[toml]>=6.2",
     "passagemath-environment",
@@ -11,4 +11,39 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 write_to = "src/hilbert_modgroup/version.py"
-git_describe_command = "git describe --tags --long --match *.*"
+git_describe_command = "git describe --dirty --tags --long --match *.*"
+
+[project]
+name = "hilbert_modular_group"
+authors = [
+    {name = "Fredrik Stromberg", email = "fredrik314@gmail.com"}
+    ]
+description = "Algorithms for Hilbert modular groups"
+license = {file = "LICENSE"}
+keywords = ["hilbert modular groups", "reduction algorithms"]
+classifiers = [
+      "Development Status :: 4 - Beta",
+      "Intended Audience :: Science/Research",
+      "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+      "Operating System :: OS Independent",
+      "Programming Language :: C",
+      "Programming Language :: C++",
+      "Programming Language :: Python",
+      "Programming Language :: Cython",
+      "Topic :: Scientific/Engineering :: Mathematics"
+    ]
+readme = {file = "README.md", content-type = "text/markdown"}
+dynamic = ["version"]
+dependencies = [
+    "passagemath-standard"
+    ]
+[project.urls]
+homepage = "https://github.com/fredstro/hilbertmodgroup"
+bugtracker = "https://github.com/fredstro/hilbertmodgroup/issues"
+sourcecode = "https://github.com/fredstro/hilbertmodgroup/"
+
+[tool.setuptools.dynamic]
+version = {attr = "hilbert_modgroup.__version__"}
+
+[tool.uv]
+managed = false
