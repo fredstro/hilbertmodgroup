@@ -181,6 +181,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
+            sage: from sage.rings.integer_ring import Z as ZZ
             sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
@@ -193,8 +194,7 @@ class HilbertPullback(SageObject):
             [ 1.81844645923207]
             [-1.81844645923207]
 
-            sage: var('x')
-            x
+            sage: x = ZZ['x'].gen()
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: P3=HilbertPullback(H3)
             sage: P3.basis_matrix_logarithmic_unit_lattice()
@@ -430,6 +430,7 @@ class HilbertPullback(SageObject):
 
         EXAMPLES::
 
+            sage: from sage.rings.integer_ring import Z as ZZ
             sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
@@ -450,8 +451,8 @@ class HilbertPullback(SageObject):
             [ 9.00000000000000 -2.16227766016838]
             [ 9.00000000000000  4.16227766016838]
 
-            sage: var('x')
-            x
+
+            sage: x = ZZ['x'].gen()
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: P3=HilbertPullback(H3)
             sage: P3.basis_matrix_ideal()
@@ -501,8 +502,8 @@ class HilbertPullback(SageObject):
             [9 1]
             [0 1]
 
-            sage: var('x')
-            x
+            sage: from sage.rings.integer_ring import Z as ZZ
+            sage: x = ZZ['x'].gen()
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: P3=HilbertPullback(H3)
             sage: P3.basis_matrix_ideal_on_power_basis()
@@ -547,7 +548,8 @@ class HilbertPullback(SageObject):
             (1, 0)
             sage: P2.coordinates_in_number_field_ideal(b2)
             (0, 1)
-            sage: x=var('x')
+            sage: from sage.rings.integer_ring import Z as ZZ
+            sage: x = ZZ['x'].gen()
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: P3=HilbertPullback(H3)
             sage: b1,b2,b3=P3.number_field().fractional_ideal(1).basis()

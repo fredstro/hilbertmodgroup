@@ -415,6 +415,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
 
         EXAMPLES::
 
+            sage: from sage.rings.integer_ring import Z as ZZ
             sage: from hilbert_modgroup.all import HilbertModularGroup
             sage: H1=HilbertModularGroup(5)
             sage: H1.ncusps()
@@ -424,8 +425,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H2.ncusps()
             2
 
-            sage: var('x')
-            x
+            sage: x = ZZ['x'].gen()
             sage: K = NumberField(x^3-36*x-1, names='a')
             sage: H3=HilbertModularGroup(K)
             sage: H3.ncusps()
@@ -456,7 +456,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H2.cusps()
             [Cusp Infinity of Number Field ... polynomial x^2 - 10 with a = 3.162277660168380?,
             Cusp [2: a] of Number Field ... polynomial x^2 - 10 with a = 3.162277660168380?]
-            sage: x=var('x')
+            sage: from sage.rings.integer_ring import Z as ZZ
+            sage: x = ZZ['x'].gen()
             sage: K = NumberField(x^3-36*x-1, names='a')
             sage: H3=HilbertModularGroup(K); H3
             Hilbert Modular Group ... x^3 - 36*x - 1
@@ -509,7 +510,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H2=HilbertModularGroup(10)
             sage: H2.ideal_cusp_representatives()
             [Fractional ideal (1), Fractional ideal (2, a)]
-            sage: x=var('x')
+            sage: from sage.rings.integer_ring import Z as ZZ
+            sage: x = ZZ['x'].gen()
             sage: K = NumberField(x^3-36*x-1, names='a')
             sage: H3=HilbertModularGroup(K); H3
             Hilbert Modular Group ... x^3 - 36*x - 1
@@ -686,8 +688,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H2.orders_of_elliptic_elements()
             [3, 4, 6]
 
-            sage: var('x')
-            x
+            sage: from sage.rings.integer_ring import Z as ZZ
+            sage: x = ZZ['x'].gen()
             sage: H4=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: H4.orders_of_elliptic_elements()
             [3, 4, 6]
@@ -716,8 +718,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H2.traces_of_elliptic_elements()
             [-1, 0, 1]
 
-            sage: var('x')
-            x
+            sage: from sage.rings.integer_ring import Z as ZZ
+            sage: x = ZZ['x'].gen()
             sage: K = NumberField(x^3-36*x-1, names='a')
             sage: H = HilbertModularGroup(K)
             sage: H2.traces_of_elliptic_elements()
@@ -757,8 +759,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H2.traces_of_elliptic_elements_of_order(3)
             [-1]
 
-            sage: var('x')
-            x
+            sage: from sage.rings.integer_ring import Z as ZZ
+            sage: x = ZZ['x'].gen()
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: H3.traces_of_elliptic_elements_of_order(6)
             [1]
@@ -800,8 +802,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H2.order_of_elliptic_element_of_trace(-1)
             3
 
-            sage: var('x')
-            x
+            sage: from sage.rings.integer_ring import Z as ZZ
+            sage: x = ZZ['x'].gen()
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: H2.order_of_elliptic_element_of_trace(1)
             6
@@ -860,7 +862,8 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: H2.cusp_normalizing_map(H2.cusps()[1])
             [     2 -1/2*a]
             [     a     -2]
-            sage: x=var('x')
+            sage: from sage.rings.integer_ring import Z as ZZ
+            sage: x = ZZ['x'].gen()
             sage: K = NumberField(x^3-36*x-1, names='a')
             sage: H3=HilbertModularGroup(K)
             sage: H3.cusp_normalizing_map(H3.cusps()[1])

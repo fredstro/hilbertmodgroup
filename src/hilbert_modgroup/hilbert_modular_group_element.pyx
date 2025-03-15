@@ -345,9 +345,10 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
 
         An example of A acting on a symbolic variable::
 
-            sage: z = var('z')
+            sage: from sage.rings.integer_ring import Z as ZZ
+            sage: z = ZZ['z'].gen()
             sage: A.acton(z)
-            (2*z + sqrt(5) + 1)/(z*(sqrt(5) + 1) + sqrt(5) + 5)
+            (z + 1/2*a + 1/2)/((1/2*a + 1/2)*z + 1/2*a + 5/2)
 
         An example of A acting on an element of the base field:
 
