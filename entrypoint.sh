@@ -11,7 +11,7 @@ if [ -n "$GIT_BRANCH" ]; then
   git pull -ff origin $GIT_BRANCH;
 fi
 make clean
-sage setup.py install
+sage -pip install .
 case $1 in
     test)
       echo "Docker container running Sage doctests for the hilbertmodgroup package."

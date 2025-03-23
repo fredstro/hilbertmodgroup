@@ -2,20 +2,18 @@ import os
 import shutil
 import subprocess
 import setuptools
+import sysconfig
 from setuptools.extension import Extension
 from Cython.Build import cythonize
 # Find correct value for SAGE_LIB which is needed to compile the Cython extensions.
-SAGE_LIB = os.getenv('SAGE_LIB')
-if not SAGE_LIB:
-    try:
-        from sage.env import SAGE_LIB
-    except ModuleNotFoundError:
-        raise ModuleNotFoundError("To install this package you need to either specify the "
-                                  "environment variable 'SAGE_LIB' or call pip with "
-                                  "'--no-build-isolation'")
-if not os.path.isdir(SAGE_LIB):
-    raise ValueError(f"The library path {SAGE_LIB} is not a directory.")
-# Find and add INCLUDE_DIRS for Homebrew if needed
+try:
+    from sage.env import SAGE_LIB
+except ModuleNotFoundError:
+    SAGE_LIB = os.getenv('SAGE_LIB') or sysconfig.get_path('purelib')
+# Check if sage is installed in SAGE_LIB
+if not os.path.isdir(SAGE_LIB + '/sage'):
+    raise ModuleNotFoundError("Sagemath or passagemath needs to be installed.")
+
 INCLUDE_DIRS = []
 LIBRARY_DIRS = []
 if shutil.which('brew') is not None:
