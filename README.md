@@ -1,37 +1,49 @@
 # Hilbert Modular Groups
 
 This repository contains a python package `hilbert_modgroup` that implements algorithms 
-for Hilbert modular groups, in particular a reduction algorithm. The implementation is written in Python 
-and is dependent on SageMath.
+for Hilbert modular groups, in particular a reduction algorithm. 
+The implementation is written in Python using classes and libraries from SageMath.
 
-## Requirements
-- SageMath v9.6+ (https://www.sagemath.org/)
-  (Tested on v9.6, v9.7, v10.0 and v10.2)
+## Supported SageMath versions
+
+- SageMath v9.6 - 10.5 (https://www.sagemath.org/)
+- passagemath 10.5.22 (https://github.com/passagemath/passagemath)
 
 ## Installation
-### Using sage pip
-This package needs to be installed in the virtual environment provided by SageMath, and it is therefore necessary 
-to run the following command 
-```console
-$ sage -pip install --no-build-isolation hilbert-modular-group
-```
-**Note**: The `--no-build-isolation` is necessary as the compiler needs access 
-to certain library files from the sage installation and SageMath itself is 
-too large to be required as a build dependency. 
-As an alternative to this flag you can also specify the environment variable 
-SAGE_LIB explicitly.
 
-### From git source
-If the SageMath executable `sage` is in the current path you can install from source using the Makefile
+### Installation from PyPI
+
+The package can be installed using pip using the modularized passagemath fork 
+of SageMath (https://github.com/passagemath/passagemath).
+
+#### In a new virtual environment
+The following will install the hilbert-modular-group package together with necessary 
+dependencies from passagemath.
+```console 
+ $ python -m venv hilbertmodgroup
+ $ source hilbertmodgroup/bin/activate
+ $ pip install hilbert-modular-group
+```
+
+#### Using an existing SageMath installation
+
+If SageMath is already installed:
+```console
+$ sage -pip install hilbert-modular-group
+```
+
+#### From git source
+You can of course also download and install from source using e.g.:
 
 ```console
 $ git clone https://github.com/fredstro/hilbertmodgroup.git
 $ cd hilbertmodgrup
-$ make install
+$ pip install . 
 ```
 
 ### Docker
-If you do not have SageMath installed, but you have docker you can use install this package
+
+If you have docker installed you can use install this package
 in a docker container built and executed using e.g. `make docker-sage` or `make docker-examples`
 
 
@@ -83,19 +95,25 @@ The make file `Makefile` contains a number of useful commands that you can run u
 ```console
 $ make <command>
 ```
-The following commands are run in your local SagMath environment:
-1. `build` -- builds the package in place (sometimes useful for development).
-2. `sdist` -- create a source distribution in /sdist (can be installed using `sage -pip install sdist/<dist name>`)
-3. `install` -- build and install the package in the currently active sage environment
-4. `clean` -- remove all build and temporary files
-5. `test` -- run sage's doctests (same as `sage -t src/*`)
-6. `examples` -- run a Jupyter notebook with the SageMath kernel initialised at the `/examples` directory.
-7. `tox` -- run `sage -tox` with all environments: `doctest`, `coverage`, `pycodestyle`, `relint`, `codespell`
-   Note: If your local SageMath installation does not contain tox this will run `sage -pip install tox`.
+The following commands are run in your local SageMath environment:
+1. `sage-build` -- builds the package, including wheel and source distribution
+2. `sage-sdist` -- build source distribution only
+3. `sage-install` -- build and install the package
+4. `test` -- run sage's doctests (same as `sage -t src/*`)
+5. `tox` -- run `sage -tox` with all environments: `doctest`, `coverage`, `pycodestyle`, `relint`, `codespell` (   Note: If your local SageMath installation does not contain tox this will run `sage -pip install tox`.)
+6. `sage-examples` -- run `sage --notebook=jupyterlab` initialised at the `/examples` directory.
+
+The following commands are run in the current virtual environment (an error is raised if you are not in a virtual environment so for global installation please just run `python -m build .` etc.)
+
+6. `build` -- builds the package, including wheel and source distribution
+7. `sdist` -- build source distribution only
+8. `install` -- build and install the package
+9. `examples` -- installs `jupyterlab` and runs `jupyter lab` with the SageMath kernel installed and initialised at the `/examples` directory.
 
 The following commands are run in an isolated docker container 
 and requires docker to be installed and running:
-1. `docker` -- build a docker container with the tag `hilbertmodgroup-{GIT_BRANCH}`
+
+1. `docker-build` -- build a docker container with the tag `hilbertmodgroup-{GIT_BRANCH}`
 2. `docker-rebuild` -- rebuild the docker container without cache
 3. `docker-test` -- run SageMath's doctests in the docker container
 4. `docker-examples` -- run a Jupyter notebook with the SageMath kernel initialised at the `/examples` directory 
@@ -103,6 +121,10 @@ and requires docker to be installed and running:
 5. `docker-tox` -- run tox with all environments: `doctest`, `coverage`, `pycodestyle`, `relint`, `codespell`. 
 6. `docker-shell` -- run a shell in a docker container
 7. `docker-sage` -- run a sage interactive shell in a docker container
+
+General commands:
+
+6. `clean` -- remove all build and temporary files
 
 The following command-line parameters are available 
 - `NBPORT` -- set the port of the notebook for `examples` and `docker-examples`  (default is 8888)
@@ -160,7 +182,8 @@ If you are creating a new version to release the source directory should be clea
 ### PyPi
 
 To upload new versions to PyPi: 
-1. `make sdist` -- creates a source distribution `dist/hilbert_modular_group-x.y.z`
+1. Install twine: `pip install twine`
+2. `make sdist` -- creates a source distribution `dist/hilbert_modular_group-x.y.z`
 2. `twine check dist/hilbert_modular_group-x.y.z`
 3. `twine upload --repository pypi dist/hilbert_modular_group-z.y.z`
 
