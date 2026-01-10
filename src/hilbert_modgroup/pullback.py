@@ -94,7 +94,7 @@ class HilbertPullback(SageObject):
          EXAMPLES::
 
             sage: from hilbert_modgroup.all import HilbertModularGroup, \
-                                                    HilbertPullback
+            ....:                                      HilbertPullback
             sage: H = HilbertModularGroup(5)
             sage: P = HilbertPullback(H)
             sage: str(P)
@@ -185,22 +185,30 @@ class HilbertPullback(SageObject):
             sage: from hilbert_modgroup.all import *
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
-            sage: P1.basis_matrix_logarithmic_unit_lattice()
-            [ 0.481211825059603]
-            [-0.481211825059603]
+            sage: u = P1.number_field().unit_group().fundamental_units()[0]
+            sage: m = matrix([[u.complex_embeddings()[0].abs().log(),
+            ....:              u.complex_embeddings()[1].abs().log()]])
+            sage: P1.basis_matrix_logarithmic_unit_lattice() == m.transpose()
+            True
             sage: H2=HilbertModularGroup(10)
             sage: P2 = HilbertPullback(H2)
-            sage: P2.basis_matrix_logarithmic_unit_lattice()
-            [ 1.81844645923207]
-            [-1.81844645923207]
-
+            sage: u = P2.number_field().unit_group().fundamental_units()[0]
+            sage: m = matrix([[u.complex_embeddings()[0].abs().log(),
+            ....:              u.complex_embeddings()[1].abs().log()]])
+            sage: P2.basis_matrix_logarithmic_unit_lattice() == m.transpose()
+            True
             sage: x = ZZ['x'].gen()
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
             sage: P3=HilbertPullback(H3)
-            sage: P3.basis_matrix_logarithmic_unit_lattice()
-            [ 1.78943386474421 -4.27317838834468]
-            [-3.58349750383703  1.78711898997458]
-            [ 1.79406363909282  2.48605939837008]
+            sage: u1, u2 = P3.number_field().unit_group().fundamental_units()
+            sage: m = matrix([[u1.complex_embeddings()[0].abs().log(),
+            ....:              u1.complex_embeddings()[1].abs().log(),
+            ....:              u1.complex_embeddings()[2].abs().log()],
+            ....:             [u2.complex_embeddings()[0].abs().log(),
+            ....:              u2.complex_embeddings()[1].abs().log(),
+            ....:              u2.complex_embeddings()[2].abs().log()]])
+            sage: P3.basis_matrix_logarithmic_unit_lattice() == m.transpose()
+            True
 
         """
         n = self.group().base_ring().degree()
@@ -246,7 +254,7 @@ class HilbertPullback(SageObject):
 
             sage: from hilbert_modgroup.all import *
             sage: from hilbert_modgroup.upper_half_plane import \
-                                                UpperHalfPlaneProductElement
+            ....:                                      UpperHalfPlaneProductElement
             sage: H1 = HilbertModularGroup(5)
             sage: P1 = HilbertPullback(H1)
             sage: u0,u1=H1.base_ring().number_field().unit_group().gens()
@@ -652,7 +660,7 @@ class HilbertPullback(SageObject):
             [ 2.00000000000000  1.00000000000000 0.500000000000000 0.200000000000000]
             [-6.32455532033676  3.16227766016838 -1.58113883008419 0.632455532033676]
             sage: zv = [23.3400000000000 + 0.0100000000000000*I,\
-                        0.0200000000000000 + 0.0300000000000000*I]
+            ....:       0.0200000000000000 + 0.0300000000000000*I]
             sage: z=UpperHalfPlaneProductElement(zv)
             sage: P2.basis_matrix_ideal_plusz(z)
             [   1.00000000000000    1.00000000000000   0.000000000000000   0.000000000000000]
@@ -733,7 +741,7 @@ class HilbertPullback(SageObject):
             [-3 -1  3  1]
             [-5  2  2 -1]
             sage: z=UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I,\
-                                                        0.0200000000000000 + 0.0300000000000000*I])
+            ....:                                 0.0200000000000000 + 0.0300000000000000*I])
             sage: P2._shortest_vectors_ideal_plusz(z)
             [  25   -8    1    1]
             [  10   -3   -4   -1]
@@ -818,11 +826,11 @@ class HilbertPullback(SageObject):
             sage: P2.get_heuristic_closest_cusp(z)
             (1, 1)
             sage: z = UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I,\
-                                                        0.0200000000000000 + 0.0300000000000000*I])
+            ....:                                   0.0200000000000000 + 0.0300000000000000*I])
             sage: P2.get_heuristic_closest_cusp(z)
             (3*a - 10, -a - 4)
             sage: w=UpperHalfPlaneProductElement([-0.668903800800698 + 0.0362571615120737*I,\
-                                                        0.708560139622790 + 0.00414937759336099*I])
+            ....:                                  0.708560139622790 + 0.00414937759336099*I])
             sage: P2.get_heuristic_closest_cusp(w)
             (-a + 4, 2*a - 5)
             sage: x = ZZ['x'].gen()
@@ -1552,11 +1560,11 @@ class HilbertPullback(SageObject):
             sage: P3.Di() # abs tol 1e-10
             5.04891733952231
             sage: P3.Di(0) # abs tol 1e-10
-            1.67389896224499
-            sage: P3.Di(1) # abs tol 1e-10
-            2.01219217261232
-            sage: P3.Di(2) # abs tol 1e-10
             1.49899286313093
+            sage: P3.Di(1) # abs tol 1e-10
+            1.67389896224499
+            sage: P3.Di(2) # abs tol 1e-10
+            2.01219217261232
         """
         n = self.group().base_ring().number_field().degree()
         return float(self.max_ideal_norm()**(1/n)*self._exp_matrix_BLambda_row_sum(i).sqrt())
@@ -1580,7 +1588,7 @@ class HilbertPullback(SageObject):
             sage: K3.<a> = NumberField(x^3-x^2-2*x+1)
             sage: P3 = HilbertPullback(HilbertModularGroup(K3))
             sage: P3.D() # abs tol 1e-10
-            [1.673898962244985, 2.012192172612324, 1.4989928631309313]
+            [1.4989928631309313, 1.673898962244985, 2.012192172612324]
         """
         n = self.group().base_ring().number_field().degree()
         return [self.Di(i) for i in range(n)]
@@ -1641,11 +1649,11 @@ class HilbertPullback(SageObject):
             sage: H2 = HilbertModularGroup(10)
             sage: P2 = HilbertPullback(H2)
             sage: z=UpperHalfPlaneProductElement([CC(2,0.5),CC(1,0.2)])
-            sage: P2._Dzi(z,0)
+            sage: P2._Dzi(z,0) # abs tol 1e-10
             6.24288923183892
             sage: z=UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I,\
-                                                  0.0200000000000000 + 0.0300000000000000*I])
-            sage: P2._Dzi(z,0)
+            ....:                                 0.0200000000000000 + 0.0300000000000000*I])
+            sage: P2._Dzi(z,0) # abs tol 1e-10
             24.4704299162553
             sage: x = ZZ['x'].gen()
             sage: H3=HilbertModularGroup(NumberField(x^3-36*x-1, names='a'))
@@ -1704,7 +1712,7 @@ class HilbertPullback(SageObject):
             sage: P2._Dz(z) # abs tol 1e-10
             [6.24288923183892, 6.24288923183892]
             sage: z=UpperHalfPlaneProductElement([23.3400000000000 + 0.0100000000000000*I,\
-                                                  0.0200000000000000 + 0.0300000000000000*I])
+            ....:                                 0.0200000000000000 + 0.0300000000000000*I])
             sage: P2._Dz(z) # abs tol 1e-10
             [24.4704299162553, 24.4704299162553]
             sage: x = ZZ['x'].gen()
