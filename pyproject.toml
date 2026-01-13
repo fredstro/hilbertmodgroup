@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools>=61.0",
+    "setuptools>=77.0.0",
     "cython>=3.0.8,<3.1.0",
     "setuptools_scm[toml]>=6.2",
     "passagemath-environment",
@@ -19,12 +19,12 @@ authors = [
     {name = "Fredrik Stromberg", email = "fredrik314@gmail.com"}
     ]
 description = "Algorithms for Hilbert modular groups"
-license = {file = "LICENSE"}
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
 keywords = ["hilbert modular groups", "reduction algorithms"]
 classifiers = [
       "Development Status :: 4 - Beta",
       "Intended Audience :: Science/Research",
-      "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
       "Operating System :: OS Independent",
       "Programming Language :: C",
       "Programming Language :: C++",
@@ -35,16 +35,55 @@ classifiers = [
 readme = {file = "README.md", content-type = "text/markdown"}
 dynamic = ["version"]
 dependencies = [
-    "passagemath-standard",
-    "passagemath-plot"
+    "passagemath-standard~=10.5.49",
+    "passagemath-plot~=10.5.49"
+    ]
+[project.optional-dependencies]
+dev = [
+    "tox",
+    "build",
+    "ruff",
     ]
 [project.urls]
 homepage = "https://github.com/fredstro/hilbertmodgroup"
 bugtracker = "https://github.com/fredstro/hilbertmodgroup/issues"
 sourcecode = "https://github.com/fredstro/hilbertmodgroup/"
 
-[tool.setuptools.dynamic]
-version = {attr = "hilbert_modgroup.__version__"}
-
 [tool.uv]
 managed = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src"]
+extend-exclude = ["*.pyx"]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "SIM",    # flake8-simplify
+]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "B008",   # do not perform function calls in argument defaults
+    "SIM108", # use ternary operator instead of if-else
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/all.py" = ["F401", "SIM105"]
+"**/_doctest_environment.py" = ["F401"]
+"**/__init__.py" = ["F401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["hilbert_modgroup"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
