@@ -21,7 +21,6 @@ from hilbert_modgroup.upper_half_plane cimport ComplexPlaneProductElement__class
 
 cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
 
-
     cdef Matrix_generic_dense __x
 
     def __init__(self, parent, x, check=True):
@@ -53,9 +52,9 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
             True
 
         """
-        if not 'HilbertModularGroup_class' in parent.__class__.__name__:
+        if 'HilbertModularGroup_class' not in parent.__class__.__name__:
             raise TypeError("parent (= {0}) must be a Hilbert Modular group".format(parent))
-        x = MatrixSpace(parent.base_ring(),2,2)(x, copy=True, coerce=True)
+        x = MatrixSpace(parent.base_ring(), 2, 2)(x, copy=True, coerce=True)
         if x.determinant() != 1:
             raise TypeError("matrix must have determinant 1")
         x.set_immutable()
@@ -150,12 +149,12 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
             False
 
         """
-        cdef HilbertModularGroupElement right = <HilbertModularGroupElement>right_r
+        cdef HilbertModularGroupElement right = <HilbertModularGroupElement > right_r
         return richcmp(self.__x, right.__x, op)
 
     def __nonzero__(self):
         """
-        Return ``True``, since the ``self`` lives in SL(2,\Z), which does not
+        Return ``True``, since the ``self`` lives in SL(2,\\Z), which does not
         contain the zero matrix.
 
         EXAMPLES::
@@ -186,9 +185,9 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
             [          0           1]
             sage: C.parent()
             Hilbert Modular Group ... x^2 - 5 with a = 2.236067977499790?
-          
+
         """
-        return self.__class__(self.parent(), self.__x * (<HilbertModularGroupElement> right).__x, check=False)
+        return self.__class__(self.parent(), self.__x * (<HilbertModularGroupElement>right).__x, check=False)
 
     def __invert__(self):
         r"""
@@ -204,9 +203,9 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
             [           0            1]
         """
         return self._parent(
-                [self.__x.get_unsafe(1, 1), -self.__x.get_unsafe(0, 1),
-                 -self.__x.get_unsafe(1, 0), self.__x.get_unsafe(0, 0)]
-                )
+            [self.__x.get_unsafe(1, 1), -self.__x.get_unsafe(0, 1),
+             -self.__x.get_unsafe(1, 0), self.__x.get_unsafe(0, 0)]
+        )
 
     def matrix(self):
         """
@@ -434,15 +433,15 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
             return self._acton_complex_plane_element(z)
         try:
             return (self.a() * z + self.b()) / (self.c() * z + self.d())
-        except:
+        except Exception:
             raise ValueError(f"Can not apply self to z of type: {type(z)}")
 
     cpdef _acton_complex_plane_element(self, ComplexPlaneProductElement__class z):
         """
         Act on an element of the type ComplexPlaneProductElement__class
-        
+
         EXAMPLES::
-        
+
             sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
             sage: from hilbert_modgroup.all import HilbertModularGroup
             sage: H=HilbertModularGroup(5)
@@ -458,14 +457,14 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
             sage: S._acton_complex_plane_element(z)
             [1.00000000000000*I, 1.00000000000000*I]
 
-        
+
         """
         result = []
         if len(z) != len(self.complex_embeddings()):
             raise ValueError("Need element of the same degree!")
         for i, Aemb in enumerate(self.complex_embeddings()):
             a, b, c, d = Aemb.list()
-            result.append((a*z[i] + b)/(c*z[i]+d))
+            result.append((a * z[i] + b) / (c * z[i] + d))
         return z.parent()(result)
 
     def __getitem__(self, q):
@@ -575,8 +574,8 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
         order = self.parent().order_of_elliptic_element_of_trace(t)
         if check:
             max_order = order or max(self.parent().orders_of_elliptic_elements())
-            for i in range(2,max_order+1):
-                m = m*self.matrix()
+            for i in range(2, max_order + 1):
+                m = m * self.matrix()
                 if m.is_one() and (not order or (i < order or not m.is_one() and i == order)):
                     raise ArithmeticError("Could not find order of element!")
         if not order:
@@ -618,6 +617,5 @@ cdef class HilbertModularGroupElement(MultiplicativeGroupElement):
         emb_b = self.b().complex_embeddings(prec)
         emb_c = self.c().complex_embeddings(prec)
         emb_d = self.d().complex_embeddings(prec)
-        M = MatrixSpace(emb_a[0].parent(),2,2)
-        return [ M([emb_a[i], emb_b[i], emb_c[i], emb_d[i]]) for i in range(len(emb_a))]
-
+        M = MatrixSpace(emb_a[0].parent(), 2, 2)
+        return [M([emb_a[i], emb_b[i], emb_c[i], emb_d[i]]) for i in range(len(emb_a))]
