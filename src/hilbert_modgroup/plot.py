@@ -4,17 +4,18 @@ Helper routine to make plots for the examples.
 
 """
 from typing import ParamSpec
-from sage.functions.other import floor, ceil
+
+from sage.calculus.var import var
+from sage.functions.other import ceil, floor
 from sage.geometry.polyhedron.constructor import Polyhedron
-from sage.plot.all import Graphics, point2d, parametric_plot
+from sage.modules.free_module_element import vector
+from sage.plot.all import Graphics, parametric_plot, point2d
+from sage.plot.plot3d.implicit_plot3d import implicit_plot3d
 from sage.plot.plot3d.shapes2 import point3d
 from sage.repl.rich_output import get_display_manager
-from sage.repl.rich_output.output_graphics3d import (OutputSceneThreejs as threejs,
-                                                     OutputSceneJmol as jmol)
+from sage.repl.rich_output.output_graphics3d import OutputSceneJmol as jmol
+from sage.repl.rich_output.output_graphics3d import OutputSceneThreejs as threejs
 from sage.rings.real_mpfr import RR
-from sage.calculus.var import var
-from sage.modules.free_module_element import vector
-from sage.plot.plot3d.implicit_plot3d import implicit_plot3d
 
 P = ParamSpec('P')
 

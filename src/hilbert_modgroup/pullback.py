@@ -8,33 +8,36 @@ AUTHORS:
 NOTE: I know it is often a bad idea to write utility classes but I decided to \
         do it anyway at least for the moment.
 """
-from hilbert_modgroup.hilbert_modular_group_class import \
-    HilbertModularGroup_class
-from sage.rings.integer_ring import Z as ZZ
+import logging
+
 from sage.categories.sets_cat import cartesian_product
 from sage.functions.other import floor
-from sage.matrix.constructor import matrix
+from sage.matrix.constructor import Matrix, matrix
 from sage.misc.cachefunc import cached_method
 from sage.misc.misc_c import prod
 from sage.modular.cusps_nf import NFCusp
 from sage.modules.free_module_element import vector
 from sage.rings.infinity import Infinity
+from sage.rings.integer_ring import Z as ZZ
 from sage.rings.number_field.number_field_ideal import NumberFieldIdeal
 from sage.rings.real_double import RDF
 from sage.rings.real_mpfr import RealField
 from sage.structure.sage_object import SageObject
-from sage.matrix.constructor import Matrix
 
-from hilbert_modgroup.upper_half_plane import \
-    ComplexPlaneProductElement__class, \
-    UpperHalfPlaneProductElement__class, UpperHalfPlaneProductElement
-
-from hilbert_modgroup.utils import upper, lower
-
-from hilbert_modgroup.pullback_cython import lattice_elements_in_box, \
-    coordinates_to_ideal_elements, find_closest_cusp, find_candidate_cusps, \
-    distance_to_cusp
-import logging
+from hilbert_modgroup.hilbert_modular_group_class import HilbertModularGroup_class
+from hilbert_modgroup.pullback_cython import (
+    coordinates_to_ideal_elements,
+    distance_to_cusp,
+    find_candidate_cusps,
+    find_closest_cusp,
+    lattice_elements_in_box,
+)
+from hilbert_modgroup.upper_half_plane import (
+    ComplexPlaneProductElement__class,
+    UpperHalfPlaneProductElement,
+    UpperHalfPlaneProductElement__class,
+)
+from hilbert_modgroup.utils import lower, upper
 
 log = logging.getLogger(__name__)
 
@@ -83,9 +86,7 @@ class HilbertPullback(SageObject):
             sage: P1 == P2
             False
         """
-        if not isinstance(other, type(self)) or self._group != other._group:
-            return False
-        return True
+        return isinstance(other, type(self)) and self._group == other._group
 
     def __str__(self):
         r"""
@@ -370,7 +371,7 @@ class HilbertPullback(SageObject):
         # To avoid overflow it is more efficient to apply the map,
         # e.g. compute (z*u**-k)/u**k instead of z*u**-(2k)
         floors = [-floor(y/2+1/2) for y in self.Y(z)]
-        reducing_map = prod([self.group().E(u ** y) for u, y in zip(units, floors)])
+        reducing_map = prod([self.group().E(u ** y) for u, y in zip(units, floors, strict=True)])
         reduced_point = z.apply(reducing_map)
         if return_map:
             return reduced_point, reducing_map
@@ -930,7 +931,7 @@ class HilbertPullback(SageObject):
         try:
             cusp = NFCusp(self.number_field(), c, d)
         except Exception:
-            raise ValueError(f"Could not construct a number field cusp from c={c} and d={d}")
+            raise ValueError(f"Could not construct a number field cusp from c={c} d={d}") from None
         return cusp
 
     def X(self, z, a=None):
@@ -1986,7 +1987,7 @@ class HilbertPullback(SageObject):
         dy = [d[j] * z.imag()[j] ** 0.5 for j in range(n)]
         for i in range(n):
             bd = 0
-            for j, y in enumerate(z.imag()):
+            for j, _y in enumerate(z.imag()):
                 bd += dy[j] + sz[j] * self.basis_matrix_ideal()[i, j].abs()
 
             bounds.append(upper(bd*factor, prec=prec))

@@ -15,28 +15,28 @@ AUTHORS:
 
 
 """
+import logging
+
 import sage
 from sage.categories.groups import Groups
 from sage.groups.matrix_gps.linear import LinearMatrixGroup_generic
-from sage.modular.cusps_nf import NFCusp
-from sage.rings.infinity import infinity
-from sage.rings.number_field.number_field import QuadraticField, CyclotomicField
-from sage.misc.latex import latex
-from sage.rings.integer import Integer
 from sage.matrix.constructor import Matrix
 from sage.matrix.constructor import Matrix as matrix
-from sage.rings.integer_ring import Z as ZZ
 from sage.misc.cachefunc import cached_method
+from sage.misc.latex import latex
+from sage.modular.cusps_nf import NFCusp
+from sage.rings.infinity import infinity
+from sage.rings.integer import Integer
+from sage.rings.integer_ring import Z as ZZ
+from sage.rings.number_field.number_field import CyclotomicField, QuadraticField
 from sage.rings.number_field.order import Order
 
 # from .upper_half_plane import ComplexPlaneOtimesK
 from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement__class
+
 from .hilbert_modular_group_element import HilbertModularGroupElement
 
-import logging
-
 logger = logging.getLogger(__name__)
-logger.setLevel(10)
 
 
 def is_HilbertModularGroup(x) -> bool:
@@ -104,7 +104,7 @@ def HilbertModularGroup(number_field, projective=True):
         raise NotImplementedError("Only PSL2 is implemented at the moment.")
     degree = Integer(2)
     name = f'Hilbert Modular Group PSL({degree}) over {ring}'
-    ltx = 'PSL({0}, {1})'.format(degree, latex(ring))
+    ltx = f'PSL({degree}, {latex(ring)})'
     return HilbertModularGroup_class(base_ring=ring, sage_name=name, latex_string=ltx)
 
 
@@ -477,7 +477,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
 
         """
         for a in self.ideal_cusp_representatives():
-            logger.debug("Set cusp info for ideal a={0}".format(a))
+            logger.debug(f"Set cusp info for ideal a={a}")
             if a.is_trivial():
                 ca = NFCusp(self.base_ring().number_field(),
                             self.base_ring()(1),
@@ -489,7 +489,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
                             lreps=self.ideal_cusp_representatives())
             self._cusps.append(ca)
             if ca.ideal() != a:
-                raise ArithmeticError("Failed to associate a cusp to ideal {0}".format(a))
+                raise ArithmeticError(f"Failed to associate a cusp to ideal {a}")
         return self._cusps
 
     def ideal_cusp_representatives(self):
@@ -645,17 +645,17 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
                 continue
             t = F.gen()
             possible_traces_in_K = [s(t) for s in F.embeddings(K)]
-            logger.debug("F={0}".format(F))
-            logger.debug("z={0}".format(z))
-            logger.debug("t={0}".format(t))
-            logger.debug("|F.emb(K)|={0}".format(len(F.embeddings(K))))
-            logger.debug("t={0}".format(possible_traces_in_K))
+            logger.debug(f"F={F}")
+            logger.debug(f"z={z}")
+            logger.debug(f"t={t}")
+            logger.debug(f"|F.emb(K)|={len(F.embeddings(K))}")
+            logger.debug(f"t={possible_traces_in_K}")
             traces_of_order_o = []
             for st in possible_traces_in_K:
                 # Make sure that the trace have all embeddings with absolute value <2
                 test = [x for x in st.complex_embeddings() if abs(x) >= 2]
-                logger.debug("st={0}".format(st))
-                logger.debug("test={0}".format(test))
+                logger.debug(f"st={st}")
+                logger.debug(f"test={test}")
                 if test:
                     continue
                 # We want to choose a representative since the point only depends
@@ -904,7 +904,7 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
                     msg = f"Did not get correct normalizing map A={A} to cusp: {cusp}"
                     raise ArithmeticError(msg)
             logger.debug(f"A={0}".format(A))
-            logger.debug("A.det()={0}".format(A.det().complex_embeddings()))
+            logger.debug(f"A.det()={A.det().complex_embeddings()}")
             self._cusp_normalizing_maps_inverse[(ca, cb)] = A.inverse()
             self._cusp_normalizing_maps[(ca, cb)] = A
         if inverse:
@@ -984,4 +984,4 @@ class HilbertModularGroup_class(LinearMatrixGroup_generic):
         if isinstance(z, ComplexPlaneProductElement__class) and \
                 z.degree() == number_field.absolute_degree():
             return z.apply(matrix(2, 2, [a, b, c, d]))
-        raise ValueError("Unsupported type for acting with cusp normalizer! (z={0})".format(z))
+        raise ValueError(f"Unsupported type for acting with cusp normalizer! (z={z})")
