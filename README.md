@@ -7,7 +7,7 @@ The implementation is written in Python using classes and libraries from SageMat
 ## Supported SageMath versions
 
 - SageMath v9.6 - 10.5 (https://www.sagemath.org/)
-- passagemath 10.5.22 (https://github.com/passagemath/passagemath)
+- passagemath 10.5.49 (https://github.com/passagemath/passagemath)
 
 ## Installation
 
@@ -150,11 +150,53 @@ Run relint on the local source with docker version of sage:
 ### GitHub Workflow
 
 - There are two long-lived branches `main` and `develop`.
-- The `develop` branch is used for development and can contain new / experimental features.  
+- The `develop` branch is used for development and can contain new / experimental features.
 - Pull-requests should be based on `develop`.
 - Releases should be based on `main`.
-- The `main` branch should always be as stable and functional as possible. In particular, merges should always happen from `develop` into `main`. 
-- Git-Flow is enabled (and encouraged) with feature branches based on `develop` and hotfixes based on `main`. 
+- The `main` branch should always be as stable and functional as possible. In particular, merges should always happen from `develop` into `main`.
+- Git-Flow is enabled (and encouraged) with feature branches based on `develop` and hotfixes based on `main`.
+
+### Commit Message Convention
+
+This project follows the [Conventional Commits](https://www.conventionalcommits.org/) specification.
+Commit messages should be structured as follows:
+
+```
+<type>: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Allowed types:**
+- `feat` - A new feature
+- `fix` - A bug fix
+- `docs` - Documentation only changes
+- `style` - Changes that do not affect the meaning of the code (formatting, etc.)
+- `refactor` - A code change that neither fixes a bug nor adds a feature
+- `perf` - A code change that improves performance
+- `test` - Adding missing tests or correcting existing tests
+- `build` - Changes that affect the build system or external dependencies
+- `ci` - Changes to CI configuration files and scripts
+- `chore` - Other changes that don't modify src or test files
+- `revert` - Reverts a previous commit
+
+**Examples:**
+```
+feat: add support for custom fundamental domains
+fix: correct boundary detection in reduction algorithm
+docs: update installation instructions for passagemath
+refactor: simplify cusp normalization logic
+test: add tests for degree 3 number fields
+```
+
+A pre-commit hook is configured to enforce this convention. To install the hooks:
+```console
+$ pip install pre-commit
+$ pre-commit install
+$ pre-commit install --hook-type commit-msg
+```
 
 ### GitHub Actions
 
@@ -179,13 +221,42 @@ version_tuple = (x, y, z, '???')
 where ??? depends on the state of the current directory. 
 If you are creating a new version to release the source directory should be clean.
 
-### PyPi
+### Publishing to PyPI
 
-To upload new versions to PyPi: 
-1. Install twine: `pip install twine`
-2. `make sdist` -- creates a source distribution `dist/hilbert_modular_group-x.y.z`
-2. `twine check dist/hilbert_modular_group-x.y.z`
-3. `twine upload --repository pypi dist/hilbert_modular_group-z.y.z`
+#### Automated Publishing (Recommended)
+
+The project uses GitHub Actions for automated publishing:
+
+- **TestPyPI**: Automatically triggered on pushes to the `develop` branch. After tox checks pass, the package is built and published to [test.pypi.org](https://test.pypi.org/project/hilbert-modular-group/).
+
+- **PyPI**: Automatically triggered when a GitHub Release is published. After tox checks pass, the package is built and published to [pypi.org](https://pypi.org/project/hilbert-modular-group/).
+
+Both workflows can also be triggered manually via the GitHub Actions interface.
+
+**To create a new release:**
+1. Ensure all changes are merged to `main`
+2. Create a git tag: `git tag x.y.z`
+3. Push the tag: `git push origin x.y.z`
+4. Create a GitHub Release from the tag:
+   - Go to the repository on GitHub
+   - Click "Releases" in the right sidebar (or navigate to `https://github.com/fredstro/hilbertmodgroup/releases`)
+   - Click "Draft a new release"
+   - Select the tag you just pushed from the "Choose a tag" dropdown
+   - Enter a release title (e.g., `v1.2.3`)
+   - Add release notes describing the changes (you can click "Generate release notes" for auto-generated notes)
+   - Click "Publish release"
+5. The publish workflow will automatically run and upload to PyPI
+
+#### Manual Publishing
+
+To manually upload to PyPI:
+```console
+$ pip install build twine
+$ python -m build
+$ twine check dist/*
+$ twine upload --repository testpypi dist/*  # Test first
+$ twine upload --repository pypi dist/*      # Production
+```
 
 ## References:
 

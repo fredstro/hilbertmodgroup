@@ -43,6 +43,7 @@ dev = [
     "tox",
     "build",
     "ruff",
+    "pre-commit",
     ]
 [project.urls]
 homepage = "https://github.com/fredstro/hilbertmodgroup"
