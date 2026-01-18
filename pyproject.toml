@@ -57,7 +57,7 @@ managed = false
 line-length = 100
 target-version = "py312"
 src = ["src"]
-extend-exclude = ["*.pyx"]
+extend-exclude = ["*.pyx", "examples/Untitled*.ipynb"]
 
 [tool.ruff.lint]
 select = [
@@ -80,6 +80,9 @@ ignore = [
 "**/all.py" = ["F401", "SIM105"]
 "**/_doctest_environment.py" = ["F401"]
 "**/__init__.py" = ["F401"]
+"examples/*.ipynb" = ["E402", "E702", "E741", "F821"]
+"**/version.py" = ["UP006", "UP007", "UP035", "I001"]
+"**/plot.py" = ["UP047"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["hilbert_modgroup"]
