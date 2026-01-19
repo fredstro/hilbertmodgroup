@@ -10,17 +10,23 @@ jobs:
   tox-checks:
     runs-on: ubuntu-latest
     steps:
-      - name: Get current date
-        id: date
-        run: echo "date=$(date +'%s')" >> $GITHUB_OUTPUT
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-      - uses: actions/checkout@v4
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
 
-      - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag hilbertmodgroup:${{ steps.date.outputs.date }}
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install package with dev dependencies
+        run: pip install ".[dev]"
 
       - name: Run tox on current commit
-        run: docker run -t -e GIT_BRANCH=${{ github.sha }} --init hilbertmodgroup:${{ steps.date.outputs.date }} tox
+        run: tox
 
   build:
     needs: tox-checks
