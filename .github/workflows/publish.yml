@@ -14,12 +14,17 @@ jobs:
         run: echo "date=$(date +'%s')" >> $GITHUB_OUTPUT
 
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag hilbertmodgroup:${{ steps.date.outputs.date }}
+        run: docker build . --file Dockerfile.passagemath --tag hilbertmodgroup:${{ steps.date.outputs.date }}
 
-      - name: Run tox on current commit
-        run: docker run -t -e GIT_BRANCH=${{ github.sha }} --init hilbertmodgroup:${{ steps.date.outputs.date }} tox
+      - name: Run doctests
+        run: docker run --rm hilbertmodgroup:${{ steps.date.outputs.date }} test
+
+      - name: Run linting checks
+        run: docker run --rm hilbertmodgroup:${{ steps.date.outputs.date }} lint
 
   build:
     needs: tox-checks

@@ -45,6 +45,11 @@ dev = [
     "ruff",
     "pre-commit",
     ]
+passagemath = [
+    "passagemath-schemes",
+    "passagemath-symbolics",
+    "passagemath-repl",
+    ]
 [project.urls]
 homepage = "https://github.com/fredstro/hilbertmodgroup"
 bugtracker = "https://github.com/fredstro/hilbertmodgroup/issues"

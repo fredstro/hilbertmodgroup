@@ -1,0 +1,16 @@
+.tox
+.eggs
+*.egg-info
+dist
+build
+*.so
+*.c
+*.cpp
+*.pyc
+__pycache__
+.ipynb_checkpoints
+.idea
+*.egg
+.pytest_cache
+.coverage
+htmlcov

@@ -12,6 +12,8 @@ if [ -n "$GIT_BRANCH" ]; then
 fi
 make clean
 sage -pip install .
+# Reinstall cysignals from source to ensure compatibility with Sage
+sage -pip install --force-reinstall --no-binary :all: cysignals
 case $1 in
     test)
       echo "Docker container running Sage doctests for the hilbertmodgroup package."
