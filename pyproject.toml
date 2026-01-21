@@ -12,6 +12,7 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools_scm]
 write_to = "src/hilbert_modgroup/version.py"
 git_describe_command = "git describe --dirty --tags --long --match *.*"
+local_scheme = "no-local-version"
 
 [project]
 name = "hilbert_modular_group"
