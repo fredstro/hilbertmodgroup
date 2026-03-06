@@ -258,6 +258,11 @@ $ twine upload --repository testpypi dist/*  # Test first
 $ twine upload --repository pypi dist/*      # Production
 ```
 
+## Contributors
+
+- [Fredrik Strömberg](https://github.com/fredstro) — author and maintainer
+- [Sujeet Kumar Singh](https://github.com/Sujeetbahel) — extended Hilbert modular group implementation
+
 ## References:
 
 - [![DOI](https://joss.theoj.org/papers/10.21105/joss.03996/status.svg)](https://doi.org/10.21105/joss.03996)
