@@ -434,7 +434,7 @@ cdef class AnytoCPP(Map):
             TypeError: unable to convert 'a' to a MPComplexNumber
         """
         cdef ComplexPlaneProduct__class parent = <ComplexPlaneProduct__class > self._codomain
-        return parent._element_constructor(x)
+        return parent._element_constructor_(x)
 
     def section(self):
         """
@@ -1222,7 +1222,7 @@ cdef class ComplexPlaneProductElement__class(Element):
             raise ValueError("One of left or right must be of the type ComplexPlaneProductElement__class!")
         return left, right, parent
 
-    cdef _add_(self, other):
+    cdef  _add_(self, other):
         """
         Add ``other`` to ``self`` and convert to ``parent``. Used by the ``__add__`` method.
 
