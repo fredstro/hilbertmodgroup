@@ -480,8 +480,8 @@ class NFCusp_wrt_lattice_ideal(Element):
         ::
 
             sage: c = NFCusp_wrt_lattice_ideal(lattice_ideal, 0)
-            sage: c.GHmatrix_wrt_lattice_ideal()
-            [0, -1 / 4, 1, 0]
+            sage: c.GHmatrix_wrt_lattice_ideal() == [0, -1 / 4, 1, 0]
+            True
 
         Note that the GH-matrix associated to a cusp is not unique, and the
         output of the ``GHmatrix`` function may change.
