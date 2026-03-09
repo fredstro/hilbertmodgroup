@@ -1,7 +1,7 @@
 [build-system]
 requires = [
     "setuptools>=77.0.0",
-    "cython>=3.0.8,<3.1.0",
+    "cython>=3.0.8,<3.3.0",
     "setuptools_scm[toml]>=6.2",
     "passagemath-environment",
     "passagemath-flint",
@@ -36,8 +36,8 @@ classifiers = [
 readme = {file = "README.md", content-type = "text/markdown"}
 dynamic = ["version"]
 dependencies = [
-    "passagemath-standard~=10.5.49",
-    "passagemath-plot~=10.5.49"
+    "passagemath-standard~=10.8.1",
+    "passagemath-plot~=10.8.1"
     ]
 [project.optional-dependencies]
 dev = [
