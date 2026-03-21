@@ -9,6 +9,7 @@ Note: The structure of this class is based on ArithmeticSubgroupElement from sag
 """
 from sage.categories.map cimport Map
 import sage
+import json
 from .utils import get_prec
 from sage.groups.perm_gps.permgroup_element import PermutationGroupElement
 from sage.rings.real_mpfr import RealField
@@ -608,11 +609,16 @@ cdef class ComplexPlaneProductElement__class(Element):
         if self._degree != parent.degree():
             msg = f"Can not construct an element of degree {parent.degree()} from list of length {len(zl)}"
             raise ValueError(msg)
-        if not isinstance(zl[0], (MPComplexNumber, ComplexNumber)):
-            raise ValueError("Need a list of MPComplexNumber")
-        super().__init__(parent)
-        self._prec = zl[0].prec()
+        if isinstance(zl[0], (RealNumber, MPComplexNumber, ComplexNumber)):
+            self._prec = zl[0].prec()
+        else:
+            self._prec = kwds.get('prec', 53)
         self._base_ring = MPComplexField(self._prec)
+        try:
+            zl = [self._base_ring(zi) for zi in zl]
+        except ValueError as a:
+            raise ValueError(f"Need elements coercible to Complex Numbers. Got: {zl}")
+        super().__init__(parent)
         if verbose > 0:
             print(zl[0], type(zl[0]))
         if isinstance(zl[0], ComplexNumber):
@@ -663,6 +669,71 @@ cdef class ComplexPlaneProductElement__class(Element):
 
         """
         return ComplexPlaneProductElement, (self.z(),)
+
+    def to_json(self):
+        r"""
+        JSON representation of self.
+
+        EXAMPLES::
+
+            sage: from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement
+            sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
+            sage: import json
+            sage: c = ComplexPlaneProductElement([1+I,1])
+            sage: c.to_json()
+            {'_cls': 'hilbert_modgroup.upper_half_plane.ComplexPlaneProductElement__class',
+             'entries': ['1.00000000000000 + 1.00000000000000*I', '1.00000000000000']}
+            sage: json.dumps(c.to_json()) # doctest: +NORMALIZE_WHITESPACE
+            '{"_cls": "hilbert_modgroup.upper_half_plane.ComplexPlaneProductElement__class",
+             "entries": ["1.00000000000000 + 1.00000000000000*I", "1.00000000000000"]}'
+
+            sage: c = UpperHalfPlaneProductElement([1+I,1+I])
+            sage: c.to_json()
+            {'_cls': 'hilbert_modgroup.upper_half_plane.UpperHalfPlaneProductElement__class',
+             'entries': ['1.00000000000000 + 1.00000000000000*I',
+             '1.00000000000000 + 1.00000000000000*I']}
+            sage: json.dumps(c.to_json()) # doctest: +NORMALIZE_WHITESPACE
+            '{"_cls": "hilbert_modgroup.upper_half_plane.UpperHalfPlaneProductElement__class",
+             "entries": ["1.00000000000000 + 1.00000000000000*I",
+                         "1.00000000000000 + 1.00000000000000*I"]}'
+
+        """
+        full_class_name = f"hilbert_modgroup.upper_half_plane.{self.__class__.__name__}"
+        return {"_cls": full_class_name, "entries": [str(x) for x in self._z]}
+
+    @classmethod
+    def from_json(cls, data):
+        r"""
+        Create an instance of this class from JSON representation.
+
+        INPUT::
+
+        - `data` (dict or str): JSON representation of the object.
+
+        EXAMPLES::
+
+            sage: from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement__class
+            sage: from hilbert_modgroup.upper_half_plane import ComplexPlaneProductElement
+            sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement__class
+            sage: from hilbert_modgroup.upper_half_plane import UpperHalfPlaneProductElement
+            sage: json_dict_data = {
+            ....:    '_cls': 'UpperHalfPlaneProductElement__class',
+            ....:    'entries': [1.00000000000000 + 1.00000000000000*I,
+            ....:    1.00000000000000 + 1.00000000000000*I]}
+            sage: UpperHalfPlaneProductElement__class.from_json(json_dict_data)
+            [1.00000000000000 + 1.00000000000000*I, 1.00000000000000 + 1.00000000000000*I]
+            sage: c = UpperHalfPlaneProductElement([1+I,1+I])
+            sage: c == UpperHalfPlaneProductElement__class.from_json(c.to_json())
+            True
+        """
+        if isinstance(data, str):
+            data = json.loads(data)
+        if not isinstance(data, dict):
+            raise ValueError("Input `data` must be a dict or JSON representation of a dict.")
+        if not data.get("_cls", "").endswith(cls.__name__):
+            raise ValueError("Input `data` must represent an element of "
+                             f"{cls.__name__}")
+        return cls(data.get("entries"))
 
     def __hash__(self):
         """
@@ -1718,12 +1789,6 @@ cdef class UpperHalfPlaneProductElement__class(ComplexPlaneProductElement__class
             [1.00000000000000 + 1.00000000000000*I, 1.00000000000000 + 1.00000000000000*I]
             sage: UpperHalfPlaneProductElement__class([MPC(1,1),MPC(1,1),MPC(1,1)])
             [1.00000000000000 + 1.00000000000000*I, 1.00000000000000 + 1.00000000000000*I, 1.00000000000000 + 1.00000000000000*I]
-
-        TESTS:
-            sage: UpperHalfPlaneProductElement__class([1+I,1+I])
-            Traceback (most recent call last):
-            ...
-            ValueError: Need a list of MPComplexNumber
 
         """
         super().__init__(zl, verbose=verbose, *argv, **kwds)

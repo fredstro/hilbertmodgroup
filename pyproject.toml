@@ -37,7 +37,8 @@ readme = {file = "README.md", content-type = "text/markdown"}
 dynamic = ["version"]
 dependencies = [
     "passagemath-standard~=10.8.1",
-    "passagemath-plot~=10.8.1"
+    "passagemath-plot~=10.8.1",
+    "comp_manager>=0.0.3"
     ]
 [project.optional-dependencies]
 dev = [
