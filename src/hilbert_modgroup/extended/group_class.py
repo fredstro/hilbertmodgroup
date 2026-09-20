@@ -1,4 +1,5 @@
 import logging
+from random import choice
 
 import sage
 from sage.all import Integer
@@ -299,6 +300,27 @@ class ExtendedHilbertModularGroup_class(LinearMatrixGroup_generic):
         """
         return self._OK
 
+    def ambient_group(self):
+        """
+        Return the ambient group associated to self, i.e., with level_ideal = O_K
+
+
+        Examples::
+
+            sage: from hilbert_modgroup.extended.all import ExtendedHilbertModularGroup
+            sage: K.<a> = QuadraticField(5)
+            sage: lattice_ideal = K.fractional_ideal(2)
+            sage: level_ideal = K.fractional_ideal(3)
+            sage: H = ExtendedHilbertModularGroup(K, lattice_ideal = lattice_ideal, level_ideal = level_ideal)
+            sage: H.ambient_group()
+            Hilbert modular group PGL_2^+(...) ... x^2 - 5 with a = 2.236067977499790? ...
+            sage: H.ambient_group().level_ideal()
+            Fractional ideal (1)
+        """
+        return ExtendedHilbertModularGroup(
+            self.number_field(), lattice_ideal=self.lattice_ideal(), tp_units=self.tp_units()
+        )
+
     def __contains__(self, x):
         r"""
         Return whether ``x`` is an element of ``self``.
@@ -386,8 +408,8 @@ class ExtendedHilbertModularGroup_class(LinearMatrixGroup_generic):
             [-a + 1      0]  [-1  0]  [a + 1     0]  [ a -1]  [-a -1]
             [     3 -a - 1], [ 3 -1], [    3 a - 1], [ 3 -a], [ 3  a],
             <BLANKLINE>
-            [-a - 1      0]  [a - 1     0]  [1 1]  [1 a]  [1 0]  [  1   0]
-            [     3 -a + 1], [    3 a + 1], [0 1], [0 1], [3 1], [3*a   1],
+            [-a - 1      0]  [1 0]  [a - 1     0]  [1 1]  [1 a]  [1 0]  [  1   0]
+            [     3 -a + 1], [3 1], [    3 a + 1], [0 1], [0 1], [3 1], [3*a   1],
             <BLANKLINE>
             [2*a + 3       0]
             [      0       1]
@@ -398,32 +420,20 @@ class ExtendedHilbertModularGroup_class(LinearMatrixGroup_generic):
             [-a + 1      0]  [-1  0]  [a + 1     0]  [ a -1]  [-a -1]
             [     3 -a - 1], [ 3 -1], [    3 a - 1], [ 3 -a], [ 3  a],
             <BLANKLINE>
-            [-a - 1      0]  [a - 1     0]  [1 1]  [1 a]  [1 0]  [  1   0]
-            [     3 -a + 1], [    3 a + 1], [0 1], [0 1], [3 1], [3*a   1]
+            [-a - 1      0]  [1 0]  [a - 1     0]  [1 1]  [1 a]  [1 0]  [  1   0]
+            [     3 -a + 1], [3 1], [    3 a + 1], [0 1], [0 1], [3 1], [3*a   1]
             ]
 
         """
         gens = []
         tp_units = self.tp_units()
-        lattice_ideal = self.lattice_ideal()
         level_ideal = self.level_ideal()
         number_field = self.number_field()
-        Lreps = list_of_representatives(level_ideal)
-        for d in level_ideal.residues():
-            if d != 0 and d != 1 and number_field.fractional_ideal(d).is_coprime(level_ideal):
-                Lds = [
-                    P * lattice_ideal * level_ideal
-                    for P in Lreps
-                    if (P * lattice_ideal * level_ideal).is_principal()
-                ]
-                C = Lds[0]
-                c = (C).gens_reduced()[0]
-                A1 = c * (lattice_ideal.inverse())
-                A2 = number_field.fractional_ideal(d)
-                r = A1.element_1_mod(A2)
-                b = -r / c
-                a = (1 - r) / d
-                gens.append(self.create_element(a, b, c, d))
+        coprime_residue = [
+            u for u in level_ideal.residues() if u != 0 and level_ideal.is_coprime(u)
+        ]
+        for x in coprime_residue:
+            gens.append(self.R(x))
         for x in self.lattice_ideal().inverse().basis():
             gens.append(self.T(x))
         for x in (self.lattice_ideal() * self.level_ideal()).basis():
@@ -433,6 +443,46 @@ class ExtendedHilbertModularGroup_class(LinearMatrixGroup_generic):
             for x in tpunit_gen:
                 gens.append(self.E(x))
         return gens
+
+    @cached_method
+    def R(self, d):
+        """
+        Return the lift of any element in (OK/(level_ideal))^* in self.
+
+        INPUT:
+
+        - ``d`` -- element of the number field, coprime to ``self.level_ideal()``
+
+        EXAMPLES::
+
+            sage: from hilbert_modgroup.extended.all import ExtendedHilbertModularGroup
+            sage: K1.<a> = QuadraticField(2)
+            sage: level_ideal = K1.fractional_ideal(3)
+            sage: H = ExtendedHilbertModularGroup(K1, level_ideal = level_ideal)
+            sage: d = K1(5)
+            sage: level_ideal.is_coprime(d)
+            True
+            sage: H.R(d)
+            [-1 -2]
+            [ 3  5]
+        """
+        level_ideal = self.level_ideal()
+        lattice_ideal = self.lattice_ideal()
+        number_field = self.number_field()
+        Lreps = list_of_representatives(level_ideal * d)
+        Lds = [
+            P * lattice_ideal * level_ideal
+            for P in Lreps
+            if (P * lattice_ideal * level_ideal).is_principal()
+        ]
+        C = Lds[0]
+        c = (C).gens_reduced()[0]
+        A1 = c * (lattice_ideal.inverse())
+        A2 = number_field.fractional_ideal(d)
+        r = A1.element_1_mod(A2)
+        b = -r / c
+        a = (1 - r) / d
+        return self([a, b, c, d])
 
     @cached_method
     def S(self):
@@ -566,7 +616,9 @@ class ExtendedHilbertModularGroup_class(LinearMatrixGroup_generic):
 
         INPUT:
 
-        - ``mode`` -- one of {'Lower', 'Upper', 'unit'} or None (default)
+        - ``matrix_type`` -- one of {'Lower', 'Upper', 'Unit', 'Lift'} or None
+          (default). If None, returns a product of all four factors. The
+          spelling ``"unit"`` is accepted as a deprecated alias for ``"Unit"``.
         - ``kwds`` -- passed to the random element generators
 
         EXAMPLES::
@@ -576,12 +628,62 @@ class ExtendedHilbertModularGroup_class(LinearMatrixGroup_generic):
             sage: A = H.random_element()
             sage: A in H
             True
+
+        The ``"Lower"`` mode returns a lower-triangular matrix with ones on the
+        diagonal::
+
+            sage: A = H.random_element(matrix_type="Lower")
+            sage: A in H
+            True
+            sage: A[0, 0] == 1 and A[0, 1] == 0 and A[1, 1] == 1
+            True
+
+        The ``"Upper"`` mode returns an upper-triangular matrix with ones on the
+        diagonal::
+
+            sage: A = H.random_element(matrix_type="Upper")
+            sage: A in H
+            True
+            sage: A[0, 0] == 1 and A[1, 0] == 0 and A[1, 1] == 1
+            True
+
+        The ``"Unit"`` mode returns a diagonal matrix coming from a unit::
+
+            sage: A = H.random_element(matrix_type="Unit")
+            sage: A in H
+            True
+            sage: A[0, 1] == 0 and A[1, 0] == 0
+            True
+
+        The ``"Lift"`` mode returns a lift of an element of (O_K/N)^* into the
+        ambient group::
+
+            sage: K.<a> = QuadraticField(2)
+            sage: HN = ExtendedHilbertModularGroup(K, level_ideal=K.fractional_ideal(3))
+            sage: A = HN.random_element(matrix_type="Lift")
+            sage: A in HN.ambient_group()
+            True
+
+        With no ``matrix_type`` set, the result is a product of all four
+        factors::
+
+            sage: A = HN.random_element()
+            sage: A in HN.ambient_group()
+            True
         """
         x = kwds.pop("x", None)
         y = kwds.pop("y", None)
         a = self.lattice_ideal().inverse().random_element(**kwds)
         b = (self.lattice_ideal() * self.level_ideal()).random_element(**kwds)
         K = self.number_field()
+        level_ideal = self.level_ideal()
+        coprime_residue = [
+            u for u in level_ideal.residues() if u != 0 and level_ideal.is_coprime(u)
+        ]
+        if not coprime_residue:
+            d = 1
+        else:
+            d = choice(coprime_residue)
         if x is None:
             x = -5
         if y is None:
@@ -594,16 +696,26 @@ class ExtendedHilbertModularGroup_class(LinearMatrixGroup_generic):
             gens = fundamental_unit_generator(K)
             exponents = [ZZ.random_element(x, y) for _ in gens]
             u = prod(g**e for g, e in zip(gens, exponents, strict=False))
+        if matrix_type == "unit":
+            import warnings
+
+            warnings.warn(
+                'matrix_type="unit" is deprecated; use "Unit" instead.',
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            matrix_type = "Unit"
         if matrix_type == "Lower":
             return self(self.L(b))
-
-        if matrix_type == "Upper":
+        elif matrix_type == "Upper":
             return self(self.T(a))
-
-        if matrix_type == "unit":
+        elif matrix_type == "Unit":
             return self(self.E(u))
-
-        return self(self.E(u) * self.T(a) * self.L(b))
+        elif matrix_type == "Lift":
+            return self(self.R(d))
+        elif matrix_type:
+            raise ValueError(f"Unknown matrix_type: {matrix_type}")
+        return self(self.R(d) * self.E(u) * self.T(a) * self.L(b))
 
     @cached_method
     def cusps(self):
@@ -668,7 +780,6 @@ class ExtendedHilbertModularGroup_class(LinearMatrixGroup_generic):
                         A2 = newb * B.inverse()
                         r = A2.element_1_mod(A1)
                         a1 = (r / newb) * g
-                        -(1 - r) / c * g
                         Lcusps.append(NFCusp_wrt_lattice_ideal(lattice_ideal, a1, c, lreps=Lreps))
         cusp = NFCusp_wrt_lattice_ideal(self.lattice_ideal(), 1, 0)
         for c in Lcusps:
@@ -965,38 +1076,40 @@ class ExtendedHilbertModularGroup_class(LinearMatrixGroup_generic):
         N = self.level_ideal()
         K = self.number_field()
         lattice_ideal = self.lattice_ideal()
-        H = ExtendedHilbertModularGroup(K, lattice_ideal)
+        H = self.ambient_group()
         L = []
         for D in divisors(N):
-            if (D * lattice_ideal).is_principal():
-                Dp = K.fractional_ideal(1)
-                c = (D * lattice_ideal * Dp).gens_reduced()[0]
+            if D == N:
+                # For D == N the general construction gives d = 1, a = 1, b = 0
+                # and c in Dp * lattice_ideal * N ⊆ lattice_ideal * N, so the
+                # representative already lies in self and represents the
+                # identity coset. Insert I directly to skip that construction.
+                L.append(H.create_element(1, 0, 0, 1))
             else:
-                it = K.primes_of_degree_one_iter()
-                Dp = next(it)
-                while not Dp.is_coprime(N) or not (Dp * D * lattice_ideal).is_principal():
+                if (D * lattice_ideal).is_principal():
+                    Dp = K.fractional_ideal(1)
+                    c = (D * lattice_ideal * Dp).gens_reduced()[0]
+                else:
+                    it = K.primes_of_degree_one_iter()
                     Dp = next(it)
-                c = (D * lattice_ideal * Dp).gens_reduced()[0]
-            I = D + N / D
-            for r in (N / D).residues():
-                if I.is_coprime(r):
-                    M = D.prime_to_idealM_part(N / D)
-                    u = (Dp * M).element_1_mod(N / D)
-                    d = u * r + (1 - u)
-                    if d.is_zero():
-                        L.append(H.create_element(1, -1 / c, c, d))
-                    else:
-                        B = K.fractional_ideal(c * lattice_ideal.inverse()).element_1_mod(
-                            K.fractional_ideal(d)
-                        )
-                        b = -B / c
-                        a = (1 - B) / d
-                        L.append(H.create_element(a, b, c, d))
-        for x in L:
-            if x in self:
-                idx = L.index(x)
-                L[idx] = H.create_element(1, 0, 0, 1)
-                break
+                    while not Dp.is_coprime(N) or not (Dp * D * lattice_ideal).is_principal():
+                        Dp = next(it)
+                    c = (D * lattice_ideal * Dp).gens_reduced()[0]
+                I = D + N / D
+                for r in (N / D).residues():
+                    if I.is_coprime(r):
+                        M = D.prime_to_idealM_part(N / D)
+                        u = (Dp * M).element_1_mod(N / D)
+                        d = u * r + (1 - u)
+                        if d.is_zero():
+                            L.append(H.create_element(1, -1 / c, c, d))
+                        else:
+                            B = K.fractional_ideal(c * lattice_ideal.inverse()).element_1_mod(
+                                K.fractional_ideal(d)
+                            )
+                            b = -B / c
+                            a = (1 - B) / d
+                            L.append(H.create_element(a, b, c, d))
         if not len(L) == psi(N):
             raise ValueError("Condition is not satisfying. Check again")
         return L

@@ -8,3 +8,10 @@ dist
 *.pgf
 .ipynb_checkpoints
 src/hilbert_modgroup/version.py
+.idea/
+.cache/
+.tox/
+.sage/
+.local/
+__pycache__/
+*.DISABLED

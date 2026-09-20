@@ -213,10 +213,10 @@ cpdef find_closest_cusp(p, z, return_multiple=False, use_lll=True, use_norm_boun
             break
     # We have already filtered away identical cusps but as a final stage
     # we also check if the minimal cusps are equal to any of the fixed representatives.
-    if p.group().ncusps() == 1:
+    if p.ambient_group().ncusps() == 1:
         return min_cusp
     result = []
-    for cusp in p.group().cusps()[1:]:
+    for cusp in p.ambient_group().cusps()[1:]:
         c, d = cusp.numerator(), cusp.denominator()
         quo = c / d
         if return_multiple:
@@ -288,7 +288,7 @@ cpdef distance_to_cusp_eg(SageObject p, NumberFieldElement_base r,
 
     """
     cdef list rlist, slist
-    ideal_rs = p.group().ideal((r, s))
+    ideal_rs = p.ambient_group().ideal((r, s))
     rlist = r.complex_embeddings()
     slist = s.complex_embeddings()
     n = len(slist)
