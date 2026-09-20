@@ -57,9 +57,9 @@ cdef class ExtendedHilbertModularGroupElement(MultiplicativeGroupElement):
             # integral and d is totally positive. is_integral() inspects the
             # minimal polynomial coefficients (O(1)); membership in
             # K.unit_group() would materialise the full unit group.
-            if d.is_zero() or not (d.is_integral()
-                                   and (d ** -1).is_integral()
-                                   and d.is_totally_positive()):
+            if d.is_zero() or not (d.is_integral() and
+                                   (d ** -1).is_integral() and
+                                   d.is_totally_positive()):
                 raise TypeError("matrix must have determinant equal to totally positive unit")
         else:
             if not (x.determinant() == 1):
