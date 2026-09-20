@@ -52,7 +52,14 @@ cdef class ExtendedHilbertModularGroupElement(MultiplicativeGroupElement):
             raise ValueError("parent (= {0}) must be a Extended Hilbert Modular group".format(parent))
         x = MatrixSpace(parent.base_ring(), 2, 2)(x, copy=True, coerce=True)
         if parent.tp_units():
-            if not (x.determinant() in parent.number_field().unit_group() and x.determinant().is_totally_positive()):
+            d = x.determinant()
+            # d is a totally positive unit of O_K iff d and d^-1 are both
+            # integral and d is totally positive. is_integral() inspects the
+            # minimal polynomial coefficients (O(1)); membership in
+            # K.unit_group() would materialise the full unit group.
+            if d.is_zero() or not (d.is_integral()
+                                   and (d ** -1).is_integral()
+                                   and d.is_totally_positive()):
                 raise TypeError("matrix must have determinant equal to totally positive unit")
         else:
             if not (x.determinant() == 1):

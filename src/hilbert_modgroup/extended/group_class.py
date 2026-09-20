@@ -617,7 +617,8 @@ class ExtendedHilbertModularGroup_class(LinearMatrixGroup_generic):
         INPUT:
 
         - ``matrix_type`` -- one of {'Lower', 'Upper', 'Unit', 'Lift'} or None
-          (default). If None, returns a product of all four factors.
+          (default). If None, returns a product of all four factors. The
+          spelling ``"unit"`` is accepted as a deprecated alias for ``"Unit"``.
         - ``kwds`` -- passed to the random element generators
 
         EXAMPLES::
@@ -695,6 +696,15 @@ class ExtendedHilbertModularGroup_class(LinearMatrixGroup_generic):
             gens = fundamental_unit_generator(K)
             exponents = [ZZ.random_element(x, y) for _ in gens]
             u = prod(g**e for g, e in zip(gens, exponents, strict=False))
+        if matrix_type == "unit":
+            import warnings
+
+            warnings.warn(
+                'matrix_type="unit" is deprecated; use "Unit" instead.',
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            matrix_type = "Unit"
         if matrix_type == "Lower":
             return self(self.L(b))
         elif matrix_type == "Upper":
@@ -1070,6 +1080,10 @@ class ExtendedHilbertModularGroup_class(LinearMatrixGroup_generic):
         L = []
         for D in divisors(N):
             if D == N:
+                # For D == N the general construction gives d = 1, a = 1, b = 0
+                # and c in Dp * lattice_ideal * N ⊆ lattice_ideal * N, so the
+                # representative already lies in self and represents the
+                # identity coset. Insert I directly to skip that construction.
                 L.append(H.create_element(1, 0, 0, 1))
             else:
                 if (D * lattice_ideal).is_principal():
