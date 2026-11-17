@@ -261,7 +261,7 @@ $ twine upload --repository pypi dist/*      # Production
 ## Contributors
 
 - [Fredrik Strömberg](https://github.com/fredstro) — author and maintainer
-- [Sujeet Kumar Singh](https://github.com/Sujeetbahel) — extended Hilbert modular group implementation
+- [Sujeet Kumar Singh](https://github.com/Sujeetksb) — extended Hilbert modular group implementation
 
 ## References:
 
